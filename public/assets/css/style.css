@@ -1,0 +1,68 @@
+/* Mini reset */
+h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd {
+    margin: 0;
+    padding: 0;
+}
+
+sup, sub {
+    line-height: 0;
+}
+
+/* Styles */
+body {
+    font-family: sans-serif;
+    font-size: 62.5%;
+}
+
+footer,
+.columns {
+    clear: both;
+    overflow: hidden;
+}
+
+footer .left,
+.columns .left {
+    display: inline;
+    float: left;
+}
+
+footer .right,
+.columns .right {
+    display: inline;
+    float: right;
+}
+
+.columns .c25 {
+    width: 25%;
+}
+
+.columns .c50 {
+    width: 50%;
+}
+
+.columns .c75 {
+    width: 50%;
+}
+
+.columns .c100 {
+    width: 100%;
+}
+
+nav ul, nav li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    display: inline;
+}
+
+nav li:before {
+    content: " | ";
+}
+
+nav li:first-child:before {
+    content: ""
+}
+
