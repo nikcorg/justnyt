@@ -679,6 +679,10 @@ abstract class Candidate implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[CandidateTableMap::COL_CANDIDATE_ID] = true;
+        if (null !== $this->candidate_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CandidateTableMap::COL_CANDIDATE_ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(CandidateTableMap::COL_CANDIDATE_ID)) {
@@ -717,6 +721,13 @@ abstract class Candidate implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setCandidateId($pk);
 
         $this->setNew(false);
     }
@@ -1024,7 +1035,6 @@ abstract class Candidate implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setCandidateId($this->getCandidateId());
         $copyObj->setCreated($this->getCreated());
         $copyObj->setEmail($this->getEmail());
 
@@ -1043,6 +1053,7 @@ abstract class Candidate implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setCandidateId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 

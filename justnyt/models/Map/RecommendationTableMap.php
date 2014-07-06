@@ -82,9 +82,9 @@ class RecommendationTableMap extends TableMap
     const COL_CURATOR_ID = 'recommendation.CURATOR_ID';
 
     /**
-     * the column name for the CREATED field
+     * the column name for the CREATED_ON field
      */
-    const COL_CREATED = 'recommendation.CREATED';
+    const COL_CREATED_ON = 'recommendation.CREATED_ON';
 
     /**
      * the column name for the SHORTLINK field
@@ -113,11 +113,11 @@ class RecommendationTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('RecommendationId', 'CuratorId', 'Created', 'Shortlink', 'Url', 'GraphicContent', ),
-        self::TYPE_STUDLYPHPNAME => array('recommendationId', 'curatorId', 'created', 'shortlink', 'url', 'graphicContent', ),
-        self::TYPE_COLNAME       => array(RecommendationTableMap::COL_RECOMMENDATION_ID, RecommendationTableMap::COL_CURATOR_ID, RecommendationTableMap::COL_CREATED, RecommendationTableMap::COL_SHORTLINK, RecommendationTableMap::COL_URL, RecommendationTableMap::COL_GRAPHIC_CONTENT, ),
-        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_ID', 'COL_CURATOR_ID', 'COL_CREATED', 'COL_SHORTLINK', 'COL_URL', 'COL_GRAPHIC_CONTENT', ),
-        self::TYPE_FIELDNAME     => array('recommendation_id', 'curator_id', 'created', 'shortlink', 'url', 'graphic_content', ),
+        self::TYPE_PHPNAME       => array('RecommendationId', 'CuratorId', 'CreatedOn', 'Shortlink', 'Url', 'GraphicContent', ),
+        self::TYPE_STUDLYPHPNAME => array('recommendationId', 'curatorId', 'createdOn', 'shortlink', 'url', 'graphicContent', ),
+        self::TYPE_COLNAME       => array(RecommendationTableMap::COL_RECOMMENDATION_ID, RecommendationTableMap::COL_CURATOR_ID, RecommendationTableMap::COL_CREATED_ON, RecommendationTableMap::COL_SHORTLINK, RecommendationTableMap::COL_URL, RecommendationTableMap::COL_GRAPHIC_CONTENT, ),
+        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_ID', 'COL_CURATOR_ID', 'COL_CREATED_ON', 'COL_SHORTLINK', 'COL_URL', 'COL_GRAPHIC_CONTENT', ),
+        self::TYPE_FIELDNAME     => array('recommendation_id', 'curator_id', 'created_on', 'shortlink', 'url', 'graphic_content', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
@@ -128,11 +128,11 @@ class RecommendationTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('RecommendationId' => 0, 'CuratorId' => 1, 'Created' => 2, 'Shortlink' => 3, 'Url' => 4, 'GraphicContent' => 5, ),
-        self::TYPE_STUDLYPHPNAME => array('recommendationId' => 0, 'curatorId' => 1, 'created' => 2, 'shortlink' => 3, 'url' => 4, 'graphicContent' => 5, ),
-        self::TYPE_COLNAME       => array(RecommendationTableMap::COL_RECOMMENDATION_ID => 0, RecommendationTableMap::COL_CURATOR_ID => 1, RecommendationTableMap::COL_CREATED => 2, RecommendationTableMap::COL_SHORTLINK => 3, RecommendationTableMap::COL_URL => 4, RecommendationTableMap::COL_GRAPHIC_CONTENT => 5, ),
-        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_ID' => 0, 'COL_CURATOR_ID' => 1, 'COL_CREATED' => 2, 'COL_SHORTLINK' => 3, 'COL_URL' => 4, 'COL_GRAPHIC_CONTENT' => 5, ),
-        self::TYPE_FIELDNAME     => array('recommendation_id' => 0, 'curator_id' => 1, 'created' => 2, 'shortlink' => 3, 'url' => 4, 'graphic_content' => 5, ),
+        self::TYPE_PHPNAME       => array('RecommendationId' => 0, 'CuratorId' => 1, 'CreatedOn' => 2, 'Shortlink' => 3, 'Url' => 4, 'GraphicContent' => 5, ),
+        self::TYPE_STUDLYPHPNAME => array('recommendationId' => 0, 'curatorId' => 1, 'createdOn' => 2, 'shortlink' => 3, 'url' => 4, 'graphicContent' => 5, ),
+        self::TYPE_COLNAME       => array(RecommendationTableMap::COL_RECOMMENDATION_ID => 0, RecommendationTableMap::COL_CURATOR_ID => 1, RecommendationTableMap::COL_CREATED_ON => 2, RecommendationTableMap::COL_SHORTLINK => 3, RecommendationTableMap::COL_URL => 4, RecommendationTableMap::COL_GRAPHIC_CONTENT => 5, ),
+        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_ID' => 0, 'COL_CURATOR_ID' => 1, 'COL_CREATED_ON' => 2, 'COL_SHORTLINK' => 3, 'COL_URL' => 4, 'COL_GRAPHIC_CONTENT' => 5, ),
+        self::TYPE_FIELDNAME     => array('recommendation_id' => 0, 'curator_id' => 1, 'created_on' => 2, 'shortlink' => 3, 'url' => 4, 'graphic_content' => 5, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
@@ -150,11 +150,11 @@ class RecommendationTableMap extends TableMap
         $this->setPhpName('Recommendation');
         $this->setClassName('\\justnyt\\models\\Recommendation');
         $this->setPackage('justnyt.models');
-        $this->setUseIdGenerator(false);
+        $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('RECOMMENDATION_ID', 'RecommendationId', 'INTEGER', true, 10, null);
         $this->addForeignKey('CURATOR_ID', 'CuratorId', 'INTEGER', 'curator', 'CURATOR_ID', false, 10, null);
-        $this->addColumn('CREATED', 'Created', 'TIMESTAMP', false, null, null);
+        $this->addColumn('CREATED_ON', 'CreatedOn', 'TIMESTAMP', false, null, null);
         $this->addColumn('SHORTLINK', 'Shortlink', 'VARCHAR', false, 32, null);
         $this->addColumn('URL', 'Url', 'VARCHAR', false, 1024, null);
         $this->addColumn('GRAPHIC_CONTENT', 'GraphicContent', 'BOOLEAN', false, 1, false);
@@ -311,14 +311,14 @@ class RecommendationTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(RecommendationTableMap::COL_RECOMMENDATION_ID);
             $criteria->addSelectColumn(RecommendationTableMap::COL_CURATOR_ID);
-            $criteria->addSelectColumn(RecommendationTableMap::COL_CREATED);
+            $criteria->addSelectColumn(RecommendationTableMap::COL_CREATED_ON);
             $criteria->addSelectColumn(RecommendationTableMap::COL_SHORTLINK);
             $criteria->addSelectColumn(RecommendationTableMap::COL_URL);
             $criteria->addSelectColumn(RecommendationTableMap::COL_GRAPHIC_CONTENT);
         } else {
             $criteria->addSelectColumn($alias . '.RECOMMENDATION_ID');
             $criteria->addSelectColumn($alias . '.CURATOR_ID');
-            $criteria->addSelectColumn($alias . '.CREATED');
+            $criteria->addSelectColumn($alias . '.CREATED_ON');
             $criteria->addSelectColumn($alias . '.SHORTLINK');
             $criteria->addSelectColumn($alias . '.URL');
             $criteria->addSelectColumn($alias . '.GRAPHIC_CONTENT');
@@ -419,6 +419,10 @@ class RecommendationTableMap extends TableMap
             $criteria = clone $criteria; // rename for clarity
         } else {
             $criteria = $criteria->buildCriteria(); // build Criteria from Recommendation object
+        }
+
+        if ($criteria->containsKey(RecommendationTableMap::COL_RECOMMENDATION_ID) && $criteria->keyContainsValue(RecommendationTableMap::COL_RECOMMENDATION_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.RecommendationTableMap::COL_RECOMMENDATION_ID.')');
         }
 
 

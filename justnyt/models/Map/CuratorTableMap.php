@@ -150,7 +150,7 @@ class CuratorTableMap extends TableMap
         $this->setPhpName('Curator');
         $this->setClassName('\\justnyt\\models\\Curator');
         $this->setPackage('justnyt.models');
-        $this->setUseIdGenerator(false);
+        $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('CURATOR_ID', 'CuratorId', 'INTEGER', true, 10, null);
         $this->addForeignKey('CANDIDATE_ID', 'CandidateId', 'INTEGER', 'candidate', 'CANDIDATE_ID', false, 10, null);
@@ -430,6 +430,10 @@ class CuratorTableMap extends TableMap
             $criteria = clone $criteria; // rename for clarity
         } else {
             $criteria = $criteria->buildCriteria(); // build Criteria from Curator object
+        }
+
+        if ($criteria->containsKey(CuratorTableMap::COL_CURATOR_ID) && $criteria->keyContainsValue(CuratorTableMap::COL_CURATOR_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.CuratorTableMap::COL_CURATOR_ID.')');
         }
 
 

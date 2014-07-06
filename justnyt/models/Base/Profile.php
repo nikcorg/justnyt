@@ -742,6 +742,10 @@ abstract class Profile implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[ProfileTableMap::COL_PROFILE_ID] = true;
+        if (null !== $this->profile_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProfileTableMap::COL_PROFILE_ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(ProfileTableMap::COL_PROFILE_ID)) {
@@ -792,6 +796,13 @@ abstract class Profile implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setProfileId($pk);
 
         $this->setNew(false);
     }
@@ -1125,7 +1136,6 @@ abstract class Profile implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setProfileId($this->getProfileId());
         $copyObj->setAlias($this->getAlias());
         $copyObj->setHomepage($this->getHomepage());
         $copyObj->setImage($this->getImage());
@@ -1146,6 +1156,7 @@ abstract class Profile implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setProfileId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 

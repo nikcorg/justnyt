@@ -145,7 +145,7 @@ class ProfileTableMap extends TableMap
         $this->setPhpName('Profile');
         $this->setClassName('\\justnyt\\models\\Profile');
         $this->setPackage('justnyt.models');
-        $this->setUseIdGenerator(false);
+        $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('PROFILE_ID', 'ProfileId', 'INTEGER', true, 10, null);
         $this->addColumn('ALIAS', 'Alias', 'VARCHAR', true, 80, null);
@@ -420,6 +420,10 @@ class ProfileTableMap extends TableMap
             $criteria = clone $criteria; // rename for clarity
         } else {
             $criteria = $criteria->buildCriteria(); // build Criteria from Profile object
+        }
+
+        if ($criteria->containsKey(ProfileTableMap::COL_PROFILE_ID) && $criteria->keyContainsValue(ProfileTableMap::COL_PROFILE_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProfileTableMap::COL_PROFILE_ID.')');
         }
 
 

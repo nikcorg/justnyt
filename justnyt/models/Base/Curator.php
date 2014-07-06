@@ -858,6 +858,10 @@ abstract class Curator implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[CuratorTableMap::COL_CURATOR_ID] = true;
+        if (null !== $this->curator_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CuratorTableMap::COL_CURATOR_ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(CuratorTableMap::COL_CURATOR_ID)) {
@@ -914,6 +918,13 @@ abstract class Curator implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setCuratorId($pk);
 
         $this->setNew(false);
     }
@@ -1266,7 +1277,6 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setCuratorId($this->getCuratorId());
         $copyObj->setCandidateId($this->getCandidateId());
         $copyObj->setProfileId($this->getProfileId());
         $copyObj->setToken($this->getToken());
@@ -1288,6 +1298,7 @@ abstract class Curator implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setCuratorId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 

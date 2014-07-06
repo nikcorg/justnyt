@@ -22,14 +22,14 @@ use justnyt\models\Map\RecommendationTableMap;
  *
  * @method     ChildRecommendationQuery orderByRecommendationId($order = Criteria::ASC) Order by the recommendation_id column
  * @method     ChildRecommendationQuery orderByCuratorId($order = Criteria::ASC) Order by the curator_id column
- * @method     ChildRecommendationQuery orderByCreated($order = Criteria::ASC) Order by the created column
+ * @method     ChildRecommendationQuery orderByCreatedOn($order = Criteria::ASC) Order by the created_on column
  * @method     ChildRecommendationQuery orderByShortlink($order = Criteria::ASC) Order by the shortlink column
  * @method     ChildRecommendationQuery orderByUrl($order = Criteria::ASC) Order by the url column
  * @method     ChildRecommendationQuery orderByGraphicContent($order = Criteria::ASC) Order by the graphic_content column
  *
  * @method     ChildRecommendationQuery groupByRecommendationId() Group by the recommendation_id column
  * @method     ChildRecommendationQuery groupByCuratorId() Group by the curator_id column
- * @method     ChildRecommendationQuery groupByCreated() Group by the created column
+ * @method     ChildRecommendationQuery groupByCreatedOn() Group by the created_on column
  * @method     ChildRecommendationQuery groupByShortlink() Group by the shortlink column
  * @method     ChildRecommendationQuery groupByUrl() Group by the url column
  * @method     ChildRecommendationQuery groupByGraphicContent() Group by the graphic_content column
@@ -49,7 +49,7 @@ use justnyt\models\Map\RecommendationTableMap;
  *
  * @method     ChildRecommendation findOneByRecommendationId(int $recommendation_id) Return the first ChildRecommendation filtered by the recommendation_id column
  * @method     ChildRecommendation findOneByCuratorId(int $curator_id) Return the first ChildRecommendation filtered by the curator_id column
- * @method     ChildRecommendation findOneByCreated(string $created) Return the first ChildRecommendation filtered by the created column
+ * @method     ChildRecommendation findOneByCreatedOn(string $created_on) Return the first ChildRecommendation filtered by the created_on column
  * @method     ChildRecommendation findOneByShortlink(string $shortlink) Return the first ChildRecommendation filtered by the shortlink column
  * @method     ChildRecommendation findOneByUrl(string $url) Return the first ChildRecommendation filtered by the url column
  * @method     ChildRecommendation findOneByGraphicContent(boolean $graphic_content) Return the first ChildRecommendation filtered by the graphic_content column
@@ -57,7 +57,7 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendation[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildRecommendation objects based on current ModelCriteria
  * @method     ChildRecommendation[]|ObjectCollection findByRecommendationId(int $recommendation_id) Return ChildRecommendation objects filtered by the recommendation_id column
  * @method     ChildRecommendation[]|ObjectCollection findByCuratorId(int $curator_id) Return ChildRecommendation objects filtered by the curator_id column
- * @method     ChildRecommendation[]|ObjectCollection findByCreated(string $created) Return ChildRecommendation objects filtered by the created column
+ * @method     ChildRecommendation[]|ObjectCollection findByCreatedOn(string $created_on) Return ChildRecommendation objects filtered by the created_on column
  * @method     ChildRecommendation[]|ObjectCollection findByShortlink(string $shortlink) Return ChildRecommendation objects filtered by the shortlink column
  * @method     ChildRecommendation[]|ObjectCollection findByUrl(string $url) Return ChildRecommendation objects filtered by the url column
  * @method     ChildRecommendation[]|ObjectCollection findByGraphicContent(boolean $graphic_content) Return ChildRecommendation objects filtered by the graphic_content column
@@ -150,7 +150,7 @@ abstract class RecommendationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT RECOMMENDATION_ID, CURATOR_ID, CREATED, SHORTLINK, URL, GRAPHIC_CONTENT FROM recommendation WHERE RECOMMENDATION_ID = :p0';
+        $sql = 'SELECT RECOMMENDATION_ID, CURATOR_ID, CREATED_ON, SHORTLINK, URL, GRAPHIC_CONTENT FROM recommendation WHERE RECOMMENDATION_ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -325,16 +325,16 @@ abstract class RecommendationQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the created column
+     * Filter the query on the created_on column
      *
      * Example usage:
      * <code>
-     * $query->filterByCreated('2011-03-14'); // WHERE created = '2011-03-14'
-     * $query->filterByCreated('now'); // WHERE created = '2011-03-14'
-     * $query->filterByCreated(array('max' => 'yesterday')); // WHERE created > '2011-03-13'
+     * $query->filterByCreatedOn('2011-03-14'); // WHERE created_on = '2011-03-14'
+     * $query->filterByCreatedOn('now'); // WHERE created_on = '2011-03-14'
+     * $query->filterByCreatedOn(array('max' => 'yesterday')); // WHERE created_on > '2011-03-13'
      * </code>
      *
-     * @param     mixed $created The value to use as filter.
+     * @param     mixed $createdOn The value to use as filter.
      *              Values can be integers (unix timestamps), DateTime objects, or strings.
      *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
@@ -344,16 +344,16 @@ abstract class RecommendationQuery extends ModelCriteria
      *
      * @return $this|ChildRecommendationQuery The current query, for fluid interface
      */
-    public function filterByCreated($created = null, $comparison = null)
+    public function filterByCreatedOn($createdOn = null, $comparison = null)
     {
-        if (is_array($created)) {
+        if (is_array($createdOn)) {
             $useMinMax = false;
-            if (isset($created['min'])) {
-                $this->addUsingAlias(RecommendationTableMap::COL_CREATED, $created['min'], Criteria::GREATER_EQUAL);
+            if (isset($createdOn['min'])) {
+                $this->addUsingAlias(RecommendationTableMap::COL_CREATED_ON, $createdOn['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($created['max'])) {
-                $this->addUsingAlias(RecommendationTableMap::COL_CREATED, $created['max'], Criteria::LESS_EQUAL);
+            if (isset($createdOn['max'])) {
+                $this->addUsingAlias(RecommendationTableMap::COL_CREATED_ON, $createdOn['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -364,7 +364,7 @@ abstract class RecommendationQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(RecommendationTableMap::COL_CREATED, $created, $comparison);
+        return $this->addUsingAlias(RecommendationTableMap::COL_CREATED_ON, $createdOn, $comparison);
     }
 
     /**

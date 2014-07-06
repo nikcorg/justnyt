@@ -69,10 +69,10 @@ abstract class Recommendation implements ActiveRecordInterface
     protected $curator_id;
 
     /**
-     * The value for the created field.
+     * The value for the created_on field.
      * @var        \DateTime
      */
-    protected $created;
+    protected $created_on;
 
     /**
      * The value for the shortlink field.
@@ -357,7 +357,7 @@ abstract class Recommendation implements ActiveRecordInterface
     }
 
     /**
-     * Get the [optionally formatted] temporal [created] column value.
+     * Get the [optionally formatted] temporal [created_on] column value.
      *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
@@ -367,12 +367,12 @@ abstract class Recommendation implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getCreated($format = NULL)
+    public function getCreatedOn($format = NULL)
     {
         if ($format === null) {
-            return $this->created;
+            return $this->created_on;
         } else {
-            return $this->created instanceof \DateTime ? $this->created->format($format) : null;
+            return $this->created_on instanceof \DateTime ? $this->created_on->format($format) : null;
         }
     }
 
@@ -462,11 +462,11 @@ abstract class Recommendation implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RecommendationTableMap::translateFieldName('CuratorId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->curator_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RecommendationTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RecommendationTableMap::translateFieldName('CreatedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
-            $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RecommendationTableMap::translateFieldName('Shortlink', TableMap::TYPE_PHPNAME, $indexType)];
             $this->shortlink = (null !== $col) ? (string) $col : null;
@@ -556,24 +556,24 @@ abstract class Recommendation implements ActiveRecordInterface
     } // setCuratorId()
 
     /**
-     * Sets the value of [created] column to a normalized version of the date/time value specified.
+     * Sets the value of [created_on] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
      * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
      */
-    public function setCreated($v)
+    public function setCreatedOn($v)
     {
         $dt = PropelDateTime::newInstance($v, null, '\DateTime');
-        if ($this->created !== null || $dt !== null) {
-            if ($dt !== $this->created) {
-                $this->created = $dt;
-                $this->modifiedColumns[RecommendationTableMap::COL_CREATED] = true;
+        if ($this->created_on !== null || $dt !== null) {
+            if ($dt !== $this->created_on) {
+                $this->created_on = $dt;
+                $this->modifiedColumns[RecommendationTableMap::COL_CREATED_ON] = true;
             }
         } // if either are not null
 
         return $this;
-    } // setCreated()
+    } // setCreatedOn()
 
     /**
      * Set the value of [shortlink] column.
@@ -823,6 +823,10 @@ abstract class Recommendation implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[RecommendationTableMap::COL_RECOMMENDATION_ID] = true;
+        if (null !== $this->recommendation_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . RecommendationTableMap::COL_RECOMMENDATION_ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(RecommendationTableMap::COL_RECOMMENDATION_ID)) {
@@ -831,8 +835,8 @@ abstract class Recommendation implements ActiveRecordInterface
         if ($this->isColumnModified(RecommendationTableMap::COL_CURATOR_ID)) {
             $modifiedColumns[':p' . $index++]  = 'CURATOR_ID';
         }
-        if ($this->isColumnModified(RecommendationTableMap::COL_CREATED)) {
-            $modifiedColumns[':p' . $index++]  = 'CREATED';
+        if ($this->isColumnModified(RecommendationTableMap::COL_CREATED_ON)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_ON';
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_SHORTLINK)) {
             $modifiedColumns[':p' . $index++]  = 'SHORTLINK';
@@ -860,8 +864,8 @@ abstract class Recommendation implements ActiveRecordInterface
                     case 'CURATOR_ID':
                         $stmt->bindValue($identifier, $this->curator_id, PDO::PARAM_INT);
                         break;
-                    case 'CREATED':
-                        $stmt->bindValue($identifier, $this->created ? $this->created->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                    case 'CREATED_ON':
+                        $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                     case 'SHORTLINK':
                         $stmt->bindValue($identifier, $this->shortlink, PDO::PARAM_STR);
@@ -879,6 +883,13 @@ abstract class Recommendation implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setRecommendationId($pk);
 
         $this->setNew(false);
     }
@@ -934,7 +945,7 @@ abstract class Recommendation implements ActiveRecordInterface
                 return $this->getCuratorId();
                 break;
             case 2:
-                return $this->getCreated();
+                return $this->getCreatedOn();
                 break;
             case 3:
                 return $this->getShortlink();
@@ -976,7 +987,7 @@ abstract class Recommendation implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getRecommendationId(),
             $keys[1] => $this->getCuratorId(),
-            $keys[2] => $this->getCreated(),
+            $keys[2] => $this->getCreatedOn(),
             $keys[3] => $this->getShortlink(),
             $keys[4] => $this->getUrl(),
             $keys[5] => $this->getGraphicContent(),
@@ -1031,7 +1042,7 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->setCuratorId($value);
                 break;
             case 2:
-                $this->setCreated($value);
+                $this->setCreatedOn($value);
                 break;
             case 3:
                 $this->setShortlink($value);
@@ -1075,7 +1086,7 @@ abstract class Recommendation implements ActiveRecordInterface
             $this->setCuratorId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setCreated($arr[$keys[2]]);
+            $this->setCreatedOn($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setShortlink($arr[$keys[3]]);
@@ -1127,8 +1138,8 @@ abstract class Recommendation implements ActiveRecordInterface
         if ($this->isColumnModified(RecommendationTableMap::COL_CURATOR_ID)) {
             $criteria->add(RecommendationTableMap::COL_CURATOR_ID, $this->curator_id);
         }
-        if ($this->isColumnModified(RecommendationTableMap::COL_CREATED)) {
-            $criteria->add(RecommendationTableMap::COL_CREATED, $this->created);
+        if ($this->isColumnModified(RecommendationTableMap::COL_CREATED_ON)) {
+            $criteria->add(RecommendationTableMap::COL_CREATED_ON, $this->created_on);
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_SHORTLINK)) {
             $criteria->add(RecommendationTableMap::COL_SHORTLINK, $this->shortlink);
@@ -1225,14 +1236,14 @@ abstract class Recommendation implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setRecommendationId($this->getRecommendationId());
         $copyObj->setCuratorId($this->getCuratorId());
-        $copyObj->setCreated($this->getCreated());
+        $copyObj->setCreatedOn($this->getCreatedOn());
         $copyObj->setShortlink($this->getShortlink());
         $copyObj->setUrl($this->getUrl());
         $copyObj->setGraphicContent($this->getGraphicContent());
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setRecommendationId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1321,7 +1332,7 @@ abstract class Recommendation implements ActiveRecordInterface
         }
         $this->recommendation_id = null;
         $this->curator_id = null;
-        $this->created = null;
+        $this->created_on = null;
         $this->shortlink = null;
         $this->url = null;
         $this->graphic_content = null;

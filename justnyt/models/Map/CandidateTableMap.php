@@ -135,7 +135,7 @@ class CandidateTableMap extends TableMap
         $this->setPhpName('Candidate');
         $this->setClassName('\\justnyt\\models\\Candidate');
         $this->setPackage('justnyt.models');
-        $this->setUseIdGenerator(false);
+        $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('CANDIDATE_ID', 'CandidateId', 'INTEGER', true, 10, null);
         $this->addColumn('CREATED', 'Created', 'TIMESTAMP', true, null, null);
@@ -404,6 +404,10 @@ class CandidateTableMap extends TableMap
             $criteria = clone $criteria; // rename for clarity
         } else {
             $criteria = $criteria->buildCriteria(); // build Criteria from Candidate object
+        }
+
+        if ($criteria->containsKey(CandidateTableMap::COL_CANDIDATE_ID) && $criteria->keyContainsValue(CandidateTableMap::COL_CANDIDATE_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.CandidateTableMap::COL_CANDIDATE_ID.')');
         }
 
 
