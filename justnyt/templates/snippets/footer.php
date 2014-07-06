@@ -2,10 +2,11 @@
     <div class="column c50 left">
         <nav>
             <ul>
+                <li><a href="/parhautta" rel="nofollow">Parhautta</a></li>
                 <li><a href="/historiaa">Parhauden historiaa</a></li>
                 <li><a href="/kuraattorit">Kuraattorit</a></li>
-                <li><a href="/faq">Kysymyksiä ja vastauksia</a></li>
                 <li><a href="/kuraattoriksi">Kuraattoriksi kuraattorin paikalle</a></li>
+                <li><a href="/faq">Kysymyksiä ja vastauksia</a></li>
             </ul>
         </nav>
     </div>
