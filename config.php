@@ -26,3 +26,12 @@ Router::addRoute(
     ->addAction("kuraattorit", null, RequestMethods::GET, "curators")
     ->addAction("historiaa", null, RequestMethods::GET, "history")
 );
+
+Router::addRoute(
+    Route::factory(
+        "/parhautta",
+        "\\justnyt\\controllers\\RedirectController",
+        RequestMethods::GET,
+        "redirect"
+        )
+);
