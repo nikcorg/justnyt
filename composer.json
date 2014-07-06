@@ -1,0 +1,13 @@
+{
+    "name": "kakspistenolla/justnyt",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niklas Lindgren",
+            "email": "nikc@iki.fi"
+        }
+    ],
+    "require": {
+        "propel/propel": "dev-master"
+    }
+}
