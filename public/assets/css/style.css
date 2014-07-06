@@ -1,5 +1,10 @@
 /* Mini reset */
-h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd {
+
+body,
+h1, h2, h3, h4, h5, h6,
+p,
+ul, ol, li,
+dl, dt, dd {
     margin: 0;
     padding: 0;
 }
@@ -8,11 +13,26 @@ sup, sub {
     line-height: 0;
 }
 
-/* Styles */
+/* Typo */
+
 body {
     font-family: sans-serif;
     font-size: 62.5%;
 }
+
+/* Set some margins */
+
+body {
+    padding-top: 3em;
+}
+
+main, footer, header {
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 2em;
+}
+
+/* Columns helpers */
 
 footer,
 .columns {
@@ -21,7 +41,9 @@ footer,
 }
 
 footer .left,
-.columns .left {
+footer .column,
+.columns .left,
+.columns .column {
     display: inline;
     float: left;
 }
@@ -32,21 +54,29 @@ footer .right,
     float: right;
 }
 
+footer .c100,
+footer .column,
+.columns .c100,
+.columns .column {
+    width: 100%;
+}
+
+footer .c25,
 .columns .c25 {
     width: 25%;
 }
 
+footer .c50,
 .columns .c50 {
     width: 50%;
 }
 
+footer .c75,
 .columns .c75 {
     width: 50%;
 }
 
-.columns .c100 {
-    width: 100%;
-}
+/* Navigation */
 
 nav ul, nav li {
     list-style: none;
