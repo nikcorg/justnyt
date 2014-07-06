@@ -35,3 +35,18 @@ Router::addRoute(
         "redirect"
         )
 );
+
+
+Router::addRoute(
+    Route::factory(
+        "/kuraattori",
+        "\\justnyt\\controllers\\RecommendationController",
+        RequestMethods::NONE
+        )
+    ->addAction(
+        ":token/suosittele",
+        array("token" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET,
+        "create"
+        )
+);
