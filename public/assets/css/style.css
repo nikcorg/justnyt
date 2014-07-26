@@ -58,6 +58,12 @@ main, footer, header {
     margin-bottom: 1.25rem;
 }
 
+/* Helpers */
+
+.centered {
+    text-align: center;
+}
+
 /* Columns helpers */
 
 footer,
