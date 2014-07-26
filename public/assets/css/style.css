@@ -8,6 +8,9 @@ h1, h2, h3, h4, h5, h6,
 p,
 ul, ol, li,
 dl, dt, dd,
+span, div, main, header, footer, nav,
+article, section, aside,
+pre, table,
 input, textarea, select, button {
     font-size: 1rem;
     font-weight: normal;
@@ -40,7 +43,6 @@ h2 {
 
 p {
     font-size: 1rem;
-    margin-bottom: 1.5rem
 }
 
 li {
@@ -56,7 +58,13 @@ body {
 main, footer, header {
     margin-left: 1rem;
     margin-right: 1rem;
-    margin-bottom: 2rem;
+}
+
+ul, ol, dl,
+p,
+form,
+main, nav, footer, header {
+    margin-bottom: 1.5rem;
 }
 
 /* Helpers */
@@ -136,7 +144,7 @@ form {
     background-color: #eee;
 }
 
-form p:last-child {
+form > :last-child {
     margin-bottom: 0;
 }
 
@@ -147,13 +155,13 @@ label {
 
 label span {
     margin-bottom: 0.5rem;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     font-weight: bold;
     display: block;
 }
 
 input {
-    font-size: 0.75rem;
+    font-size: 1rem;
     margin: 0;
     padding: 0.5rem;
     width: 100%;
@@ -161,7 +169,7 @@ input {
 
 button {
     padding: 0.5rem;
-    font-size: 0.75rem;
+    font-size: 1rem;
 }
 
 button[type=submit] {
