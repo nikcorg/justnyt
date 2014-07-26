@@ -9,7 +9,7 @@ class RedirectController extends \glue\Controller
 
     public function redirect() {
         $newestRecommendation = \justnyt\models\RecommendationQuery::create()
-            ->orderByCreated(\Propel\Runtime\ActiveQuery\Criteria::DESC)
+            ->orderByCreatedOn(\Propel\Runtime\ActiveQuery\Criteria::DESC)
             ->findOne();
 
         if (! $newestRecommendation) {
