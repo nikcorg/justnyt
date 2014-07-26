@@ -126,15 +126,17 @@ nav ul, nav li {
 }
 
 nav li {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
     display: inline;
 }
 
-nav li:before {
-    content: " | ";
+nav li:first-child {
+    margin-left: 0;
 }
 
-nav li:first-child:before {
-    content: ""
+nav li:last-child {
+    margin-right: 0;
 }
 
 /* Forms */
