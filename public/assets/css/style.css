@@ -49,13 +49,13 @@ li {
 /* Set some margins */
 
 body {
-    padding-top: 1.25rem;
+    padding-top: 3rem;
 }
 
 main, footer, header {
-    margin-left: 0.625rem;
-    margin-right: 0.625rem;
-    margin-bottom: 1.25rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 2rem;
 }
 
 /* Helpers */
