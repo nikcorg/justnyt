@@ -77,9 +77,9 @@ class CandidateTableMap extends TableMap
     const COL_CANDIDATE_ID = 'candidate.CANDIDATE_ID';
 
     /**
-     * the column name for the CREATED field
+     * the column name for the CREATED_ON field
      */
-    const COL_CREATED = 'candidate.CREATED';
+    const COL_CREATED_ON = 'candidate.CREATED_ON';
 
     /**
      * the column name for the EMAIL field
@@ -98,11 +98,11 @@ class CandidateTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('CandidateId', 'Created', 'Email', ),
-        self::TYPE_STUDLYPHPNAME => array('candidateId', 'created', 'email', ),
-        self::TYPE_COLNAME       => array(CandidateTableMap::COL_CANDIDATE_ID, CandidateTableMap::COL_CREATED, CandidateTableMap::COL_EMAIL, ),
-        self::TYPE_RAW_COLNAME   => array('COL_CANDIDATE_ID', 'COL_CREATED', 'COL_EMAIL', ),
-        self::TYPE_FIELDNAME     => array('candidate_id', 'created', 'email', ),
+        self::TYPE_PHPNAME       => array('CandidateId', 'CreatedOn', 'Email', ),
+        self::TYPE_STUDLYPHPNAME => array('candidateId', 'createdOn', 'email', ),
+        self::TYPE_COLNAME       => array(CandidateTableMap::COL_CANDIDATE_ID, CandidateTableMap::COL_CREATED_ON, CandidateTableMap::COL_EMAIL, ),
+        self::TYPE_RAW_COLNAME   => array('COL_CANDIDATE_ID', 'COL_CREATED_ON', 'COL_EMAIL', ),
+        self::TYPE_FIELDNAME     => array('candidate_id', 'created_on', 'email', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -113,11 +113,11 @@ class CandidateTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('CandidateId' => 0, 'Created' => 1, 'Email' => 2, ),
-        self::TYPE_STUDLYPHPNAME => array('candidateId' => 0, 'created' => 1, 'email' => 2, ),
-        self::TYPE_COLNAME       => array(CandidateTableMap::COL_CANDIDATE_ID => 0, CandidateTableMap::COL_CREATED => 1, CandidateTableMap::COL_EMAIL => 2, ),
-        self::TYPE_RAW_COLNAME   => array('COL_CANDIDATE_ID' => 0, 'COL_CREATED' => 1, 'COL_EMAIL' => 2, ),
-        self::TYPE_FIELDNAME     => array('candidate_id' => 0, 'created' => 1, 'email' => 2, ),
+        self::TYPE_PHPNAME       => array('CandidateId' => 0, 'CreatedOn' => 1, 'Email' => 2, ),
+        self::TYPE_STUDLYPHPNAME => array('candidateId' => 0, 'createdOn' => 1, 'email' => 2, ),
+        self::TYPE_COLNAME       => array(CandidateTableMap::COL_CANDIDATE_ID => 0, CandidateTableMap::COL_CREATED_ON => 1, CandidateTableMap::COL_EMAIL => 2, ),
+        self::TYPE_RAW_COLNAME   => array('COL_CANDIDATE_ID' => 0, 'COL_CREATED_ON' => 1, 'COL_EMAIL' => 2, ),
+        self::TYPE_FIELDNAME     => array('candidate_id' => 0, 'created_on' => 1, 'email' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -138,7 +138,7 @@ class CandidateTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('CANDIDATE_ID', 'CandidateId', 'INTEGER', true, 10, null);
-        $this->addColumn('CREATED', 'Created', 'TIMESTAMP', true, null, null);
+        $this->addColumn('CREATED_ON', 'CreatedOn', 'TIMESTAMP', true, null, null);
         $this->addColumn('EMAIL', 'Email', 'VARCHAR', true, 255, null);
     } // initialize()
 
@@ -301,11 +301,11 @@ class CandidateTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(CandidateTableMap::COL_CANDIDATE_ID);
-            $criteria->addSelectColumn(CandidateTableMap::COL_CREATED);
+            $criteria->addSelectColumn(CandidateTableMap::COL_CREATED_ON);
             $criteria->addSelectColumn(CandidateTableMap::COL_EMAIL);
         } else {
             $criteria->addSelectColumn($alias . '.CANDIDATE_ID');
-            $criteria->addSelectColumn($alias . '.CREATED');
+            $criteria->addSelectColumn($alias . '.CREATED_ON');
             $criteria->addSelectColumn($alias . '.EMAIL');
         }
     }

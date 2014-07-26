@@ -65,10 +65,10 @@ abstract class Candidate implements ActiveRecordInterface
     protected $candidate_id;
 
     /**
-     * The value for the created field.
+     * The value for the created_on field.
      * @var        \DateTime
      */
-    protected $created;
+    protected $created_on;
 
     /**
      * The value for the email field.
@@ -324,7 +324,7 @@ abstract class Candidate implements ActiveRecordInterface
     }
 
     /**
-     * Get the [optionally formatted] temporal [created] column value.
+     * Get the [optionally formatted] temporal [created_on] column value.
      *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
@@ -334,12 +334,12 @@ abstract class Candidate implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getCreated($format = NULL)
+    public function getCreatedOn($format = NULL)
     {
         if ($format === null) {
-            return $this->created;
+            return $this->created_on;
         } else {
-            return $this->created instanceof \DateTime ? $this->created->format($format) : null;
+            return $this->created_on instanceof \DateTime ? $this->created_on->format($format) : null;
         }
     }
 
@@ -392,11 +392,11 @@ abstract class Candidate implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : CandidateTableMap::translateFieldName('CandidateId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->candidate_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : CandidateTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : CandidateTableMap::translateFieldName('CreatedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
-            $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CandidateTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
             $this->email = (null !== $col) ? (string) $col : null;
@@ -453,24 +453,24 @@ abstract class Candidate implements ActiveRecordInterface
     } // setCandidateId()
 
     /**
-     * Sets the value of [created] column to a normalized version of the date/time value specified.
+     * Sets the value of [created_on] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
      * @return $this|\justnyt\models\Candidate The current object (for fluent API support)
      */
-    public function setCreated($v)
+    public function setCreatedOn($v)
     {
         $dt = PropelDateTime::newInstance($v, null, '\DateTime');
-        if ($this->created !== null || $dt !== null) {
-            if ($dt !== $this->created) {
-                $this->created = $dt;
-                $this->modifiedColumns[CandidateTableMap::COL_CREATED] = true;
+        if ($this->created_on !== null || $dt !== null) {
+            if ($dt !== $this->created_on) {
+                $this->created_on = $dt;
+                $this->modifiedColumns[CandidateTableMap::COL_CREATED_ON] = true;
             }
         } // if either are not null
 
         return $this;
-    } // setCreated()
+    } // setCreatedOn()
 
     /**
      * Set the value of [email] column.
@@ -688,8 +688,8 @@ abstract class Candidate implements ActiveRecordInterface
         if ($this->isColumnModified(CandidateTableMap::COL_CANDIDATE_ID)) {
             $modifiedColumns[':p' . $index++]  = 'CANDIDATE_ID';
         }
-        if ($this->isColumnModified(CandidateTableMap::COL_CREATED)) {
-            $modifiedColumns[':p' . $index++]  = 'CREATED';
+        if ($this->isColumnModified(CandidateTableMap::COL_CREATED_ON)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_ON';
         }
         if ($this->isColumnModified(CandidateTableMap::COL_EMAIL)) {
             $modifiedColumns[':p' . $index++]  = 'EMAIL';
@@ -708,8 +708,8 @@ abstract class Candidate implements ActiveRecordInterface
                     case 'CANDIDATE_ID':
                         $stmt->bindValue($identifier, $this->candidate_id, PDO::PARAM_INT);
                         break;
-                    case 'CREATED':
-                        $stmt->bindValue($identifier, $this->created ? $this->created->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                    case 'CREATED_ON':
+                        $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                     case 'EMAIL':
                         $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
@@ -780,7 +780,7 @@ abstract class Candidate implements ActiveRecordInterface
                 return $this->getCandidateId();
                 break;
             case 1:
-                return $this->getCreated();
+                return $this->getCreatedOn();
                 break;
             case 2:
                 return $this->getEmail();
@@ -815,7 +815,7 @@ abstract class Candidate implements ActiveRecordInterface
         $keys = CandidateTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getCandidateId(),
-            $keys[1] => $this->getCreated(),
+            $keys[1] => $this->getCreatedOn(),
             $keys[2] => $this->getEmail(),
         );
         $virtualColumns = $this->virtualColumns;
@@ -865,7 +865,7 @@ abstract class Candidate implements ActiveRecordInterface
                 $this->setCandidateId($value);
                 break;
             case 1:
-                $this->setCreated($value);
+                $this->setCreatedOn($value);
                 break;
             case 2:
                 $this->setEmail($value);
@@ -900,7 +900,7 @@ abstract class Candidate implements ActiveRecordInterface
             $this->setCandidateId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setCreated($arr[$keys[1]]);
+            $this->setCreatedOn($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
             $this->setEmail($arr[$keys[2]]);
@@ -943,8 +943,8 @@ abstract class Candidate implements ActiveRecordInterface
         if ($this->isColumnModified(CandidateTableMap::COL_CANDIDATE_ID)) {
             $criteria->add(CandidateTableMap::COL_CANDIDATE_ID, $this->candidate_id);
         }
-        if ($this->isColumnModified(CandidateTableMap::COL_CREATED)) {
-            $criteria->add(CandidateTableMap::COL_CREATED, $this->created);
+        if ($this->isColumnModified(CandidateTableMap::COL_CREATED_ON)) {
+            $criteria->add(CandidateTableMap::COL_CREATED_ON, $this->created_on);
         }
         if ($this->isColumnModified(CandidateTableMap::COL_EMAIL)) {
             $criteria->add(CandidateTableMap::COL_EMAIL, $this->email);
@@ -1035,7 +1035,7 @@ abstract class Candidate implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setCreated($this->getCreated());
+        $copyObj->setCreatedOn($this->getCreatedOn());
         $copyObj->setEmail($this->getEmail());
 
         if ($deepCopy) {
@@ -1346,7 +1346,7 @@ abstract class Candidate implements ActiveRecordInterface
     public function clear()
     {
         $this->candidate_id = null;
-        $this->created = null;
+        $this->created_on = null;
         $this->email = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();

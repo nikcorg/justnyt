@@ -21,11 +21,11 @@ use justnyt\models\Map\CandidateTableMap;
  *
  *
  * @method     ChildCandidateQuery orderByCandidateId($order = Criteria::ASC) Order by the candidate_id column
- * @method     ChildCandidateQuery orderByCreated($order = Criteria::ASC) Order by the created column
+ * @method     ChildCandidateQuery orderByCreatedOn($order = Criteria::ASC) Order by the created_on column
  * @method     ChildCandidateQuery orderByEmail($order = Criteria::ASC) Order by the email column
  *
  * @method     ChildCandidateQuery groupByCandidateId() Group by the candidate_id column
- * @method     ChildCandidateQuery groupByCreated() Group by the created column
+ * @method     ChildCandidateQuery groupByCreatedOn() Group by the created_on column
  * @method     ChildCandidateQuery groupByEmail() Group by the email column
  *
  * @method     ChildCandidateQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -42,12 +42,12 @@ use justnyt\models\Map\CandidateTableMap;
  * @method     ChildCandidate findOneOrCreate(ConnectionInterface $con = null) Return the first ChildCandidate matching the query, or a new ChildCandidate object populated from the query conditions when no match is found
  *
  * @method     ChildCandidate findOneByCandidateId(int $candidate_id) Return the first ChildCandidate filtered by the candidate_id column
- * @method     ChildCandidate findOneByCreated(string $created) Return the first ChildCandidate filtered by the created column
+ * @method     ChildCandidate findOneByCreatedOn(string $created_on) Return the first ChildCandidate filtered by the created_on column
  * @method     ChildCandidate findOneByEmail(string $email) Return the first ChildCandidate filtered by the email column
  *
  * @method     ChildCandidate[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildCandidate objects based on current ModelCriteria
  * @method     ChildCandidate[]|ObjectCollection findByCandidateId(int $candidate_id) Return ChildCandidate objects filtered by the candidate_id column
- * @method     ChildCandidate[]|ObjectCollection findByCreated(string $created) Return ChildCandidate objects filtered by the created column
+ * @method     ChildCandidate[]|ObjectCollection findByCreatedOn(string $created_on) Return ChildCandidate objects filtered by the created_on column
  * @method     ChildCandidate[]|ObjectCollection findByEmail(string $email) Return ChildCandidate objects filtered by the email column
  * @method     ChildCandidate[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -138,7 +138,7 @@ abstract class CandidateQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT CANDIDATE_ID, CREATED, EMAIL FROM candidate WHERE CANDIDATE_ID = :p0';
+        $sql = 'SELECT CANDIDATE_ID, CREATED_ON, EMAIL FROM candidate WHERE CANDIDATE_ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -270,16 +270,16 @@ abstract class CandidateQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the created column
+     * Filter the query on the created_on column
      *
      * Example usage:
      * <code>
-     * $query->filterByCreated('2011-03-14'); // WHERE created = '2011-03-14'
-     * $query->filterByCreated('now'); // WHERE created = '2011-03-14'
-     * $query->filterByCreated(array('max' => 'yesterday')); // WHERE created > '2011-03-13'
+     * $query->filterByCreatedOn('2011-03-14'); // WHERE created_on = '2011-03-14'
+     * $query->filterByCreatedOn('now'); // WHERE created_on = '2011-03-14'
+     * $query->filterByCreatedOn(array('max' => 'yesterday')); // WHERE created_on > '2011-03-13'
      * </code>
      *
-     * @param     mixed $created The value to use as filter.
+     * @param     mixed $createdOn The value to use as filter.
      *              Values can be integers (unix timestamps), DateTime objects, or strings.
      *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
@@ -289,16 +289,16 @@ abstract class CandidateQuery extends ModelCriteria
      *
      * @return $this|ChildCandidateQuery The current query, for fluid interface
      */
-    public function filterByCreated($created = null, $comparison = null)
+    public function filterByCreatedOn($createdOn = null, $comparison = null)
     {
-        if (is_array($created)) {
+        if (is_array($createdOn)) {
             $useMinMax = false;
-            if (isset($created['min'])) {
-                $this->addUsingAlias(CandidateTableMap::COL_CREATED, $created['min'], Criteria::GREATER_EQUAL);
+            if (isset($createdOn['min'])) {
+                $this->addUsingAlias(CandidateTableMap::COL_CREATED_ON, $createdOn['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($created['max'])) {
-                $this->addUsingAlias(CandidateTableMap::COL_CREATED, $created['max'], Criteria::LESS_EQUAL);
+            if (isset($createdOn['max'])) {
+                $this->addUsingAlias(CandidateTableMap::COL_CREATED_ON, $createdOn['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -309,7 +309,7 @@ abstract class CandidateQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(CandidateTableMap::COL_CREATED, $created, $comparison);
+        return $this->addUsingAlias(CandidateTableMap::COL_CREATED_ON, $createdOn, $comparison);
     }
 
     /**
