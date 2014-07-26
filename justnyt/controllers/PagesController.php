@@ -1,7 +1,7 @@
 <?php
 namespace justnyt\controllers;
 
-class IndexController extends \glue\Controller
+class PagesController extends \glue\Controller
 {
     protected function respond($content) {
         $this->response->setContentType("text/html; charset=utf-8");
@@ -11,6 +11,7 @@ class IndexController extends \glue\Controller
     public function index() {
         $this->respond(
             \glue\ui\View::quickRender("layout", array(
+                    "title" => "Parhautta &mdash; Just nyt!",
                     "content" => \glue\ui\View::quickRender("index/index")
                 )
             )

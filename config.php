@@ -17,7 +17,7 @@ if (file_exists(GLUE_APPHOME . DIRECTORY_SEPARATOR . "config.local.php")) {
 Router::addRoute(
     Route::factory(
         "/",
-        "\\justnyt\\controllers\\IndexController",
+        "\\justnyt\\controllers\\PagesController",
         RequestMethods::GET,
         "index"
         )
