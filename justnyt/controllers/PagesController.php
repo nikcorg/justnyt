@@ -12,7 +12,7 @@ class PagesController extends \glue\Controller
         $this->respond(
             \glue\ui\View::quickRender("layout", array(
                     "title" => "Parhautta &mdash; Just nyt!",
-                    "content" => \glue\ui\View::quickRender("index/index")
+                    "content" => \glue\ui\View::quickRender("pages/index")
                 )
             )
         );
@@ -22,7 +22,7 @@ class PagesController extends \glue\Controller
         $this->respond(
             \glue\ui\View::quickRender("layout", array(
                     "title" => "Kuraattoriksi kuraattorin paikalle",
-                    "content" => \glue\ui\View::quickRender("index/volunteer")
+                    "content" => \glue\ui\View::quickRender("pages/volunteer")
                 )
             )
         );
@@ -32,7 +32,7 @@ class PagesController extends \glue\Controller
         $this->respond(
             \glue\ui\View::quickRender("layout", array(
                     "title" => "Kysymyksiä ja vastauksia",
-                    "content" => \glue\ui\View::quickRender("index/faq")
+                    "content" => \glue\ui\View::quickRender("pages/faq")
                 )
             )
         );
@@ -42,7 +42,7 @@ class PagesController extends \glue\Controller
         $this->respond(
             \glue\ui\View::quickRender("layout", array(
                     "title" => "Kuraattorit",
-                    "content" => \glue\ui\View::quickRender("index/curators")
+                    "content" => \glue\ui\View::quickRender("pages/curators")
                 )
             )
         );
@@ -52,7 +52,7 @@ class PagesController extends \glue\Controller
         $this->respond(
             \glue\ui\View::quickRender("layout", array(
                     "title" => "Parhauden historiaa",
-                    "content" => \glue\ui\View::quickRender("index/history")
+                    "content" => \glue\ui\View::quickRender("pages/history")
                 )
             )
         );
