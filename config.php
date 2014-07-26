@@ -22,7 +22,7 @@ Router::addRoute(
         "index"
         )
     ->addAction("faq", null, RequestMethods::GET, "faq")
-    ->addAction("kuraattoriksi", null, RequestMethods::GET, "recommend")
+    ->addAction("kuraattoriksi", null, RequestMethods::GET, "volunteer")
     ->addAction("kuraattorit", null, RequestMethods::GET, "curators")
     ->addAction("historiaa", null, RequestMethods::GET, "history")
 );

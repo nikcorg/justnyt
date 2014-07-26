@@ -18,11 +18,11 @@ class PagesController extends \glue\Controller
         );
     }
 
-    public function recommend() {
+    public function volunteer() {
         $this->respond(
             \glue\ui\View::quickRender("layout", array(
                     "title" => "Kuraattoriksi kuraattorin paikalle",
-                    "content" => \glue\ui\View::quickRender("index/recommend")
+                    "content" => \glue\ui\View::quickRender("index/volunteer")
                 )
             )
         );
