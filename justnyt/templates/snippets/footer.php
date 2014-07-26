@@ -12,6 +12,6 @@
         </nav>
     </div>
     <div class="column left centered">
-        <p>Just Nyt! on vapaaehtoisten kuraattoreiden valitseman sisällön suosittelukone.</p>
+        <p>Just Nyt! on vapaaehtoisten kuraattoreiden valitseman sisällön suosittelukone</p>
     </div>
 </footer>
