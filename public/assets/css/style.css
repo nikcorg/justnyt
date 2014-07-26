@@ -29,12 +29,13 @@ html {
 }
 
 h1 {
-    font-weight: bold;
     font-size: 1.875rem;
+    font-weight: 600;
 }
 
 h2 {
     font-size: 1.25rem;
+    font-weight: 400;
 }
 
 p {
