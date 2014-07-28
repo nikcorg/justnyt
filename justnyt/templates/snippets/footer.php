@@ -9,5 +9,5 @@
             <li><a href="/">Etusivulle</a></li>
         </ul>
     </nav>
-    <p class="centered">Just Nyt! on vapaaehtoisten kuraattoreiden valitseman sisällön suosittelukone</p>
+    <p class="centered tagline">Just Nyt! on vapaaehtoisten kuraattoreiden valitseman sisällön suosittelukone</p>
 </footer>
