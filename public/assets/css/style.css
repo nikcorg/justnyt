@@ -1,5 +1,5 @@
 /* Mini reset */
-* {
+body * {
     box-sizing: border-box
 }
 
@@ -37,7 +37,7 @@ h1 {
 }
 
 h2 {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 400;
 }
 
@@ -49,18 +49,35 @@ li {
     font-size: 1rem;
 }
 
+dt {
+    font-weight: 600;
+}
+
+h1, h2, h3, h4, h5, h6,
+p.tagline {
+    font-family: 'Special Elite', monospace;
+}
+
+
 /* Set some margins */
 
-body {
+header {
+    background-color: #333;
+    color: #eee;
     padding-top: 3rem;
+    padding-bottom: 1rem;
+}
+
+body > :last-child {
+    margin-bottom: 0;
 }
 
 main, footer, header {
-    margin-left: 1rem;
-    margin-right: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
-ul, ol, dl,
+ul, ol, dl, dd,
 p,
 form,
 main, nav, footer, header {
@@ -129,14 +146,7 @@ nav li {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     display: inline;
-}
-
-nav li:first-child {
-    margin-left: 0;
-}
-
-nav li:last-child {
-    margin-right: 0;
+    white-space: nowrap;
 }
 
 /* Forms */
@@ -184,6 +194,7 @@ footer {
     background-color: #333;
     color: #eee;
     padding: 1rem;
+    margin-bottom: 0;
 }
 
 footer > :last-child {
