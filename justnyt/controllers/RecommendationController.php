@@ -17,7 +17,9 @@ class RecommendationController extends \glue\Controller
         $curator = $this->getCurator($token);
         $pending = \justnyt\models\RecommendationQuery::create()->findOneByRecommendationId($id);
 
-        if (! is_null($pending->getScrapedOn())) {
+        if (is_null($pending)) {
+            throw new \glue\exceptions\http\E400Exception("Invalid ID");
+        } elseif (! is_null($pending->getScrapedOn())) {
             return $this->response->setJSONContent($pending->toJSON());
         }
 
