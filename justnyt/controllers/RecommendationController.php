@@ -66,8 +66,15 @@ class RecommendationController extends \glue\Controller
         }
 
         // Add scrape job to queue, include job ID in response
-        $this->response->setContentType("text/plain; charset=utf-8");
-        $this->response->setContent("Scrape job queued: " . ($prepare->getRecommendationId()));
+        $this->response->setContent(\glue\ui\View::quickRender("layout", array("content" => \glue\ui\View::quickRender(
+            "kuraattori/prepare",
+            array(
+                "token" => $token,
+                "candidateId" => $prepare->getRecommendationId(),
+                "title" => "",
+                "url" => $url
+                )
+            ))));
     }
 
     public function approve($token, $id) {
