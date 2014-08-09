@@ -38,5 +38,11 @@
         s.parentNode.insertBefore(wf, s);
         })();
     </script>
+
+    <?php if (isset($scripts) && is_array($scripts)): ?>
+        <?php foreach ($scripts as $src): ?>
+            <script type="text/javascript" src="<?= $src ?>" async defer></script>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </body>
 </html>
