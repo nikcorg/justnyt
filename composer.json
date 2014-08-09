@@ -8,6 +8,7 @@
         }
     ],
     "require": {
-        "propel/propel": "dev-master"
+        "propel/propel": "dev-master",
+        "sunra/php-simple-html-dom-parser": "dev-master"
     }
 }
