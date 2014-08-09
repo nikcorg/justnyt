@@ -23,16 +23,22 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendationQuery orderByRecommendationId($order = Criteria::ASC) Order by the recommendation_id column
  * @method     ChildRecommendationQuery orderByCuratorId($order = Criteria::ASC) Order by the curator_id column
  * @method     ChildRecommendationQuery orderByCreatedOn($order = Criteria::ASC) Order by the created_on column
+ * @method     ChildRecommendationQuery orderByScrapedOn($order = Criteria::ASC) Order by the scraped_on column
+ * @method     ChildRecommendationQuery orderByApprovedOn($order = Criteria::ASC) Order by the approved_on column
+ * @method     ChildRecommendationQuery orderByGraphicContent($order = Criteria::ASC) Order by the graphic_content column
  * @method     ChildRecommendationQuery orderByShortlink($order = Criteria::ASC) Order by the shortlink column
  * @method     ChildRecommendationQuery orderByUrl($order = Criteria::ASC) Order by the url column
- * @method     ChildRecommendationQuery orderByGraphicContent($order = Criteria::ASC) Order by the graphic_content column
+ * @method     ChildRecommendationQuery orderByTitle($order = Criteria::ASC) Order by the title column
  *
  * @method     ChildRecommendationQuery groupByRecommendationId() Group by the recommendation_id column
  * @method     ChildRecommendationQuery groupByCuratorId() Group by the curator_id column
  * @method     ChildRecommendationQuery groupByCreatedOn() Group by the created_on column
+ * @method     ChildRecommendationQuery groupByScrapedOn() Group by the scraped_on column
+ * @method     ChildRecommendationQuery groupByApprovedOn() Group by the approved_on column
+ * @method     ChildRecommendationQuery groupByGraphicContent() Group by the graphic_content column
  * @method     ChildRecommendationQuery groupByShortlink() Group by the shortlink column
  * @method     ChildRecommendationQuery groupByUrl() Group by the url column
- * @method     ChildRecommendationQuery groupByGraphicContent() Group by the graphic_content column
+ * @method     ChildRecommendationQuery groupByTitle() Group by the title column
  *
  * @method     ChildRecommendationQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildRecommendationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -50,17 +56,23 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendation findOneByRecommendationId(int $recommendation_id) Return the first ChildRecommendation filtered by the recommendation_id column
  * @method     ChildRecommendation findOneByCuratorId(int $curator_id) Return the first ChildRecommendation filtered by the curator_id column
  * @method     ChildRecommendation findOneByCreatedOn(string $created_on) Return the first ChildRecommendation filtered by the created_on column
+ * @method     ChildRecommendation findOneByScrapedOn(string $scraped_on) Return the first ChildRecommendation filtered by the scraped_on column
+ * @method     ChildRecommendation findOneByApprovedOn(string $approved_on) Return the first ChildRecommendation filtered by the approved_on column
+ * @method     ChildRecommendation findOneByGraphicContent(boolean $graphic_content) Return the first ChildRecommendation filtered by the graphic_content column
  * @method     ChildRecommendation findOneByShortlink(string $shortlink) Return the first ChildRecommendation filtered by the shortlink column
  * @method     ChildRecommendation findOneByUrl(string $url) Return the first ChildRecommendation filtered by the url column
- * @method     ChildRecommendation findOneByGraphicContent(boolean $graphic_content) Return the first ChildRecommendation filtered by the graphic_content column
+ * @method     ChildRecommendation findOneByTitle(string $title) Return the first ChildRecommendation filtered by the title column
  *
  * @method     ChildRecommendation[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildRecommendation objects based on current ModelCriteria
  * @method     ChildRecommendation[]|ObjectCollection findByRecommendationId(int $recommendation_id) Return ChildRecommendation objects filtered by the recommendation_id column
  * @method     ChildRecommendation[]|ObjectCollection findByCuratorId(int $curator_id) Return ChildRecommendation objects filtered by the curator_id column
  * @method     ChildRecommendation[]|ObjectCollection findByCreatedOn(string $created_on) Return ChildRecommendation objects filtered by the created_on column
+ * @method     ChildRecommendation[]|ObjectCollection findByScrapedOn(string $scraped_on) Return ChildRecommendation objects filtered by the scraped_on column
+ * @method     ChildRecommendation[]|ObjectCollection findByApprovedOn(string $approved_on) Return ChildRecommendation objects filtered by the approved_on column
+ * @method     ChildRecommendation[]|ObjectCollection findByGraphicContent(boolean $graphic_content) Return ChildRecommendation objects filtered by the graphic_content column
  * @method     ChildRecommendation[]|ObjectCollection findByShortlink(string $shortlink) Return ChildRecommendation objects filtered by the shortlink column
  * @method     ChildRecommendation[]|ObjectCollection findByUrl(string $url) Return ChildRecommendation objects filtered by the url column
- * @method     ChildRecommendation[]|ObjectCollection findByGraphicContent(boolean $graphic_content) Return ChildRecommendation objects filtered by the graphic_content column
+ * @method     ChildRecommendation[]|ObjectCollection findByTitle(string $title) Return ChildRecommendation objects filtered by the title column
  * @method     ChildRecommendation[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -150,7 +162,7 @@ abstract class RecommendationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT RECOMMENDATION_ID, CURATOR_ID, CREATED_ON, SHORTLINK, URL, GRAPHIC_CONTENT FROM recommendation WHERE RECOMMENDATION_ID = :p0';
+        $sql = 'SELECT RECOMMENDATION_ID, CURATOR_ID, CREATED_ON, SCRAPED_ON, APPROVED_ON, GRAPHIC_CONTENT, SHORTLINK, URL, TITLE FROM recommendation WHERE RECOMMENDATION_ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -368,6 +380,119 @@ abstract class RecommendationQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the scraped_on column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByScrapedOn('2011-03-14'); // WHERE scraped_on = '2011-03-14'
+     * $query->filterByScrapedOn('now'); // WHERE scraped_on = '2011-03-14'
+     * $query->filterByScrapedOn(array('max' => 'yesterday')); // WHERE scraped_on > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $scrapedOn The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildRecommendationQuery The current query, for fluid interface
+     */
+    public function filterByScrapedOn($scrapedOn = null, $comparison = null)
+    {
+        if (is_array($scrapedOn)) {
+            $useMinMax = false;
+            if (isset($scrapedOn['min'])) {
+                $this->addUsingAlias(RecommendationTableMap::COL_SCRAPED_ON, $scrapedOn['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($scrapedOn['max'])) {
+                $this->addUsingAlias(RecommendationTableMap::COL_SCRAPED_ON, $scrapedOn['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecommendationTableMap::COL_SCRAPED_ON, $scrapedOn, $comparison);
+    }
+
+    /**
+     * Filter the query on the approved_on column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByApprovedOn('2011-03-14'); // WHERE approved_on = '2011-03-14'
+     * $query->filterByApprovedOn('now'); // WHERE approved_on = '2011-03-14'
+     * $query->filterByApprovedOn(array('max' => 'yesterday')); // WHERE approved_on > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $approvedOn The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildRecommendationQuery The current query, for fluid interface
+     */
+    public function filterByApprovedOn($approvedOn = null, $comparison = null)
+    {
+        if (is_array($approvedOn)) {
+            $useMinMax = false;
+            if (isset($approvedOn['min'])) {
+                $this->addUsingAlias(RecommendationTableMap::COL_APPROVED_ON, $approvedOn['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($approvedOn['max'])) {
+                $this->addUsingAlias(RecommendationTableMap::COL_APPROVED_ON, $approvedOn['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecommendationTableMap::COL_APPROVED_ON, $approvedOn, $comparison);
+    }
+
+    /**
+     * Filter the query on the graphic_content column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByGraphicContent(true); // WHERE graphic_content = true
+     * $query->filterByGraphicContent('yes'); // WHERE graphic_content = true
+     * </code>
+     *
+     * @param     boolean|string $graphicContent The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildRecommendationQuery The current query, for fluid interface
+     */
+    public function filterByGraphicContent($graphicContent = null, $comparison = null)
+    {
+        if (is_string($graphicContent)) {
+            $graphicContent = in_array(strtolower($graphicContent), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(RecommendationTableMap::COL_GRAPHIC_CONTENT, $graphicContent, $comparison);
+    }
+
+    /**
      * Filter the query on the shortlink column
      *
      * Example usage:
@@ -426,30 +551,32 @@ abstract class RecommendationQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the graphic_content column
+     * Filter the query on the title column
      *
      * Example usage:
      * <code>
-     * $query->filterByGraphicContent(true); // WHERE graphic_content = true
-     * $query->filterByGraphicContent('yes'); // WHERE graphic_content = true
+     * $query->filterByTitle('fooValue');   // WHERE title = 'fooValue'
+     * $query->filterByTitle('%fooValue%'); // WHERE title LIKE '%fooValue%'
      * </code>
      *
-     * @param     boolean|string $graphicContent The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $title The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildRecommendationQuery The current query, for fluid interface
      */
-    public function filterByGraphicContent($graphicContent = null, $comparison = null)
+    public function filterByTitle($title = null, $comparison = null)
     {
-        if (is_string($graphicContent)) {
-            $graphicContent = in_array(strtolower($graphicContent), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        if (null === $comparison) {
+            if (is_array($title)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $title)) {
+                $title = str_replace('*', '%', $title);
+                $comparison = Criteria::LIKE;
+            }
         }
 
-        return $this->addUsingAlias(RecommendationTableMap::COL_GRAPHIC_CONTENT, $graphicContent, $comparison);
+        return $this->addUsingAlias(RecommendationTableMap::COL_TITLE, $title, $comparison);
     }
 
     /**

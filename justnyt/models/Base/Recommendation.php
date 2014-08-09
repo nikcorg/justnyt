@@ -75,6 +75,25 @@ abstract class Recommendation implements ActiveRecordInterface
     protected $created_on;
 
     /**
+     * The value for the scraped_on field.
+     * @var        \DateTime
+     */
+    protected $scraped_on;
+
+    /**
+     * The value for the approved_on field.
+     * @var        \DateTime
+     */
+    protected $approved_on;
+
+    /**
+     * The value for the graphic_content field.
+     * Note: this column has a database default value of: false
+     * @var        boolean
+     */
+    protected $graphic_content;
+
+    /**
      * The value for the shortlink field.
      * @var        string
      */
@@ -87,11 +106,10 @@ abstract class Recommendation implements ActiveRecordInterface
     protected $url;
 
     /**
-     * The value for the graphic_content field.
-     * Note: this column has a database default value of: false
-     * @var        boolean
+     * The value for the title field.
+     * @var        string
      */
-    protected $graphic_content;
+    protected $title;
 
     /**
      * @var        ChildCurator
@@ -377,23 +395,43 @@ abstract class Recommendation implements ActiveRecordInterface
     }
 
     /**
-     * Get the [shortlink] column value.
+     * Get the [optionally formatted] temporal [scraped_on] column value.
      *
-     * @return string
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getShortlink()
+    public function getScrapedOn($format = NULL)
     {
-        return $this->shortlink;
+        if ($format === null) {
+            return $this->scraped_on;
+        } else {
+            return $this->scraped_on instanceof \DateTime ? $this->scraped_on->format($format) : null;
+        }
     }
 
     /**
-     * Get the [url] column value.
+     * Get the [optionally formatted] temporal [approved_on] column value.
      *
-     * @return string
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getUrl()
+    public function getApprovedOn($format = NULL)
     {
-        return $this->url;
+        if ($format === null) {
+            return $this->approved_on;
+        } else {
+            return $this->approved_on instanceof \DateTime ? $this->approved_on->format($format) : null;
+        }
     }
 
     /**
@@ -414,6 +452,36 @@ abstract class Recommendation implements ActiveRecordInterface
     public function isGraphicContent()
     {
         return $this->getGraphicContent();
+    }
+
+    /**
+     * Get the [shortlink] column value.
+     *
+     * @return string
+     */
+    public function getShortlink()
+    {
+        return $this->shortlink;
+    }
+
+    /**
+     * Get the [url] column value.
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Get the [title] column value.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     /**
@@ -468,14 +536,29 @@ abstract class Recommendation implements ActiveRecordInterface
             }
             $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RecommendationTableMap::translateFieldName('Shortlink', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->shortlink = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RecommendationTableMap::translateFieldName('ScrapedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->scraped_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : RecommendationTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->url = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : RecommendationTableMap::translateFieldName('ApprovedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->approved_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : RecommendationTableMap::translateFieldName('GraphicContent', TableMap::TYPE_PHPNAME, $indexType)];
             $this->graphic_content = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : RecommendationTableMap::translateFieldName('Shortlink', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->shortlink = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : RecommendationTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->url = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : RecommendationTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->title = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -484,7 +567,7 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = RecommendationTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = RecommendationTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Recommendation'), 0, $e);
@@ -576,6 +659,74 @@ abstract class Recommendation implements ActiveRecordInterface
     } // setCreatedOn()
 
     /**
+     * Sets the value of [scraped_on] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
+     */
+    public function setScrapedOn($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->scraped_on !== null || $dt !== null) {
+            if ($dt !== $this->scraped_on) {
+                $this->scraped_on = $dt;
+                $this->modifiedColumns[RecommendationTableMap::COL_SCRAPED_ON] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setScrapedOn()
+
+    /**
+     * Sets the value of [approved_on] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
+     */
+    public function setApprovedOn($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->approved_on !== null || $dt !== null) {
+            if ($dt !== $this->approved_on) {
+                $this->approved_on = $dt;
+                $this->modifiedColumns[RecommendationTableMap::COL_APPROVED_ON] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setApprovedOn()
+
+    /**
+     * Sets the value of the [graphic_content] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
+     */
+    public function setGraphicContent($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->graphic_content !== $v) {
+            $this->graphic_content = $v;
+            $this->modifiedColumns[RecommendationTableMap::COL_GRAPHIC_CONTENT] = true;
+        }
+
+        return $this;
+    } // setGraphicContent()
+
+    /**
      * Set the value of [shortlink] column.
      *
      * @param  string $v new value
@@ -616,32 +767,24 @@ abstract class Recommendation implements ActiveRecordInterface
     } // setUrl()
 
     /**
-     * Sets the value of the [graphic_content] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * Set the value of [title] column.
      *
-     * @param  boolean|integer|string $v The new value
+     * @param  string $v new value
      * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
      */
-    public function setGraphicContent($v)
+    public function setTitle($v)
     {
         if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
+            $v = (string) $v;
         }
 
-        if ($this->graphic_content !== $v) {
-            $this->graphic_content = $v;
-            $this->modifiedColumns[RecommendationTableMap::COL_GRAPHIC_CONTENT] = true;
+        if ($this->title !== $v) {
+            $this->title = $v;
+            $this->modifiedColumns[RecommendationTableMap::COL_TITLE] = true;
         }
 
         return $this;
-    } // setGraphicContent()
+    } // setTitle()
 
     /**
      * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
@@ -838,14 +981,23 @@ abstract class Recommendation implements ActiveRecordInterface
         if ($this->isColumnModified(RecommendationTableMap::COL_CREATED_ON)) {
             $modifiedColumns[':p' . $index++]  = 'CREATED_ON';
         }
+        if ($this->isColumnModified(RecommendationTableMap::COL_SCRAPED_ON)) {
+            $modifiedColumns[':p' . $index++]  = 'SCRAPED_ON';
+        }
+        if ($this->isColumnModified(RecommendationTableMap::COL_APPROVED_ON)) {
+            $modifiedColumns[':p' . $index++]  = 'APPROVED_ON';
+        }
+        if ($this->isColumnModified(RecommendationTableMap::COL_GRAPHIC_CONTENT)) {
+            $modifiedColumns[':p' . $index++]  = 'GRAPHIC_CONTENT';
+        }
         if ($this->isColumnModified(RecommendationTableMap::COL_SHORTLINK)) {
             $modifiedColumns[':p' . $index++]  = 'SHORTLINK';
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_URL)) {
             $modifiedColumns[':p' . $index++]  = 'URL';
         }
-        if ($this->isColumnModified(RecommendationTableMap::COL_GRAPHIC_CONTENT)) {
-            $modifiedColumns[':p' . $index++]  = 'GRAPHIC_CONTENT';
+        if ($this->isColumnModified(RecommendationTableMap::COL_TITLE)) {
+            $modifiedColumns[':p' . $index++]  = 'TITLE';
         }
 
         $sql = sprintf(
@@ -867,14 +1019,23 @@ abstract class Recommendation implements ActiveRecordInterface
                     case 'CREATED_ON':
                         $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
+                    case 'SCRAPED_ON':
+                        $stmt->bindValue($identifier, $this->scraped_on ? $this->scraped_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'APPROVED_ON':
+                        $stmt->bindValue($identifier, $this->approved_on ? $this->approved_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'GRAPHIC_CONTENT':
+                        $stmt->bindValue($identifier, (int) $this->graphic_content, PDO::PARAM_INT);
+                        break;
                     case 'SHORTLINK':
                         $stmt->bindValue($identifier, $this->shortlink, PDO::PARAM_STR);
                         break;
                     case 'URL':
                         $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
                         break;
-                    case 'GRAPHIC_CONTENT':
-                        $stmt->bindValue($identifier, (int) $this->graphic_content, PDO::PARAM_INT);
+                    case 'TITLE':
+                        $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -948,13 +1109,22 @@ abstract class Recommendation implements ActiveRecordInterface
                 return $this->getCreatedOn();
                 break;
             case 3:
-                return $this->getShortlink();
+                return $this->getScrapedOn();
                 break;
             case 4:
-                return $this->getUrl();
+                return $this->getApprovedOn();
                 break;
             case 5:
                 return $this->getGraphicContent();
+                break;
+            case 6:
+                return $this->getShortlink();
+                break;
+            case 7:
+                return $this->getUrl();
+                break;
+            case 8:
+                return $this->getTitle();
                 break;
             default:
                 return null;
@@ -988,9 +1158,12 @@ abstract class Recommendation implements ActiveRecordInterface
             $keys[0] => $this->getRecommendationId(),
             $keys[1] => $this->getCuratorId(),
             $keys[2] => $this->getCreatedOn(),
-            $keys[3] => $this->getShortlink(),
-            $keys[4] => $this->getUrl(),
+            $keys[3] => $this->getScrapedOn(),
+            $keys[4] => $this->getApprovedOn(),
             $keys[5] => $this->getGraphicContent(),
+            $keys[6] => $this->getShortlink(),
+            $keys[7] => $this->getUrl(),
+            $keys[8] => $this->getTitle(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1045,13 +1218,22 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->setCreatedOn($value);
                 break;
             case 3:
-                $this->setShortlink($value);
+                $this->setScrapedOn($value);
                 break;
             case 4:
-                $this->setUrl($value);
+                $this->setApprovedOn($value);
                 break;
             case 5:
                 $this->setGraphicContent($value);
+                break;
+            case 6:
+                $this->setShortlink($value);
+                break;
+            case 7:
+                $this->setUrl($value);
+                break;
+            case 8:
+                $this->setTitle($value);
                 break;
         } // switch()
 
@@ -1089,13 +1271,22 @@ abstract class Recommendation implements ActiveRecordInterface
             $this->setCreatedOn($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setShortlink($arr[$keys[3]]);
+            $this->setScrapedOn($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setUrl($arr[$keys[4]]);
+            $this->setApprovedOn($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
             $this->setGraphicContent($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setShortlink($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setUrl($arr[$keys[7]]);
+        }
+        if (array_key_exists($keys[8], $arr)) {
+            $this->setTitle($arr[$keys[8]]);
         }
     }
 
@@ -1141,14 +1332,23 @@ abstract class Recommendation implements ActiveRecordInterface
         if ($this->isColumnModified(RecommendationTableMap::COL_CREATED_ON)) {
             $criteria->add(RecommendationTableMap::COL_CREATED_ON, $this->created_on);
         }
+        if ($this->isColumnModified(RecommendationTableMap::COL_SCRAPED_ON)) {
+            $criteria->add(RecommendationTableMap::COL_SCRAPED_ON, $this->scraped_on);
+        }
+        if ($this->isColumnModified(RecommendationTableMap::COL_APPROVED_ON)) {
+            $criteria->add(RecommendationTableMap::COL_APPROVED_ON, $this->approved_on);
+        }
+        if ($this->isColumnModified(RecommendationTableMap::COL_GRAPHIC_CONTENT)) {
+            $criteria->add(RecommendationTableMap::COL_GRAPHIC_CONTENT, $this->graphic_content);
+        }
         if ($this->isColumnModified(RecommendationTableMap::COL_SHORTLINK)) {
             $criteria->add(RecommendationTableMap::COL_SHORTLINK, $this->shortlink);
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_URL)) {
             $criteria->add(RecommendationTableMap::COL_URL, $this->url);
         }
-        if ($this->isColumnModified(RecommendationTableMap::COL_GRAPHIC_CONTENT)) {
-            $criteria->add(RecommendationTableMap::COL_GRAPHIC_CONTENT, $this->graphic_content);
+        if ($this->isColumnModified(RecommendationTableMap::COL_TITLE)) {
+            $criteria->add(RecommendationTableMap::COL_TITLE, $this->title);
         }
 
         return $criteria;
@@ -1238,9 +1438,12 @@ abstract class Recommendation implements ActiveRecordInterface
     {
         $copyObj->setCuratorId($this->getCuratorId());
         $copyObj->setCreatedOn($this->getCreatedOn());
+        $copyObj->setScrapedOn($this->getScrapedOn());
+        $copyObj->setApprovedOn($this->getApprovedOn());
+        $copyObj->setGraphicContent($this->getGraphicContent());
         $copyObj->setShortlink($this->getShortlink());
         $copyObj->setUrl($this->getUrl());
-        $copyObj->setGraphicContent($this->getGraphicContent());
+        $copyObj->setTitle($this->getTitle());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setRecommendationId(NULL); // this is a auto-increment column, so set to default value
@@ -1333,9 +1536,12 @@ abstract class Recommendation implements ActiveRecordInterface
         $this->recommendation_id = null;
         $this->curator_id = null;
         $this->created_on = null;
+        $this->scraped_on = null;
+        $this->approved_on = null;
+        $this->graphic_content = null;
         $this->shortlink = null;
         $this->url = null;
-        $this->graphic_content = null;
+        $this->title = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
