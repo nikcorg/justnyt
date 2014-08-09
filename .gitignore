@@ -2,3 +2,5 @@
 /vendor/
 *local*
 composer.lock
+node_modules
+public/assets/js
