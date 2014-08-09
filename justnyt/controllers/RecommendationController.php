@@ -70,9 +70,21 @@ class RecommendationController extends \glue\Controller
         $this->response->setContent("Scrape job queued: " . ($prepare->getRecommendationId()));
     }
 
-    public function approve($token) {
+    public function approve($token, $id) {
         $curator = $this->getCurator($token);
+        $pending = \justnyt\models\RecommendationQuery::create()->findOneByRecommendationId($id);
 
+        if (is_null($pending)) {
+            throw new \glue\exceptions\http\E400Exception("Invalid ID");
+        }
 
+        try {
+            $pending->setApprovedOn(time());
+            $pending->save();
+        } catch (\Exception $e) {
+            throw new \glue\exceptions\http\E500Exception("Error saving recommendation candidate", 0, $e);
+        }
+
+        $this->response->setJSONContent($pending->toJSON());
     }
 }
