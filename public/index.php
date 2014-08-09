@@ -3,7 +3,7 @@ define("GLUE_APPHOME", dirname(__DIR__));
 define("GLUE_CONFIG", GLUE_APPHOME . "/config.php");
 define("GLUE_RUNNER", "\\justnyt\\JustNytApp");
 
-if (getenv("APP_ENVIRONMENT") !== "prod") {
+if (getenv("APP_ENVIRONMENT") !== "production") {
     define("GLUE_DEBUG", true);
 }
 

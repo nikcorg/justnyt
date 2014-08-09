@@ -1,0 +1,38 @@
+{
+  "name": "JustNyt",
+  "version": "0.0.0",
+  "description": "Just Nyt ========",
+  "main": "\"\"",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp clean && ./bin/client-build.sh",
+    "devel": "gulp clean && ./bin/client-dev.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nikcorg/justnyt.git"
+  },
+  "author": "Niklas Lindgren <nikc@iki.fi>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nikcorg/justnyt/issues"
+  },
+  "homepage": "https://github.com/nikcorg/justnyt",
+  "devDependencies": {
+    "gulp": "~3.8.7",
+    "envify": "~2.0.1",
+    "watchify": "~0.10.2",
+    "rimraf": "~2.2.8",
+    "vinyl-source-stream": "~0.1.1",
+    "gulp-if": "~1.2.4",
+    "gulp-util": "~3.0.0",
+    "gulp-uglify": "~0.3.1",
+    "gulp-notify": "~1.4.2",
+    "gulp-streamify": "0.0.5"
+  },
+  "dependencies": {
+    "bluebird": "~2.2.2",
+    "debug": "~1.0.4",
+    "superagent": "~0.18.2"
+  }
+}
