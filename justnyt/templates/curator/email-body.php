@@ -1,6 +1,6 @@
 Hei,
 
-Sinulle on heitetty kuraattorinhattu. Ota se vastaan osoitteessa <?php $url ?>
+Sinulle on heitetty kuraattorinhattu. Ota se vastaan osoitteessa <?= $url ?>
 
 
 Terveisin
