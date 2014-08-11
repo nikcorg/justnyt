@@ -196,7 +196,7 @@ label span {
     display: block;
 }
 
-input {
+input, textarea, select {
     font-size: 1rem;
     margin: 0;
     padding: 0.5rem;
