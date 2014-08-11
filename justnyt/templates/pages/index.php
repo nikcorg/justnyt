@@ -1,4 +1,4 @@
-<p>Just nyt auttaa sinua löytämään mielenkiintoista luettavaa.</p>
+<p>JustNyt.fi auttaa sinua löytämään mielenkiintoista luettavaa.</p>
 
 <h2>Miten se toimii?</h2>
 
