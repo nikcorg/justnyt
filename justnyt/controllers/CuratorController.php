@@ -44,6 +44,36 @@ class CuratorController extends \glue\Controller
         );
     }
 
+    public function activate($token) {
+        $curator = \justnyt\models\CuratorQuery::create("cr")
+            ->where("cr.ActivatedOn IS NULL")
+            ->findOneByToken($token);
+
+        if (is_null($curator)) {
+            throw new \glue\exceptions\http\E404Exception("Token not found");
+        }
+
+        if ($this->request->isPost()) {
+            $curator->activate();
+            throw new \glue\exceptions\http\E303Exception("/kuraattori/$token/tervetuloa");
+        }
+
+        $this->response->setContent(
+            \glue\ui\View::quickRender(
+                "layout",
+                array(
+                    "title" => "Aktivoi tilisi",
+                    "content" => \glue\ui\View::quickRender(
+                        "curator/activate",
+                        array(
+                            "token" => $token
+                        )
+                    )
+                )
+            )
+        );
+    }
+
     public function profile($token) {
         $curator = $this->getCurator($token);
         $profile = $curator->getProfile();
