@@ -7,6 +7,6 @@ RewriteRule . index.php [L]
 SetEnv APP_ENVIRONMENT production
 
 # Comment the line below to disable dev settings
-SetEnv APP_ENVIRONMENT dev
+# SetEnv APP_ENVIRONMENT dev
 
 AddDefaultCharset UTF-8

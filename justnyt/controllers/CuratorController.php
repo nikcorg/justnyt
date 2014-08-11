@@ -80,10 +80,43 @@ class CuratorController extends \glue\Controller
             ->where("cr.ActivatedOn IS NULL")
             ->findOne();
 
+        $volunteer = $check = \justnyt\models\CandidateQuery::create("cd")
+            ->joinCurator("cr")
+            ->useCuratorQuery("cr")
+                ->where("cr.ActivatedOn IS NULL")
+                ->endUse()
+            ->orderByCreatedOn("ASC")
+            ->findOne();
+
         if (is_null($candidate)) {
             $candidate = new \justnyt\models\Curator();
             $candidate->generateToken();
             $candidate->save();
+        }
+
+        $activationUrl = sprintf("http://%s/kuraattori/%s/aktivoi", $_SERVER["HTTP_HOST"], $candidate->getToken());
+        $mailSent = false;
+
+        if ($this->request->isPost() && intval($this->request->POST->volunteer) == 1) {
+            $msg = new \Nette\Mail\Message();
+            $msg->setFrom("JustNyt <justnytfi@gmail.com>")
+                ->addTo($volunteer->getEmail())
+                ->setSubject("JustNyt tarvitsee kuraattoria")
+                ->setBody(\glue\ui\View::quickRender(
+                    "curator/email-body", array(
+                        "url" => $activationUrl
+                        )
+                    )
+                );
+
+            $mailer = new \Nette\Mail\SendmailMailer();
+            $mailer->send($msg);
+
+            $candidate->setCandidate($volunteer);
+            $candidate->save();
+
+            $mailSent = true;
+            // var_dump($volunteer->getEmail(), $mailer->send($msg));die();
         }
 
         $this->response->setContent(
@@ -94,8 +127,9 @@ class CuratorController extends \glue\Controller
                     "content" => \glue\ui\View::quickRender(
                         "curator/create-token",
                         array(
-                            "host" => $_SERVER["HTTP_HOST"],
-                            "token" => isset($candidate) ? $candidate->getToken() : false
+                            "mailSent" => $mailSent,
+                            "activationUrl" => $activationUrl,
+                            "volunteers" => ! is_null($volunteer)
                         )
                     )
                 )
