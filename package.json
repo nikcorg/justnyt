@@ -28,7 +28,8 @@
     "gulp-util": "~3.0.0",
     "gulp-uglify": "~0.3.1",
     "gulp-notify": "~1.4.2",
-    "gulp-streamify": "0.0.5"
+    "gulp-streamify": "0.0.5",
+    "browserify": "~5.9.3"
   },
   "dependencies": {
     "bluebird": "~2.2.2",

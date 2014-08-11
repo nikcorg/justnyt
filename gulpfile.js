@@ -41,14 +41,14 @@ gulp.task("browserify", function () {
     var bundler = (global.isWatching ? watchify : browserify)({
             entries: ["./client/app.js"],
             extensions: [".js", ".json"],
-            _options: {}
+            debug: isDevelBuild
         }).
         transform(envify);
 
     var bundle = function () {
         console.log("bundling", Date.now());
 
-        return bundler.bundle({ debug: isDevelBuild }).
+        return bundler.bundle().
             on("error", handleError).
             pipe(source("app.js")).
             pipe(gulpif(! isDevelBuild, streamify(uglify({
