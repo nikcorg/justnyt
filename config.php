@@ -66,6 +66,12 @@ Router::addRoute(
         RequestMethods::GET | RequestMethods::POST,
         "profile"
         )
+    ->addAction(
+        ":token/seuraava",
+        array("token" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET | RequestMethods::POST,
+        "createToken"
+        )
 );
 
 Router::addRoute(
