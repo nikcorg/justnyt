@@ -49,6 +49,12 @@ Router::addRoute(
         "volunteer"
         )
     ->addAction(
+        ":token/aktivoi",
+        array("token" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET | RequestMethods::POST,
+        "activate"
+        )
+    ->addAction(
         ":token/tervetuloa",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET,
