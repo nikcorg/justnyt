@@ -67,6 +67,7 @@ header {
     padding-top: 3rem;
     padding-bottom: 1rem;
     overflow: hidden;
+    position: relative;
 }
 
 body > :last-child {
