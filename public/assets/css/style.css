@@ -66,6 +66,7 @@ header {
     color: #eee;
     padding-top: 3rem;
     padding-bottom: 1rem;
+    overflow: hidden;
 }
 
 body > :last-child {
@@ -234,7 +235,9 @@ footer a:hover {
 }
 
 /* Beta banner */
+
 .beta-banner {
+    color: #333;
     position: absolute;
     top: 10px;
     right: -70px;
@@ -243,9 +246,14 @@ footer a:hover {
     padding-bottom: 0.5rem;
     width: 15rem;
     text-align: center;
-    border-bottom: 2px inset #f00;
-    border-top: 2px inset #f00;
-    transform: rotate(35deg);
+    border-bottom: 2px double #f00;
+    border-top: 2px double #f00;
     box-shadow: 10px 5px 5px 5px rgba(0, 0, 0, 0.3);
     font-weight: bold;
+
+    -webkit-transform: rotate(35deg);
+    -moz-transform: rotate(35deg);
+    -ms-transform: rotate(35deg);
+    -o-transform: rotate(35deg);
+    transform: rotate(35deg);
 }

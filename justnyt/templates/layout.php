@@ -24,8 +24,6 @@
 
     <?php $this->snippet("snippets/footer") ?>
 
-    <div class="beta-banner">Beta!</div>
-
     <script type="text/javascript">
         WebFontConfig = {
             google: { families: [ 'Special+Elite::latin' ] } //, 'Luckiest+Guy::latin' ] }
