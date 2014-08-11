@@ -44,9 +44,21 @@ Router::addRoute(
         RequestMethods::NONE
         )
     ->addAction(
-        ":token/suosittele",
+        ":token/esikatsele",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET,
-        "create"
+        "prepare"
+        )
+    ->addAction(
+        ":token/suosittelut/:id",
+        array("token" => RouteVariableTypes::ALNUM, "id" => RouteVariableTypes::NUMBER),
+        RequestMethods::POST | RequestMethods::PUT,
+        "approve"
+        )
+    ->addAction(
+        ":token/scrape/:id",
+        array("token" => RouteVariableTypes::ALNUM, "id" => RouteVariableTypes::NUMBER),
+        RequestMethods::GET,
+        "scrape"
         )
 );
