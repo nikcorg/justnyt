@@ -39,10 +39,24 @@ class PagesController extends \glue\Controller
     }
 
     public function curators() {
+        $curators = \justnyt\models\CuratorQuery::create("cr")
+            ->useProfileQuery("pr")
+                ->where("pr.Alias IS NOT NULL")
+                ->where("pr.Alias != ''")
+                ->endUse()
+            ->joinProfile("pr")
+            ->where("cr.ActivatedOn IS NOT NULL")
+            ->orderByActivatedOn("DESC")
+            ->find();
+
         $this->respond(
             \glue\ui\View::quickRender("layout", array(
                     "title" => "Kuraattorit",
-                    "content" => \glue\ui\View::quickRender("pages/curators")
+                    "content" => \glue\ui\View::quickRender(
+                        "pages/curators", array(
+                            "curators" => $curators
+                            )
+                        )
                 )
             )
         );
