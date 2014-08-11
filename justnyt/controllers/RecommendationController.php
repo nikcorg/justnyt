@@ -30,7 +30,7 @@ class RecommendationController extends \glue\Controller
         }
 
         $dom = \Sunra\PhpSimple\HtmlDomParser::str_get_html($curl->getResponseBody());
-        $title = trim($dom->find("title", 0)->plaintext);
+        $title = html_entity_decode(trim($dom->find("title", 0)->plaintext));
 
         if (empty($title)) {
             $title = "Untitled";
