@@ -43,6 +43,12 @@ Router::addRoute(
         RequestMethods::NONE
         )
     ->addAction(
+        "vapaaehtoiseksi",
+        null,
+        RequestMethods::POST,
+        "volunteer"
+        )
+    ->addAction(
         ":token/tervetuloa",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET,
