@@ -63,10 +63,19 @@ class PagesController extends \glue\Controller
     }
 
     public function history() {
+        $recommendations = \justnyt\models\RecommendationQuery::create("r")
+            ->where("r.ApprovedOn IS NOT NULL")
+            ->orderByApprovedOn("DESC")
+            ->find();
+
         $this->respond(
             \glue\ui\View::quickRender("layout", array(
                     "title" => "Parhauden historiaa",
-                    "content" => \glue\ui\View::quickRender("pages/history")
+                    "content" => \glue\ui\View::quickRender(
+                        "pages/history", array(
+                            "recommendations" => $recommendations
+                            )
+                        )
                 )
             )
         );
