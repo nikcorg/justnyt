@@ -23,8 +23,9 @@
 
         <main>
             <?= $content ?>
-            <div class="footer-push"></div>
         </main>
+
+        <div class="footer-push"></div>
     </div>
 
     <?php $this->snippet("snippets/footer") ?>
