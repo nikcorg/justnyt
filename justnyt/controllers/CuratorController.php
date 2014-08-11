@@ -68,7 +68,7 @@ class CuratorController extends \glue\Controller
         $this->response->setContent(
             \glue\ui\View::quickRender(
                 "layout", array(
-                    "title" => "Profiilisi",
+                    "title" => "Muokkaa profiiliasi",
                     "content" => \glue\ui\View::quickRender(
                         "kuraattori/profile", array(
                             "token" => $token,
