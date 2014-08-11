@@ -44,16 +44,37 @@ class CuratorController extends \glue\Controller
         );
     }
 
-    public function profile() {
+    public function profile($token) {
+        $curator = $this->getCurator($token);
+        $profile = $curator->getProfile();
+
+        if (is_null($profile)) {
+            $profile = new \justnyt\models\Profile();
+        }
+
+        if ($this->request->isPost()) {
+            try {
+                $profile->setAlias($this->request->POST->alias);
+                $profile->setHomepage($this->request->POST->homepage);
+                $profile->setDescription($this->request->POST->description);
+
+                $curator->setProfile($profile);
+                $curator->save();
+            } catch (\Exception $e) {
+                throw new \glue\exceptions\http\E500Exception("Error saving profile", 0, $e);
+            }
+        }
+
         $this->response->setContent(
             \glue\ui\View::quickRender(
                 "layout", array(
                     "title" => "Profiilisi",
                     "content" => \glue\ui\View::quickRender(
                         "kuraattori/profile", array(
-                            "alias" => "",
-                            "homepage" => "",
-                            "description" => ""
+                            "token" => $token,
+                            "alias" => $profile->getAlias(),
+                            "homepage" => $profile->getHomepage(),
+                            "description" => $profile->getDescription()
                             )
                         )
                 )
