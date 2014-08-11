@@ -4,7 +4,7 @@
 <?php foreach ($curators as $curator): ?>
     <?php $profile = $curator->getProfile(); ?>
     <li>
-    <?php if (! trim($profile->getHomepage()) != ""): ?>
+    <?php if (trim($profile->getHomepage()) != ""): ?>
         <a href="<?= $profile->getHomepage() ?>" rel="nofollow"><?= $profile->getAlias() ?></a></li>
     <?php else: ?>
         <?= $profile->getAlias() ?>
