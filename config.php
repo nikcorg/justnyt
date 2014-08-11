@@ -36,6 +36,19 @@ Router::addRoute(
         )
 );
 
+Router::addRoute(
+    Route::factory(
+        "/kuraattori",
+        "\\justnyt\\controllers\\CuratorController",
+        RequestMethods::NONE
+        )
+    ->addAction(
+        ":token/tervetuloa",
+        array("token" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET,
+        "home"
+        )
+);
 
 Router::addRoute(
     Route::factory(
