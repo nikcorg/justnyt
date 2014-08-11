@@ -4,7 +4,7 @@
     <div class="form-blocker hidden"></div>
     <p>
         <label><span>Sähköpostiosoitteesi</span>
-        <input type="email" name="email" placeholder="syötä sähköpostiosoitteesi tähän" required></label></p>
+        <input type="email" name="email" placeholder="sinun.oma@osoitteesi.fi" required></label></p>
 
     <p><button type="submit">Ilmoittaudun vapaaehtoiseksi</button></p>
 </form>
