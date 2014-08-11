@@ -10,5 +10,6 @@
 <p>Mitä tahansa, mikä sinusta on suosittelun arvoista, johon voi linkata suoraan. Suosi kuitenkin ensisijaisesti blogisisältöä ja mielellään suomenkielistä. Tärkeintä on, että suositus vie suoraan sisältöön, eikä esimerkiksi etusivulle.</p>
 
 <h2>Kuinka päätän kuraattorikauteni</h2>
-<p>Kuraattorikautesi pituuden päätät sinä itse. Kun et enää haluat käyttää kuraattorinhattua, voit jakaa sen seuraavalle kahdella tapaa: voit antaa sen suoraan jollekulle henkilölle, tai poimia seuraavan vapaaehtoisen jonosta.</p>
+<p>Kuraattorikautesi pituuden päätät sinä itse. Kun et enää haluat pitää kuraattorinhattua, voit jakaa sen seuraavalle kahdella tapaa: voit antaa sen suoraan jollekulle, tai poimia seuraavan vapaaehtoisen jonosta.</p>
 <p>Oma kautesi päättyy kun seuraajasi aktivoi oman kuraattorikautensa. Tämän jälkeen tunnuksesi ei enää toimi, etkä voi tehdä uusia suosituksia, tai muokata profiiliasi.</p>
+<p><a href="/kuraattori/<?= $token ?>/seuraava">Kutsu seuraava kuraattori</a>.</p>
