@@ -1,4 +1,8 @@
 /* Mini reset */
+html, body {
+    height: 100%;
+}
+
 body * {
     box-sizing: border-box
 }
@@ -222,6 +226,51 @@ footer {
     padding: 1rem;
     margin-bottom: 0;
 }
+
+footer, .footer-push {
+    height: 11rem;
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+}
+
+.wrapper {
+    margin-bottom: -12rem;
+}
+
+@media (min-width: 391px) {
+    footer, .footer-push {
+        height: 9.5rem;
+    }
+
+    .wrapper {
+        margin-bottom: -10.5rem;
+    }
+}
+
+@media (min-width: 695px) {
+    footer, .footer-push {
+        height: 8rem;
+    }
+
+    .wrapper {
+        margin-bottom: -9rem;
+    }
+}
+
+@media (min-width: 713px) {
+    footer, .footer-push {
+        height: 6.5rem;
+    }
+
+    .wrapper {
+        margin-bottom: -7.5rem;
+    }
+}
+
 
 footer > :last-child {
     margin-bottom: 0;
