@@ -53,6 +53,10 @@ li {
     font-size: 1rem;
 }
 
+.collapsed li {
+    display: inline;
+}
+
 dt {
     font-weight: 600;
 }
