@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
     <link rel="shortcut icon" href="/assets/img/glyphicons_054_clock.png" type="image/png">
     <title><?= isset($title) ? preg_replace("/\s+?(-|&mdash;) Just Nyt!$/i", "", $title) . " - " : "" ?>Just Nyt!</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
     <meta property="og:title"
         content="<?= isset($title) ? preg_replace("/\s+?(-|&mdash;) Just Nyt!$/i", "", $title) . " - " : "" ?>Just Nyt!">
 
@@ -18,9 +18,14 @@
     <?php endif; ?>
 </head>
 <body>
-    <?php $this->snippet("snippets/header") ?>
+    <div class="wrapper">
+        <?php $this->snippet("snippets/header") ?>
 
-    <main><?= $content ?></main>
+        <main>
+            <?= $content ?>
+            <div class="footer-push"></div>
+        </main>
+    </div>
 
     <?php $this->snippet("snippets/footer") ?>
 
