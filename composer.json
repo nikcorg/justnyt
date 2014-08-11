@@ -9,6 +9,8 @@
     ],
     "require": {
         "propel/propel": "dev-master",
-        "sunra/php-simple-html-dom-parser": "dev-master"
+        "sunra/php-simple-html-dom-parser": "dev-master",
+        "nette/mail": "dev-master",
+        "nette/utils": "dev-master"
     }
 }
