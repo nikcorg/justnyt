@@ -38,7 +38,7 @@ class CuratorController extends \glue\Controller
             \glue\ui\View::quickRender(
                 "layout", array(
                     "title" => "Olet jonossa",
-                    "content" => \glue\ui\View::quickRender("kuraattori/volunteer")
+                    "content" => \glue\ui\View::quickRender("curator/volunteer")
                 )
             )
         );
@@ -70,7 +70,7 @@ class CuratorController extends \glue\Controller
                 "layout", array(
                     "title" => "Muokkaa profiiliasi",
                     "content" => \glue\ui\View::quickRender(
-                        "kuraattori/profile", array(
+                        "curator/profile", array(
                             "token" => $token,
                             "alias" => $profile->getAlias(),
                             "homepage" => $profile->getHomepage(),
@@ -89,7 +89,7 @@ class CuratorController extends \glue\Controller
             \glue\ui\View::quickRender(
                 "layout", array(
                     "content" => \glue\ui\View::quickRender(
-                        "kuraattori/home", array(
+                        "curator/home", array(
                             "token" => $token,
                             "host" => $_SERVER["HTTP_HOST"]
                             )

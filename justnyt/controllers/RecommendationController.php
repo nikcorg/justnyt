@@ -70,7 +70,7 @@ class RecommendationController extends \glue\Controller
             "layout",
             array(
                 "content" => \glue\ui\View::quickRender(
-                    "kuraattori/prepare",
+                    "recommendation/prepare",
                     array(
                         "token" => $token,
                         "candidateId" => $prepare->getRecommendationId(),
@@ -109,7 +109,7 @@ class RecommendationController extends \glue\Controller
             "layout",
             array(
                 "content" => \glue\ui\View::quickRender(
-                    "kuraattori/approve",
+                    "recommendation/approve",
                     array(
                         "title" => $pending->getTitle(),
                         "url" => $pending->getUrl()
