@@ -1,5 +1,7 @@
 <p>Henkilökohtainen suosittelulinkkisi on tässä: <a href='javascript:(function(h,t){window.location=h+t+"/esikatsele?url="+encodeURIComponent(String(window.location));}("http://<?= $host ?>/kuraattori/","<?= $token ?>"));'>Suosittele</a>. Raahaa linkki selaimesi kirjanmerkkipalkkiin. Kirjanmerkki on kuraattorikautesi tärkein työkalu. Mikäli hukkaat kirjanmerkin, tai haluat lisätä sen usealle eri koneelle, löydät sen aina tältä sivulta kuraattorikautesi ajan.</p>
 
+<p><a href="/kuraattori/<?= $token ?>/profiili">Muokkaa profiiliasi</a>, jos haluat. Se on täysin vapaaehtoista.</p>
+
 <h2>Miten suosittelen lukemista?</h2>
 <p>Kaikki mitä tarvitset on yllä oleva kirjanmerkki. Kun luet jotain mitä haluat suositella, paina kirjanmerkkiä. Älä huoli, sinulta varmistetaan tietojen oikeellisuus.</p>
 <p>Valitettavasti mobiilisuosittelu on vielä työn alla. Voit tietysti käyttää samaa mekanismia myös mobiilissa kuin pöytäkoneellasi, mutta se on ärsyttävän työlästä. Toimiva, helppo ratkaisu on etsinnässä.</p>
