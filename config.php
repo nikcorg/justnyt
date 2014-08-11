@@ -54,6 +54,12 @@ Router::addRoute(
         RequestMethods::GET,
         "home"
         )
+    ->addAction(
+        ":token/profiili",
+        array("token" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET | RequestMethods::POST,
+        "profile"
+        )
 );
 
 Router::addRoute(
