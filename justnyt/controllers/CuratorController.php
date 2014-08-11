@@ -44,6 +44,23 @@ class CuratorController extends \glue\Controller
         );
     }
 
+    public function profile() {
+        $this->response->setContent(
+            \glue\ui\View::quickRender(
+                "layout", array(
+                    "title" => "Profiilisi",
+                    "content" => \glue\ui\View::quickRender(
+                        "kuraattori/profile", array(
+                            "alias" => "",
+                            "homepage" => "",
+                            "description" => ""
+                            )
+                        )
+                )
+            )
+        );
+    }
+
     public function home($token) {
         $curator = $this->getCurator($token);
 
