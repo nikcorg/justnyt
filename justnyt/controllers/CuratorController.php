@@ -74,6 +74,35 @@ class CuratorController extends \glue\Controller
         );
     }
 
+    public function createToken($token) {
+        $curator = $this->getCurator($token);
+        $candidate = \justnyt\models\CuratorQuery::create("cr")
+            ->where("cr.ActivatedOn IS NULL")
+            ->findOne();
+
+        if (is_null($candidate)) {
+            $candidate = new \justnyt\models\Curator();
+            $candidate->generateToken();
+            $candidate->save();
+        }
+
+        $this->response->setContent(
+            \glue\ui\View::quickRender(
+                "layout",
+                array(
+                    "title" => "Kutsu seuraava kuraattori",
+                    "content" => \glue\ui\View::quickRender(
+                        "curator/create-token",
+                        array(
+                            "host" => $_SERVER["HTTP_HOST"],
+                            "token" => isset($candidate) ? $candidate->getToken() : false
+                        )
+                    )
+                )
+            )
+        );
+    }
+
     public function profile($token) {
         $curator = $this->getCurator($token);
         $profile = $curator->getProfile();
