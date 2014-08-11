@@ -51,7 +51,7 @@ Router::addRoute(
         )
     ->addAction(
         ":token/suosittelut/:id",
-        array("token" => RouteVariableTypes::ALNUM),
+        array("token" => RouteVariableTypes::ALNUM, "id" => RouteVariableTypes::NUMBER),
         RequestMethods::POST | RequestMethods::PUT,
         "approve"
         )

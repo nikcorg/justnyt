@@ -66,15 +66,22 @@ class RecommendationController extends \glue\Controller
         }
 
         // Add scrape job to queue, include job ID in response
-        $this->response->setContent(\glue\ui\View::quickRender("layout", array("content" => \glue\ui\View::quickRender(
-            "kuraattori/prepare",
+        $this->response->setContent(\glue\ui\View::quickRender(
+            "layout",
             array(
-                "token" => $token,
-                "candidateId" => $prepare->getRecommendationId(),
-                "title" => "",
-                "url" => $url
+                "content" => \glue\ui\View::quickRender(
+                    "kuraattori/prepare",
+                    array(
+                        "token" => $token,
+                        "candidateId" => $prepare->getRecommendationId(),
+                        "title" => "",
+                        "url" => $url
+                        )
+                    ),
+                "scripts" => array("/assets/js/app.js")
                 )
-            ))));
+            )
+        );
     }
 
     public function approve($token, $id) {
@@ -86,12 +93,30 @@ class RecommendationController extends \glue\Controller
         }
 
         try {
+            $pending->setTitle($this->request->POST->title);
+            $pending->setUrl($this->request->POST->url);
             $pending->setApprovedOn(time());
             $pending->save();
         } catch (\Exception $e) {
             throw new \glue\exceptions\http\E500Exception("Error saving recommendation candidate", 0, $e);
         }
 
-        $this->response->setJSONContent($pending->toJSON());
+        if (preg_match("/application\/json/", $this->request->getHeader("Accept"))) {
+            return $this->response->setJSONContent($pending->toJSON());
+        }
+
+        $this->response->setContent(\glue\ui\View::quickRender(
+            "layout",
+            array(
+                "content" => \glue\ui\View::quickRender(
+                    "kuraattori/approve",
+                    array(
+                        "title" => $pending->getTitle(),
+                        "url" => $pending->getUrl()
+                        )
+                    )
+                )
+            )
+        );
     }
 }
