@@ -99,7 +99,7 @@ class RecommendationController extends \glue\Controller
                     array(
                         "title" => $pending->getTitle(),
                         "url" => $pending->getUrl(),
-                        "token" => $token
+                        "token" => $curator->getToken()
                         )
                     )
                 )
