@@ -232,6 +232,10 @@ button[type=submit] {
     background-color: lightgreen
 }
 
+button.cancel {
+    background-color: lightcoral;
+}
+
 /* Footer */
 
 footer {
