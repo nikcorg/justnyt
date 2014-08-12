@@ -8,7 +8,7 @@
     <description>Parhautta - Just Nyt!</description>
     <?php foreach ($items as $item): ?>
         <item>
-            <guid isPermaLink="true">http://justnyt.fi/<?= $item->getShortLink() ?></guid>
+            <guid isPermaLink="true">http://justnyt.fi/s/<?= $item->getShortLink() ?></guid>
             <pubDate><?= $item->getApprovedOn()->setTimezone(new DateTimeZone("UTC"))->format("D, d M Y H:i:s T") ?></pubDate>
             <title><?= $item->getTitle() ?></title>
             <link><?= $item->getUrl() ?></link>
