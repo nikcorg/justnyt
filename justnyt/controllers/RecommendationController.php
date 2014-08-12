@@ -84,12 +84,39 @@ class RecommendationController extends \glue\Controller
         );
     }
 
+    public function remove($curator, $pending) {
+        try {
+            $pending->delete();
+        } catch (\Exception $e) {
+            throw new \glue\exceptions\http\E500Exception("Error removing recommendation", 0, $e);
+        }
+
+        $this->response->setContent(\glue\ui\View::quickRender(
+            "layout",
+            array(
+                "content" => \glue\ui\View::quickRender(
+                    "recommendation/remove",
+                    array(
+                        "title" => $pending->getTitle(),
+                        "url" => $pending->getUrl(),
+                        "token" => $token
+                        )
+                    )
+                )
+            )
+        );
+    }
+
     public function approve($token, $id) {
         $curator = $this->getCurator($token);
         $pending = \justnyt\models\RecommendationQuery::create()->findOneByRecommendationId($id);
 
         if (is_null($pending)) {
             throw new \glue\exceptions\http\E404Exception("Invalid ID");
+        }
+
+        if ($this->request->POST->action === "remove") {
+            return $this->remove($curator, $pending);
         }
 
         try {
