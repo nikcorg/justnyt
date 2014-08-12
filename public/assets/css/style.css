@@ -94,6 +94,10 @@ main, nav, footer, header {
     margin-bottom: 1.5rem;
 }
 
+main ol {
+    margin-left: 2rem;
+}
+
 /* Helpers */
 
 .centered {
