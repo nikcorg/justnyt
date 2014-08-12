@@ -89,7 +89,7 @@ class RecommendationController extends \glue\Controller
         $pending = \justnyt\models\RecommendationQuery::create()->findOneByRecommendationId($id);
 
         if (is_null($pending)) {
-            throw new \glue\exceptions\http\E400Exception("Invalid ID");
+            throw new \glue\exceptions\http\E404Exception("Invalid ID");
         }
 
         try {
