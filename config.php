@@ -29,6 +29,21 @@ Router::addRoute(
 
 Router::addRoute(
     Route::factory(
+        "/feed",
+        "\\justnyt\\controllers\\FeedController",
+        RequestMethods::GET,
+        "index"
+        )
+    ->addAction(
+        "rss",
+        null,
+        RequestMethods::GET,
+        "rss"
+        )
+);
+
+Router::addRoute(
+    Route::factory(
         "/parhautta",
         "\\justnyt\\controllers\\RedirectController",
         RequestMethods::GET,
