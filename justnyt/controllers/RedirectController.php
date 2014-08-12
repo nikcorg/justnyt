@@ -4,7 +4,7 @@ namespace justnyt\controllers;
 class RedirectController extends \glue\Controller
 {
     protected function redirectTo($url) {
-        $url .= (strpos($url, "?") === false ? "?" : "&") . "utm_source=justnytfi";
+        $url .= (strpos($url, "?") === false ? "?" : "&") . "utm_source=justnyt.fi";
 
         throw new \glue\exceptions\http\E303Exception($url);
     }
