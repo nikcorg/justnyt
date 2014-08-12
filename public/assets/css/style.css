@@ -53,10 +53,6 @@ li {
     font-size: 1rem;
 }
 
-.collapsed li {
-    display: inline;
-}
-
 dt {
     font-weight: 600;
 }
@@ -94,8 +90,18 @@ main, nav, footer, header {
     margin-bottom: 1.5rem;
 }
 
+/* List styles */
+
 main ol {
     margin-left: 2rem;
+}
+
+ol.collapsed {
+    margin-left: 0;
+}
+
+.collapsed li {
+    display: inline;
 }
 
 /* Helpers */
