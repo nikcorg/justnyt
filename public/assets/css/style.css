@@ -232,14 +232,24 @@ footer {
 }
 
 footer, .footer-push {
-    height: 12rem;
+    height: 14rem;
 }
 
 .wrapper {
     min-height: 100%;
     height: auto !important;
     height: 100%;
-    margin-bottom: -12rem;
+    margin-bottom: -14rem;
+}
+
+@media (min-width: 365px) {
+    footer, .footer-push {
+        height: 12rem;
+    }
+
+    .wrapper {
+        margin-bottom: -12rem;
+    }
 }
 
 @media (min-width: 391px) {
