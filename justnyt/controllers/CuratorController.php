@@ -127,6 +127,7 @@ class CuratorController extends \glue\Controller
                     "content" => \glue\ui\View::quickRender(
                         "curator/create-token",
                         array(
+                            "token" => $token,
                             "mailSent" => $mailSent,
                             "activationUrl" => $activationUrl,
                             "volunteers" => ! is_null($volunteer)
