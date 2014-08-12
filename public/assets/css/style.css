@@ -295,6 +295,18 @@ footer a:hover {
     color: #fc8;
 }
 
+/* Main nav */
+main nav {
+    background-color: #ddd;
+    padding: 1rem;
+    border-radius: 1rem;
+    text-align: center;
+}
+
+main nav a {
+    color: #333;
+}
+
 /* Beta banner */
 
 .beta-banner {
