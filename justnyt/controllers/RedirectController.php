@@ -4,6 +4,8 @@ namespace justnyt\controllers;
 class RedirectController extends \glue\Controller
 {
     protected function redirectTo($url) {
+        $url .= (strpos($url, "?") === false ? "?" : "&") . "utm_source=justnytfi";
+
         throw new \glue\exceptions\http\E303Exception($url);
     }
 
@@ -17,8 +19,8 @@ class RedirectController extends \glue\Controller
             throw new \glue\exceptions\http\E404Exception();
         }
 
-        $url = $newestRecommendation->getUrl();
-        $url .= (strpos($url, "?") === false ? "?" : "&") . "utm_source=justnytfi";
+        $this->redirectTo($newestRecommendation->getUrl());
+    }
 
         $this->redirectTo($url);
     }
