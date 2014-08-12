@@ -11,5 +11,5 @@
     <p><label><span>Otsikko</span>
         <input type="text" name="title" value="<?= $title ?>" required></label></p>
 
-    <p><button type="submit">Tallenna</button></p>
+    <p><button type="submit" name="action" value="approve">Hyvältä näyttää, tällä mennään</button> <button type="submit" name="action" value="remove" class="cancel">Nyt tuli vikatikki, saa poistaa</button></p>
 </form>
