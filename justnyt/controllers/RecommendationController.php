@@ -60,7 +60,6 @@ class RecommendationController extends \glue\Controller
             $prepare->setCurator($curator);
             $prepare->setCreatedOn(time());
             $prepare->setUrl($this->request->GET->url);
-            $prepare->generateShortLink();
             $prepare->save();
         } catch (\Exception $e) {
             throw new \glue\exceptions\http\E500Exception("Error saving recommendation candidate", 0, $e);
