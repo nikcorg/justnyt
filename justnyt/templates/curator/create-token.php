@@ -14,6 +14,6 @@
         <button type="submit" name="volunteer" value="0" class="hidden">Lähetän koodin itse</button>
         <p><button type="submit" name="volunteer" value="1">Lähetä seuraavalle jonottajalle</button></p>
     <?php else: ?>
-        <p>Valitettavasti ei tällä hetkellä ole yhtään vapaaehtoista jonossa.</p>
+        <p>Valitettavasti ei tällä hetkellä ole yhtään vapaaehtoista jonossa. Ellet keksi ketä kutsuisit, ota yhteyttä ylläpitoon osoitteessa <a href="mailto:justnytfi+apua@gmail.com">justnytfi+apua@gmail.com</a>.</p>
     <?php endif; ?>
 </form>
