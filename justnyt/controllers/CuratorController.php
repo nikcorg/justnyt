@@ -3,10 +3,10 @@ namespace justnyt\controllers;
 
 class CuratorController extends \glue\Controller
 {
-    protected function getCurator($token) {
+    protected function getCurator($token, $throw = true) {
         $curator = \justnyt\models\CuratorQuery::create()->getActiveCuratorByToken($token);
 
-        if (is_null($curator)) {
+        if ($throw && is_null($curator)) {
             throw new \glue\exceptions\http\E403Exception();
         }
 
@@ -94,7 +94,7 @@ class CuratorController extends \glue\Controller
             $candidate->save();
         }
 
-        $activationUrl = sprintf("http://%s/kuraattori/%s/aktivoi", $_SERVER["HTTP_HOST"], $candidate->getToken());
+        $activationUrl = sprintf("http://%s/kuraattori/%s/tervetuloa", $_SERVER["HTTP_HOST"], $candidate->getToken());
         $mailSent = false;
 
         if ($this->request->isPost() && intval($this->request->POST->volunteer) == 1) {
@@ -176,7 +176,11 @@ class CuratorController extends \glue\Controller
     }
 
     public function home($token) {
-        $curator = $this->getCurator($token);
+        $curator = $this->getCurator($token, false);
+
+        if (is_null($curator)) {
+            throw new \glue\exceptions\http\E303Exception("/kuraattori/$token/aktivoi");
+        }
 
         $this->response->setContent(
             \glue\ui\View::quickRender(
