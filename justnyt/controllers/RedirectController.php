@@ -22,6 +22,16 @@ class RedirectController extends \glue\Controller
         $this->redirectTo($newestRecommendation->getUrl());
     }
 
-        $this->redirectTo($url);
+    public function hashLookup($hash) {
+        $recommendation = \justnyt\models\RecommendationQuery::create("r")
+            ->filterByShortlink($hash)
+            ->where("r.ApprovedOn IS NOT NULL")
+            ->findOne();
+
+        if (is_null($recommendation)) {
+            throw new \glue\exceptions\http\E404Exception();
+        }
+
+        $this->redirectTo($recommendation->getUrl());
     }
 }
