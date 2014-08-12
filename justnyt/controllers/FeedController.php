@@ -15,6 +15,11 @@ class FeedController extends \glue\Controller
 
         $this->response->setHeader("Content-Type", "application/rss+xml; charset=utf-8");
         $this->response->setContent(\glue\ui\View::quickRender(
-            "feed/rss", array("items" => $recommendations)));
+            "feed/rss", array(
+                "host" => $_SERVER["HTTP_HOST"],
+                "items" => $recommendations
+                )
+            )
+        );
     }
 }
