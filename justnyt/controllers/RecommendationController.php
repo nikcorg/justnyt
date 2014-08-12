@@ -122,7 +122,7 @@ class RecommendationController extends \glue\Controller
         try {
             $pending->setTitle($this->request->POST->title);
             $pending->setUrl($this->request->POST->url);
-            $pending->setApprovedOn(time());
+            $pending->setApprovedOn(time() + max(0, min(intval($this->request->POST->delay), 43200)));
             $pending->save();
         } catch (\Exception $e) {
             throw new \glue\exceptions\http\E500Exception("Error saving recommendation candidate", 0, $e);
