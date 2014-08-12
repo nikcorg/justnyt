@@ -1,3 +1,5 @@
+<?php $this->snippet("curator/navigation") ?>
+
 <form method="post" action="/kuraattori/<?= $token ?>/suosittelut/<?= $candidateId ?>" data-candidate-id="<?= $candidateId ?>" id="preview-form">
     <div class="form-blocker hidden nomargin"></div>
 

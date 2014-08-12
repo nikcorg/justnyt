@@ -112,7 +112,8 @@ class RecommendationController extends \glue\Controller
                     "recommendation/approve",
                     array(
                         "title" => $pending->getTitle(),
-                        "url" => $pending->getUrl()
+                        "url" => $pending->getUrl(),
+                        "token" => $token
                         )
                     )
                 )
