@@ -53,6 +53,20 @@ Router::addRoute(
 
 Router::addRoute(
     Route::factory(
+        "/s",
+        "\\justnyt\\controllers\\RedirectController",
+        RequestMethods::NONE
+        )
+    ->addAction(
+        ":hash",
+        array("hash" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET,
+        "hashlookup"
+        )
+);
+
+Router::addRoute(
+    Route::factory(
         "/kuraattori",
         "\\justnyt\\controllers\\CuratorController",
         RequestMethods::NONE
