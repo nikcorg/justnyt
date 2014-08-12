@@ -1,3 +1,5 @@
+<?php $this->snippet("curator/navigation") ?>
+
 <p>Profiilin luominen on täysin vapaaehtoista, mutta edes nimimerkin täyttäminen suositeltavaa. Profiilin tiedot näytetään <a href="/kuraattorit">Kuraattorit-listassa</a>.</p>
 
 <form action="/kuraattori/<?= $token ?>/profiili" method="post">

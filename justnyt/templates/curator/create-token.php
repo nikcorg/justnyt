@@ -1,3 +1,5 @@
+<?php $this->snippet("curator/navigation") ?>
+
 <p>Lähetä alle oleva linkki seuraajallesi, tai seuravalle jonossa olevalle vapaaehtoiselle.</p>
 
 <form action="" method="post">

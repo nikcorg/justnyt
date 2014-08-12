@@ -1,3 +1,5 @@
+<?php $this->snippet("curator/navigation") ?>
+
 <p>Henkilökohtainen suosittelulinkkisi on tässä: <a href='javascript:(function(h,t){window.location=h+t+"/esikatsele?url="+encodeURIComponent(String(window.location));}("http://<?= $host ?>/kuraattori/","<?= $token ?>"));'>Suosittele</a>. Raahaa linkki selaimesi kirjanmerkkipalkkiin. Kirjanmerkki on kuraattorikautesi tärkein työkalu. Mikäli hukkaat kirjanmerkin, tai haluat lisätä sen usealle eri koneelle, löydät sen aina tältä sivulta kuraattorikautesi ajan.</p>
 
 <p><a href="/kuraattori/<?= $token ?>/profiili">Muokkaa profiiliasi</a>, jos haluat. Se on täysin vapaaehtoista.</p>
