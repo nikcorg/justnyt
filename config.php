@@ -96,6 +96,12 @@ Router::addRoute(
         "profile"
         )
     ->addAction(
+        ":token/jonossa",
+        array("token" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET,
+        "pending"
+        )
+    ->addAction(
         ":token/seuraava",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET | RequestMethods::POST,

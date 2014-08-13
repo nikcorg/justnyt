@@ -163,6 +163,25 @@ class CuratorController extends \glue\Controller
         );
     }
 
+    public function pending($token) {
+        $curator = $this->getCurator($token);
+        $upcoming = \justnyt\models\RecommendationQuery::create("r")
+            ->upcomingApproved()
+            ->find();
+
+        $this->response->setContent(
+            \justnyt\views\JustNytLayout::quickRender(
+                "curator/pending",
+                array(
+                    "title" => "Muokkaa profiiliasi",
+                    "token" => $token,
+                    "currentTime" => new \DateTime(),
+                    "upcoming" => $upcoming
+                    )
+                )
+        );
+    }
+
     public function home($token) {
         $curator = $this->getCurator($token, false);
 
