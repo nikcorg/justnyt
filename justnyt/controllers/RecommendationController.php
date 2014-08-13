@@ -50,6 +50,9 @@ class RecommendationController extends \glue\Controller
     public function prepare($token) {
         $curator = $this->getCurator($token);
         $url = $this->request->GET->url;
+        $upcoming = \justnyt\models\RecommendationQuery::create("r")
+            ->upcomingApproved()
+            ->find();
 
         if (empty($url)) {
             throw new \glue\exceptions\http\E400Exception("Empty URL");
@@ -69,13 +72,16 @@ class RecommendationController extends \glue\Controller
         $this->response->setContent(\glue\ui\View::quickRender(
             "layout",
             array(
+                "title" => "Uusi suositus",
                 "content" => \glue\ui\View::quickRender(
                     "recommendation/prepare",
                     array(
                         "token" => $token,
                         "candidateId" => $prepare->getRecommendationId(),
                         "title" => "",
-                        "url" => $url
+                        "url" => $url,
+                        "upcoming" => $upcoming,
+                        "currentTime" => new \DateTime()
                         )
                     ),
                 "scripts" => array("/assets/js/app.js")
