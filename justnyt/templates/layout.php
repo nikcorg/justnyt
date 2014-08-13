@@ -16,6 +16,8 @@
         <meta property="og:description"
             content="Just Nyt! on vapaaehtoisten kuraattoreiden valitseman sisällön suosittelukone">
     <?php endif; ?>
+
+    <script src="/assets/js/global.js"></script>
 </head>
 <body>
     <div class="wrapper">
