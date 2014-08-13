@@ -29,11 +29,13 @@
     "gulp-uglify": "~0.3.1",
     "gulp-notify": "~1.4.2",
     "gulp-streamify": "0.0.5",
-    "browserify": "~5.9.3"
+    "browserify": "~5.9.3",
+    "event-stream": "~3.1.7"
   },
   "dependencies": {
     "bluebird": "~2.2.2",
     "debug": "~1.0.4",
-    "superagent": "~0.18.2"
+    "superagent": "~0.18.2",
+    "underscore": "~1.6.0"
   }
 }
