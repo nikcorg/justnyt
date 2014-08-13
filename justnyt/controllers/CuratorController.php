@@ -119,7 +119,7 @@ class CuratorController extends \glue\Controller
                 "curator/create-token",
                 array(
                     "title" => "Kutsu seuraava kuraattori",
-                    "token" => $token,
+                    "curator" => $curator,
                     "mailSent" => $mailSent,
                     "activationUrl" => $activationUrl,
                     "volunteers" => ! is_null($volunteer)
@@ -154,7 +154,7 @@ class CuratorController extends \glue\Controller
                 "curator/profile",
                 array(
                     "title" => "Muokkaa profiiliasi",
-                    "token" => $token,
+                    "curator" => $curator,
                     "alias" => $profile->getAlias(),
                     "homepage" => $profile->getHomepage(),
                     "description" => $profile->getDescription()
@@ -174,7 +174,7 @@ class CuratorController extends \glue\Controller
                 "curator/pending",
                 array(
                     "title" => "Julkaisujono",
-                    "token" => $token,
+                    "curator" => $curator,
                     "currentTime" => new \DateTime(),
                     "upcoming" => $upcoming
                     )
@@ -194,7 +194,7 @@ class CuratorController extends \glue\Controller
                 "curator/home",
                 array(
                     "title" => "Tervetuloa kuraattorikaudellesi",
-                    "token" => $token,
+                    "curator" => $curator,
                     "host" => $_SERVER["HTTP_HOST"]
                     )
                 )

@@ -1,6 +1,6 @@
-<p>Henkilökohtainen suosittelulinkkisi on tässä: <a href='javascript:(function(h,t){window.location=h+t+"/esikatsele?url="+encodeURIComponent(String(window.location));}("http://<?= $host ?>/kuraattori/","<?= $token ?>"));'>Suosittele</a>. Raahaa linkki selaimesi kirjanmerkkipalkkiin. Kirjanmerkki on kuraattorikautesi tärkein työkalu. Mikäli hukkaat kirjanmerkin, tai haluat lisätä sen usealle eri koneelle, löydät sen aina tältä sivulta kuraattorikautesi ajan.</p>
+<p>Henkilökohtainen suosittelulinkkisi on tässä: <a href='javascript:(function(h,t){window.location=h+t+"/esikatsele?url="+encodeURIComponent(String(window.location));}("http://<?= $host ?>/kuraattori/","<?= $curator->getToken() ?>"));'>Suosittele</a>. Raahaa linkki selaimesi kirjanmerkkipalkkiin. Kirjanmerkki on kuraattorikautesi tärkein työkalu. Mikäli hukkaat kirjanmerkin, tai haluat lisätä sen usealle eri koneelle, löydät sen aina tältä sivulta kuraattorikautesi ajan.</p>
 
-<p><a href="/kuraattori/<?= $token ?>/profiili">Muokkaa profiiliasi</a>, jos haluat. Se on täysin vapaaehtoista.</p>
+<p><a href="/kuraattori/<?= $curator->getToken() ?>/profiili">Muokkaa profiiliasi</a>, jos haluat. Se on täysin vapaaehtoista.</p>
 
 <h2>Miten suosittelen</h2>
 <p>Kaikki mitä tarvitset on yllä oleva kirjanmerkki. Kun luet jotain mitä haluat suositella, paina kirjanmerkkiä. Älä huoli, sinulta varmistetaan tietojen oikeellisuus.</p>
@@ -12,4 +12,4 @@
 <h2>Kuinka päätän kuraattorikauteni</h2>
 <p>Kuraattorikautesi pituuden päätät sinä itse. Kun et enää haluat pitää kuraattorinhattua, voit jakaa sen seuraavalle kahdella tapaa: voit antaa sen suoraan jollekulle, tai poimia seuraavan vapaaehtoisen jonosta.</p>
 <p>Oma kautesi päättyy kun seuraajasi aktivoi oman kuraattorikautensa. Tämän jälkeen tunnuksesi ei enää toimi, etkä voi tehdä uusia suosituksia, tai muokata profiiliasi.</p>
-<p>Eli, sitten kun hattu ei enää sovi päähän, <a href="/kuraattori/<?= $token ?>/seuraava">kutsu seuraava kuraattori</a>.</p>
+<p>Eli, sitten kun hattu ei enää sovi päähän, <a href="/kuraattori/<?= $curator->getToken() ?>/seuraava">kutsu seuraava kuraattori</a>.</p>

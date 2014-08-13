@@ -74,7 +74,7 @@ class RecommendationController extends \glue\Controller
                 "recommendation/prepare",
                 array(
                     "title" => "Uusi suositus",
-                    "token" => $token,
+                    "curator" => $curator,
                     "candidateId" => $prepare->getRecommendationId(),
                     "title" => "",
                     "url" => $url,
@@ -133,9 +133,9 @@ class RecommendationController extends \glue\Controller
             \justnyt\views\JustNytLayout::quickRender(
                 "recommendation/approve",
                 array(
-                    "title" => $pending->getTitle(),
-                    "url" => $pending->getUrl(),
-                    "token" => $token
+                    "title" => "Suosituksesi on lisätty",
+                    "curator" => $curator,
+                    "recommendation" => $pending
                     )
                 )
         );
