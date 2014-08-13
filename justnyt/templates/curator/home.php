@@ -11,5 +11,5 @@
 
 <h2>Kuinka päätän kuraattorikauteni</h2>
 <p>Kuraattorikautesi pituuden päätät sinä itse. Kun et enää haluat pitää kuraattorinhattua, voit jakaa sen seuraavalle kahdella tapaa: voit antaa sen suoraan jollekulle, tai poimia seuraavan vapaaehtoisen jonosta.</p>
-<p>Oma kautesi päättyy kun seuraajasi aktivoi oman kuraattorikautensa. Tämän jälkeen tunnuksesi ei enää toimi, etkä voi tehdä uusia suosituksia, tai muokata profiiliasi.</p>
+<p>Tunnuksesi lakkaa toimimasta kun seuraajasi aktivoi oman kuraattorikautensa. Tämän jälkeen et voi enää tehdä uusia suosituksia, tai muokata profiiliasi.</p>
 <p>Toisin sanoen, kun hattu ei enää istu omaan päähän, on aika <a href="/kuraattori/<?= $curator->getToken() ?>/seuraava">kutsua seuraava kuraattori</a>.</p>
