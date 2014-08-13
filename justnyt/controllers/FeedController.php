@@ -8,10 +8,8 @@ class FeedController extends \glue\Controller
     }
 
     public function rss() {
-        $recommendations = \justnyt\models\RecommendationQuery::create("rd")
-            ->where("rd.ApprovedOn IS NOT NULL")
-            ->where("r.ApprovedOn <= ?", new \DateTime())
-            ->orderByApprovedOn("DESC")
+        $recommendations = \justnyt\models\RecommendationQuery::create("r")
+            ->latestApproved()
             ->find();
 
         $this->response->setHeader("Content-Type", "application/rss+xml; charset=utf-8");
