@@ -59,7 +59,7 @@ class ProfileTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ProfileTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the PROFILE_ID field
@@ -85,6 +85,11 @@ class ProfileTableMap extends TableMap
      * the column name for the HOMEPAGE field
      */
     const COL_HOMEPAGE = 'profile.HOMEPAGE';
+
+    /**
+     * the column name for the EMAIL field
+     */
+    const COL_EMAIL = 'profile.EMAIL';
 
     /**
      * the column name for the IMAGE field
@@ -108,12 +113,12 @@ class ProfileTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ProfileId', 'Alias', 'Homepage', 'Image', 'Description', ),
-        self::TYPE_STUDLYPHPNAME => array('profileId', 'alias', 'homepage', 'image', 'description', ),
-        self::TYPE_COLNAME       => array(ProfileTableMap::COL_PROFILE_ID, ProfileTableMap::COL_ALIAS, ProfileTableMap::COL_HOMEPAGE, ProfileTableMap::COL_IMAGE, ProfileTableMap::COL_DESCRIPTION, ),
-        self::TYPE_RAW_COLNAME   => array('COL_PROFILE_ID', 'COL_ALIAS', 'COL_HOMEPAGE', 'COL_IMAGE', 'COL_DESCRIPTION', ),
-        self::TYPE_FIELDNAME     => array('profile_id', 'alias', 'homepage', 'image', 'description', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('ProfileId', 'Alias', 'Homepage', 'Email', 'Image', 'Description', ),
+        self::TYPE_STUDLYPHPNAME => array('profileId', 'alias', 'homepage', 'email', 'image', 'description', ),
+        self::TYPE_COLNAME       => array(ProfileTableMap::COL_PROFILE_ID, ProfileTableMap::COL_ALIAS, ProfileTableMap::COL_HOMEPAGE, ProfileTableMap::COL_EMAIL, ProfileTableMap::COL_IMAGE, ProfileTableMap::COL_DESCRIPTION, ),
+        self::TYPE_RAW_COLNAME   => array('COL_PROFILE_ID', 'COL_ALIAS', 'COL_HOMEPAGE', 'COL_EMAIL', 'COL_IMAGE', 'COL_DESCRIPTION', ),
+        self::TYPE_FIELDNAME     => array('profile_id', 'alias', 'homepage', 'email', 'image', 'description', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -123,12 +128,12 @@ class ProfileTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ProfileId' => 0, 'Alias' => 1, 'Homepage' => 2, 'Image' => 3, 'Description' => 4, ),
-        self::TYPE_STUDLYPHPNAME => array('profileId' => 0, 'alias' => 1, 'homepage' => 2, 'image' => 3, 'description' => 4, ),
-        self::TYPE_COLNAME       => array(ProfileTableMap::COL_PROFILE_ID => 0, ProfileTableMap::COL_ALIAS => 1, ProfileTableMap::COL_HOMEPAGE => 2, ProfileTableMap::COL_IMAGE => 3, ProfileTableMap::COL_DESCRIPTION => 4, ),
-        self::TYPE_RAW_COLNAME   => array('COL_PROFILE_ID' => 0, 'COL_ALIAS' => 1, 'COL_HOMEPAGE' => 2, 'COL_IMAGE' => 3, 'COL_DESCRIPTION' => 4, ),
-        self::TYPE_FIELDNAME     => array('profile_id' => 0, 'alias' => 1, 'homepage' => 2, 'image' => 3, 'description' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('ProfileId' => 0, 'Alias' => 1, 'Homepage' => 2, 'Email' => 3, 'Image' => 4, 'Description' => 5, ),
+        self::TYPE_STUDLYPHPNAME => array('profileId' => 0, 'alias' => 1, 'homepage' => 2, 'email' => 3, 'image' => 4, 'description' => 5, ),
+        self::TYPE_COLNAME       => array(ProfileTableMap::COL_PROFILE_ID => 0, ProfileTableMap::COL_ALIAS => 1, ProfileTableMap::COL_HOMEPAGE => 2, ProfileTableMap::COL_EMAIL => 3, ProfileTableMap::COL_IMAGE => 4, ProfileTableMap::COL_DESCRIPTION => 5, ),
+        self::TYPE_RAW_COLNAME   => array('COL_PROFILE_ID' => 0, 'COL_ALIAS' => 1, 'COL_HOMEPAGE' => 2, 'COL_EMAIL' => 3, 'COL_IMAGE' => 4, 'COL_DESCRIPTION' => 5, ),
+        self::TYPE_FIELDNAME     => array('profile_id' => 0, 'alias' => 1, 'homepage' => 2, 'email' => 3, 'image' => 4, 'description' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -150,6 +155,7 @@ class ProfileTableMap extends TableMap
         $this->addPrimaryKey('PROFILE_ID', 'ProfileId', 'INTEGER', true, 10, null);
         $this->addColumn('ALIAS', 'Alias', 'VARCHAR', true, 80, null);
         $this->addColumn('HOMEPAGE', 'Homepage', 'VARCHAR', false, 255, null);
+        $this->addColumn('EMAIL', 'Email', 'VARCHAR', false, 255, null);
         $this->addColumn('IMAGE', 'Image', 'VARCHAR', false, 40, null);
         $this->addColumn('DESCRIPTION', 'Description', 'LONGVARCHAR', false, null, null);
     } // initialize()
@@ -315,12 +321,14 @@ class ProfileTableMap extends TableMap
             $criteria->addSelectColumn(ProfileTableMap::COL_PROFILE_ID);
             $criteria->addSelectColumn(ProfileTableMap::COL_ALIAS);
             $criteria->addSelectColumn(ProfileTableMap::COL_HOMEPAGE);
+            $criteria->addSelectColumn(ProfileTableMap::COL_EMAIL);
             $criteria->addSelectColumn(ProfileTableMap::COL_IMAGE);
             $criteria->addSelectColumn(ProfileTableMap::COL_DESCRIPTION);
         } else {
             $criteria->addSelectColumn($alias . '.PROFILE_ID');
             $criteria->addSelectColumn($alias . '.ALIAS');
             $criteria->addSelectColumn($alias . '.HOMEPAGE');
+            $criteria->addSelectColumn($alias . '.EMAIL');
             $criteria->addSelectColumn($alias . '.IMAGE');
             $criteria->addSelectColumn($alias . '.DESCRIPTION');
         }

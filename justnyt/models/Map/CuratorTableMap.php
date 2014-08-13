@@ -59,7 +59,7 @@ class CuratorTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class CuratorTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the CURATOR_ID field
@@ -102,6 +102,11 @@ class CuratorTableMap extends TableMap
     const COL_ACTIVATED_ON = 'curator.ACTIVATED_ON';
 
     /**
+     * the column name for the DEACTIVATED_ON field
+     */
+    const COL_DEACTIVATED_ON = 'curator.DEACTIVATED_ON';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -113,12 +118,12 @@ class CuratorTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('CuratorId', 'CandidateId', 'ProfileId', 'Token', 'CreatedOn', 'ActivatedOn', ),
-        self::TYPE_STUDLYPHPNAME => array('curatorId', 'candidateId', 'profileId', 'token', 'createdOn', 'activatedOn', ),
-        self::TYPE_COLNAME       => array(CuratorTableMap::COL_CURATOR_ID, CuratorTableMap::COL_CANDIDATE_ID, CuratorTableMap::COL_PROFILE_ID, CuratorTableMap::COL_TOKEN, CuratorTableMap::COL_CREATED_ON, CuratorTableMap::COL_ACTIVATED_ON, ),
-        self::TYPE_RAW_COLNAME   => array('COL_CURATOR_ID', 'COL_CANDIDATE_ID', 'COL_PROFILE_ID', 'COL_TOKEN', 'COL_CREATED_ON', 'COL_ACTIVATED_ON', ),
-        self::TYPE_FIELDNAME     => array('curator_id', 'candidate_id', 'profile_id', 'token', 'created_on', 'activated_on', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('CuratorId', 'CandidateId', 'ProfileId', 'Token', 'CreatedOn', 'ActivatedOn', 'DeactivatedOn', ),
+        self::TYPE_STUDLYPHPNAME => array('curatorId', 'candidateId', 'profileId', 'token', 'createdOn', 'activatedOn', 'deactivatedOn', ),
+        self::TYPE_COLNAME       => array(CuratorTableMap::COL_CURATOR_ID, CuratorTableMap::COL_CANDIDATE_ID, CuratorTableMap::COL_PROFILE_ID, CuratorTableMap::COL_TOKEN, CuratorTableMap::COL_CREATED_ON, CuratorTableMap::COL_ACTIVATED_ON, CuratorTableMap::COL_DEACTIVATED_ON, ),
+        self::TYPE_RAW_COLNAME   => array('COL_CURATOR_ID', 'COL_CANDIDATE_ID', 'COL_PROFILE_ID', 'COL_TOKEN', 'COL_CREATED_ON', 'COL_ACTIVATED_ON', 'COL_DEACTIVATED_ON', ),
+        self::TYPE_FIELDNAME     => array('curator_id', 'candidate_id', 'profile_id', 'token', 'created_on', 'activated_on', 'deactivated_on', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -128,12 +133,12 @@ class CuratorTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('CuratorId' => 0, 'CandidateId' => 1, 'ProfileId' => 2, 'Token' => 3, 'CreatedOn' => 4, 'ActivatedOn' => 5, ),
-        self::TYPE_STUDLYPHPNAME => array('curatorId' => 0, 'candidateId' => 1, 'profileId' => 2, 'token' => 3, 'createdOn' => 4, 'activatedOn' => 5, ),
-        self::TYPE_COLNAME       => array(CuratorTableMap::COL_CURATOR_ID => 0, CuratorTableMap::COL_CANDIDATE_ID => 1, CuratorTableMap::COL_PROFILE_ID => 2, CuratorTableMap::COL_TOKEN => 3, CuratorTableMap::COL_CREATED_ON => 4, CuratorTableMap::COL_ACTIVATED_ON => 5, ),
-        self::TYPE_RAW_COLNAME   => array('COL_CURATOR_ID' => 0, 'COL_CANDIDATE_ID' => 1, 'COL_PROFILE_ID' => 2, 'COL_TOKEN' => 3, 'COL_CREATED_ON' => 4, 'COL_ACTIVATED_ON' => 5, ),
-        self::TYPE_FIELDNAME     => array('curator_id' => 0, 'candidate_id' => 1, 'profile_id' => 2, 'token' => 3, 'created_on' => 4, 'activated_on' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('CuratorId' => 0, 'CandidateId' => 1, 'ProfileId' => 2, 'Token' => 3, 'CreatedOn' => 4, 'ActivatedOn' => 5, 'DeactivatedOn' => 6, ),
+        self::TYPE_STUDLYPHPNAME => array('curatorId' => 0, 'candidateId' => 1, 'profileId' => 2, 'token' => 3, 'createdOn' => 4, 'activatedOn' => 5, 'deactivatedOn' => 6, ),
+        self::TYPE_COLNAME       => array(CuratorTableMap::COL_CURATOR_ID => 0, CuratorTableMap::COL_CANDIDATE_ID => 1, CuratorTableMap::COL_PROFILE_ID => 2, CuratorTableMap::COL_TOKEN => 3, CuratorTableMap::COL_CREATED_ON => 4, CuratorTableMap::COL_ACTIVATED_ON => 5, CuratorTableMap::COL_DEACTIVATED_ON => 6, ),
+        self::TYPE_RAW_COLNAME   => array('COL_CURATOR_ID' => 0, 'COL_CANDIDATE_ID' => 1, 'COL_PROFILE_ID' => 2, 'COL_TOKEN' => 3, 'COL_CREATED_ON' => 4, 'COL_ACTIVATED_ON' => 5, 'COL_DEACTIVATED_ON' => 6, ),
+        self::TYPE_FIELDNAME     => array('curator_id' => 0, 'candidate_id' => 1, 'profile_id' => 2, 'token' => 3, 'created_on' => 4, 'activated_on' => 5, 'deactivated_on' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -158,6 +163,7 @@ class CuratorTableMap extends TableMap
         $this->addColumn('TOKEN', 'Token', 'VARCHAR', true, 32, null);
         $this->addColumn('CREATED_ON', 'CreatedOn', 'TIMESTAMP', false, null, null);
         $this->addColumn('ACTIVATED_ON', 'ActivatedOn', 'TIMESTAMP', false, null, null);
+        $this->addColumn('DEACTIVATED_ON', 'DeactivatedOn', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -326,6 +332,7 @@ class CuratorTableMap extends TableMap
             $criteria->addSelectColumn(CuratorTableMap::COL_TOKEN);
             $criteria->addSelectColumn(CuratorTableMap::COL_CREATED_ON);
             $criteria->addSelectColumn(CuratorTableMap::COL_ACTIVATED_ON);
+            $criteria->addSelectColumn(CuratorTableMap::COL_DEACTIVATED_ON);
         } else {
             $criteria->addSelectColumn($alias . '.CURATOR_ID');
             $criteria->addSelectColumn($alias . '.CANDIDATE_ID');
@@ -333,6 +340,7 @@ class CuratorTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.TOKEN');
             $criteria->addSelectColumn($alias . '.CREATED_ON');
             $criteria->addSelectColumn($alias . '.ACTIVATED_ON');
+            $criteria->addSelectColumn($alias . '.DEACTIVATED_ON');
         }
     }
 

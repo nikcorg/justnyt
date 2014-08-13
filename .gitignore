@@ -4,3 +4,5 @@
 composer.lock
 node_modules
 public/assets/js
+db/generated*
+db/schema.xml

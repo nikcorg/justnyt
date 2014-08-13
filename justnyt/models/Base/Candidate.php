@@ -24,6 +24,13 @@ use justnyt\models\Curator as ChildCurator;
 use justnyt\models\CuratorQuery as ChildCuratorQuery;
 use justnyt\models\Map\CandidateTableMap;
 
+/**
+ * Base class that represents a row from the 'candidate' table.
+ *
+ *
+ *
+* @package    propel.generator.justnyt.models.Base
+*/
 abstract class Candidate implements ActiveRecordInterface
 {
     /**
@@ -328,9 +335,9 @@ abstract class Candidate implements ActiveRecordInterface
      *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -396,7 +403,7 @@ abstract class Candidate implements ActiveRecordInterface
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
-            $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CandidateTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
             $this->email = (null !== $col) ? (string) $col : null;
@@ -461,7 +468,7 @@ abstract class Candidate implements ActiveRecordInterface
      */
     public function setCreatedOn($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->created_on !== null || $dt !== null) {
             if ($dt !== $this->created_on) {
                 $this->created_on = $dt;
@@ -686,17 +693,17 @@ abstract class Candidate implements ActiveRecordInterface
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(CandidateTableMap::COL_CANDIDATE_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'CANDIDATE_ID';
+            $modifiedColumns[':p' . $index++]  = '`CANDIDATE_ID`';
         }
         if ($this->isColumnModified(CandidateTableMap::COL_CREATED_ON)) {
-            $modifiedColumns[':p' . $index++]  = 'CREATED_ON';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_ON`';
         }
         if ($this->isColumnModified(CandidateTableMap::COL_EMAIL)) {
-            $modifiedColumns[':p' . $index++]  = 'EMAIL';
+            $modifiedColumns[':p' . $index++]  = '`EMAIL`';
         }
 
         $sql = sprintf(
-            'INSERT INTO candidate (%s) VALUES (%s)',
+            'INSERT INTO `candidate` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -705,13 +712,13 @@ abstract class Candidate implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'CANDIDATE_ID':
+                    case '`CANDIDATE_ID`':
                         $stmt->bindValue($identifier, $this->candidate_id, PDO::PARAM_INT);
                         break;
-                    case 'CREATED_ON':
+                    case '`CREATED_ON`':
                         $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
-                    case 'EMAIL':
+                    case '`EMAIL`':
                         $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
                         break;
                 }
@@ -808,10 +815,11 @@ abstract class Candidate implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['Candidate'][$this->getPrimaryKey()])) {
+
+        if (isset($alreadyDumpedObjects['Candidate'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Candidate'][$this->getPrimaryKey()] = true;
+        $alreadyDumpedObjects['Candidate'][$this->hashCode()] = true;
         $keys = CandidateTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getCandidateId(),
@@ -825,7 +833,19 @@ abstract class Candidate implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->collCurators) {
-                $result['Curators'] = $this->collCurators->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'curators';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'curators';
+                        break;
+                    default:
+                        $key = 'Curators';
+                }
+
+                $result[$key] = $this->collCurators->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 

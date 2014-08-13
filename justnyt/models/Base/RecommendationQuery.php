@@ -162,7 +162,7 @@ abstract class RecommendationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT RECOMMENDATION_ID, CURATOR_ID, CREATED_ON, SCRAPED_ON, APPROVED_ON, GRAPHIC_CONTENT, SHORTLINK, URL, TITLE FROM recommendation WHERE RECOMMENDATION_ID = :p0';
+        $sql = 'SELECT `RECOMMENDATION_ID`, `CURATOR_ID`, `CREATED_ON`, `SCRAPED_ON`, `APPROVED_ON`, `GRAPHIC_CONTENT`, `SHORTLINK`, `URL`, `TITLE` FROM `recommendation` WHERE `RECOMMENDATION_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);

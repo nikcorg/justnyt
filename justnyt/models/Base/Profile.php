@@ -22,6 +22,13 @@ use justnyt\models\Profile as ChildProfile;
 use justnyt\models\ProfileQuery as ChildProfileQuery;
 use justnyt\models\Map\ProfileTableMap;
 
+/**
+ * Base class that represents a row from the 'profile' table.
+ *
+ *
+ *
+* @package    propel.generator.justnyt.models.Base
+*/
 abstract class Profile implements ActiveRecordInterface
 {
     /**
@@ -73,6 +80,12 @@ abstract class Profile implements ActiveRecordInterface
      * @var        string
      */
     protected $homepage;
+
+    /**
+     * The value for the email field.
+     * @var        string
+     */
+    protected $email;
 
     /**
      * The value for the image field.
@@ -354,6 +367,16 @@ abstract class Profile implements ActiveRecordInterface
     }
 
     /**
+     * Get the [email] column value.
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
      * Get the [image] column value.
      *
      * @return string
@@ -418,10 +441,13 @@ abstract class Profile implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProfileTableMap::translateFieldName('Homepage', TableMap::TYPE_PHPNAME, $indexType)];
             $this->homepage = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProfileTableMap::translateFieldName('Image', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProfileTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->email = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProfileTableMap::translateFieldName('Image', TableMap::TYPE_PHPNAME, $indexType)];
             $this->image = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProfileTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ProfileTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -431,7 +457,7 @@ abstract class Profile implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = ProfileTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = ProfileTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Profile'), 0, $e);
@@ -514,6 +540,26 @@ abstract class Profile implements ActiveRecordInterface
 
         return $this;
     } // setHomepage()
+
+    /**
+     * Set the value of [email] column.
+     *
+     * @param  string $v new value
+     * @return $this|\justnyt\models\Profile The current object (for fluent API support)
+     */
+    public function setEmail($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->email !== $v) {
+            $this->email = $v;
+            $this->modifiedColumns[ProfileTableMap::COL_EMAIL] = true;
+        }
+
+        return $this;
+    } // setEmail()
 
     /**
      * Set the value of [image] column.
@@ -749,23 +795,26 @@ abstract class Profile implements ActiveRecordInterface
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(ProfileTableMap::COL_PROFILE_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'PROFILE_ID';
+            $modifiedColumns[':p' . $index++]  = '`PROFILE_ID`';
         }
         if ($this->isColumnModified(ProfileTableMap::COL_ALIAS)) {
-            $modifiedColumns[':p' . $index++]  = 'ALIAS';
+            $modifiedColumns[':p' . $index++]  = '`ALIAS`';
         }
         if ($this->isColumnModified(ProfileTableMap::COL_HOMEPAGE)) {
-            $modifiedColumns[':p' . $index++]  = 'HOMEPAGE';
+            $modifiedColumns[':p' . $index++]  = '`HOMEPAGE`';
+        }
+        if ($this->isColumnModified(ProfileTableMap::COL_EMAIL)) {
+            $modifiedColumns[':p' . $index++]  = '`EMAIL`';
         }
         if ($this->isColumnModified(ProfileTableMap::COL_IMAGE)) {
-            $modifiedColumns[':p' . $index++]  = 'IMAGE';
+            $modifiedColumns[':p' . $index++]  = '`IMAGE`';
         }
         if ($this->isColumnModified(ProfileTableMap::COL_DESCRIPTION)) {
-            $modifiedColumns[':p' . $index++]  = 'DESCRIPTION';
+            $modifiedColumns[':p' . $index++]  = '`DESCRIPTION`';
         }
 
         $sql = sprintf(
-            'INSERT INTO profile (%s) VALUES (%s)',
+            'INSERT INTO `profile` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -774,19 +823,22 @@ abstract class Profile implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'PROFILE_ID':
+                    case '`PROFILE_ID`':
                         $stmt->bindValue($identifier, $this->profile_id, PDO::PARAM_INT);
                         break;
-                    case 'ALIAS':
+                    case '`ALIAS`':
                         $stmt->bindValue($identifier, $this->alias, PDO::PARAM_STR);
                         break;
-                    case 'HOMEPAGE':
+                    case '`HOMEPAGE`':
                         $stmt->bindValue($identifier, $this->homepage, PDO::PARAM_STR);
                         break;
-                    case 'IMAGE':
+                    case '`EMAIL`':
+                        $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
+                        break;
+                    case '`IMAGE`':
                         $stmt->bindValue($identifier, $this->image, PDO::PARAM_STR);
                         break;
-                    case 'DESCRIPTION':
+                    case '`DESCRIPTION`':
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
                 }
@@ -861,9 +913,12 @@ abstract class Profile implements ActiveRecordInterface
                 return $this->getHomepage();
                 break;
             case 3:
-                return $this->getImage();
+                return $this->getEmail();
                 break;
             case 4:
+                return $this->getImage();
+                break;
+            case 5:
                 return $this->getDescription();
                 break;
             default:
@@ -889,17 +944,19 @@ abstract class Profile implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['Profile'][$this->getPrimaryKey()])) {
+
+        if (isset($alreadyDumpedObjects['Profile'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Profile'][$this->getPrimaryKey()] = true;
+        $alreadyDumpedObjects['Profile'][$this->hashCode()] = true;
         $keys = ProfileTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getProfileId(),
             $keys[1] => $this->getAlias(),
             $keys[2] => $this->getHomepage(),
-            $keys[3] => $this->getImage(),
-            $keys[4] => $this->getDescription(),
+            $keys[3] => $this->getEmail(),
+            $keys[4] => $this->getImage(),
+            $keys[5] => $this->getDescription(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -908,7 +965,19 @@ abstract class Profile implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->collCurators) {
-                $result['Curators'] = $this->collCurators->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'curators';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'curators';
+                        break;
+                    default:
+                        $key = 'Curators';
+                }
+
+                $result[$key] = $this->collCurators->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -954,9 +1023,12 @@ abstract class Profile implements ActiveRecordInterface
                 $this->setHomepage($value);
                 break;
             case 3:
-                $this->setImage($value);
+                $this->setEmail($value);
                 break;
             case 4:
+                $this->setImage($value);
+                break;
+            case 5:
                 $this->setDescription($value);
                 break;
         } // switch()
@@ -995,10 +1067,13 @@ abstract class Profile implements ActiveRecordInterface
             $this->setHomepage($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setImage($arr[$keys[3]]);
+            $this->setEmail($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setDescription($arr[$keys[4]]);
+            $this->setImage($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setDescription($arr[$keys[5]]);
         }
     }
 
@@ -1043,6 +1118,9 @@ abstract class Profile implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ProfileTableMap::COL_HOMEPAGE)) {
             $criteria->add(ProfileTableMap::COL_HOMEPAGE, $this->homepage);
+        }
+        if ($this->isColumnModified(ProfileTableMap::COL_EMAIL)) {
+            $criteria->add(ProfileTableMap::COL_EMAIL, $this->email);
         }
         if ($this->isColumnModified(ProfileTableMap::COL_IMAGE)) {
             $criteria->add(ProfileTableMap::COL_IMAGE, $this->image);
@@ -1138,6 +1216,7 @@ abstract class Profile implements ActiveRecordInterface
     {
         $copyObj->setAlias($this->getAlias());
         $copyObj->setHomepage($this->getHomepage());
+        $copyObj->setEmail($this->getEmail());
         $copyObj->setImage($this->getImage());
         $copyObj->setDescription($this->getDescription());
 
@@ -1451,6 +1530,7 @@ abstract class Profile implements ActiveRecordInterface
         $this->profile_id = null;
         $this->alias = null;
         $this->homepage = null;
+        $this->email = null;
         $this->image = null;
         $this->description = null;
         $this->alreadyInSave = false;

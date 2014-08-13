@@ -22,6 +22,13 @@ use justnyt\models\CuratorQuery as ChildCuratorQuery;
 use justnyt\models\RecommendationQuery as ChildRecommendationQuery;
 use justnyt\models\Map\RecommendationTableMap;
 
+/**
+ * Base class that represents a row from the 'recommendation' table.
+ *
+ *
+ *
+* @package    propel.generator.justnyt.models.Base
+*/
 abstract class Recommendation implements ActiveRecordInterface
 {
     /**
@@ -379,9 +386,9 @@ abstract class Recommendation implements ActiveRecordInterface
      *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -399,9 +406,9 @@ abstract class Recommendation implements ActiveRecordInterface
      *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -419,9 +426,9 @@ abstract class Recommendation implements ActiveRecordInterface
      *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -534,19 +541,19 @@ abstract class Recommendation implements ActiveRecordInterface
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
-            $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RecommendationTableMap::translateFieldName('ScrapedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
-            $this->scraped_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $this->scraped_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : RecommendationTableMap::translateFieldName('ApprovedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
-            $this->approved_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $this->approved_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : RecommendationTableMap::translateFieldName('GraphicContent', TableMap::TYPE_PHPNAME, $indexType)];
             $this->graphic_content = (null !== $col) ? (boolean) $col : null;
@@ -647,7 +654,7 @@ abstract class Recommendation implements ActiveRecordInterface
      */
     public function setCreatedOn($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->created_on !== null || $dt !== null) {
             if ($dt !== $this->created_on) {
                 $this->created_on = $dt;
@@ -667,7 +674,7 @@ abstract class Recommendation implements ActiveRecordInterface
      */
     public function setScrapedOn($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->scraped_on !== null || $dt !== null) {
             if ($dt !== $this->scraped_on) {
                 $this->scraped_on = $dt;
@@ -687,7 +694,7 @@ abstract class Recommendation implements ActiveRecordInterface
      */
     public function setApprovedOn($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->approved_on !== null || $dt !== null) {
             if ($dt !== $this->approved_on) {
                 $this->approved_on = $dt;
@@ -973,35 +980,35 @@ abstract class Recommendation implements ActiveRecordInterface
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(RecommendationTableMap::COL_RECOMMENDATION_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'RECOMMENDATION_ID';
+            $modifiedColumns[':p' . $index++]  = '`RECOMMENDATION_ID`';
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_CURATOR_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'CURATOR_ID';
+            $modifiedColumns[':p' . $index++]  = '`CURATOR_ID`';
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_CREATED_ON)) {
-            $modifiedColumns[':p' . $index++]  = 'CREATED_ON';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_ON`';
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_SCRAPED_ON)) {
-            $modifiedColumns[':p' . $index++]  = 'SCRAPED_ON';
+            $modifiedColumns[':p' . $index++]  = '`SCRAPED_ON`';
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_APPROVED_ON)) {
-            $modifiedColumns[':p' . $index++]  = 'APPROVED_ON';
+            $modifiedColumns[':p' . $index++]  = '`APPROVED_ON`';
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_GRAPHIC_CONTENT)) {
-            $modifiedColumns[':p' . $index++]  = 'GRAPHIC_CONTENT';
+            $modifiedColumns[':p' . $index++]  = '`GRAPHIC_CONTENT`';
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_SHORTLINK)) {
-            $modifiedColumns[':p' . $index++]  = 'SHORTLINK';
+            $modifiedColumns[':p' . $index++]  = '`SHORTLINK`';
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_URL)) {
-            $modifiedColumns[':p' . $index++]  = 'URL';
+            $modifiedColumns[':p' . $index++]  = '`URL`';
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_TITLE)) {
-            $modifiedColumns[':p' . $index++]  = 'TITLE';
+            $modifiedColumns[':p' . $index++]  = '`TITLE`';
         }
 
         $sql = sprintf(
-            'INSERT INTO recommendation (%s) VALUES (%s)',
+            'INSERT INTO `recommendation` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1010,31 +1017,31 @@ abstract class Recommendation implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'RECOMMENDATION_ID':
+                    case '`RECOMMENDATION_ID`':
                         $stmt->bindValue($identifier, $this->recommendation_id, PDO::PARAM_INT);
                         break;
-                    case 'CURATOR_ID':
+                    case '`CURATOR_ID`':
                         $stmt->bindValue($identifier, $this->curator_id, PDO::PARAM_INT);
                         break;
-                    case 'CREATED_ON':
+                    case '`CREATED_ON`':
                         $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
-                    case 'SCRAPED_ON':
+                    case '`SCRAPED_ON`':
                         $stmt->bindValue($identifier, $this->scraped_on ? $this->scraped_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
-                    case 'APPROVED_ON':
+                    case '`APPROVED_ON`':
                         $stmt->bindValue($identifier, $this->approved_on ? $this->approved_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
-                    case 'GRAPHIC_CONTENT':
+                    case '`GRAPHIC_CONTENT`':
                         $stmt->bindValue($identifier, (int) $this->graphic_content, PDO::PARAM_INT);
                         break;
-                    case 'SHORTLINK':
+                    case '`SHORTLINK`':
                         $stmt->bindValue($identifier, $this->shortlink, PDO::PARAM_STR);
                         break;
-                    case 'URL':
+                    case '`URL`':
                         $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
                         break;
-                    case 'TITLE':
+                    case '`TITLE`':
                         $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
                         break;
                 }
@@ -1149,10 +1156,11 @@ abstract class Recommendation implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['Recommendation'][$this->getPrimaryKey()])) {
+
+        if (isset($alreadyDumpedObjects['Recommendation'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Recommendation'][$this->getPrimaryKey()] = true;
+        $alreadyDumpedObjects['Recommendation'][$this->hashCode()] = true;
         $keys = RecommendationTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getRecommendationId(),
@@ -1172,7 +1180,19 @@ abstract class Recommendation implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->aCurator) {
-                $result['Curator'] = $this->aCurator->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'curator';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'curator';
+                        break;
+                    default:
+                        $key = 'Curator';
+                }
+
+                $result[$key] = $this->aCurator->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 

@@ -26,6 +26,7 @@ use justnyt\models\Map\CuratorTableMap;
  * @method     ChildCuratorQuery orderByToken($order = Criteria::ASC) Order by the token column
  * @method     ChildCuratorQuery orderByCreatedOn($order = Criteria::ASC) Order by the created_on column
  * @method     ChildCuratorQuery orderByActivatedOn($order = Criteria::ASC) Order by the activated_on column
+ * @method     ChildCuratorQuery orderByDeactivatedOn($order = Criteria::ASC) Order by the deactivated_on column
  *
  * @method     ChildCuratorQuery groupByCuratorId() Group by the curator_id column
  * @method     ChildCuratorQuery groupByCandidateId() Group by the candidate_id column
@@ -33,6 +34,7 @@ use justnyt\models\Map\CuratorTableMap;
  * @method     ChildCuratorQuery groupByToken() Group by the token column
  * @method     ChildCuratorQuery groupByCreatedOn() Group by the created_on column
  * @method     ChildCuratorQuery groupByActivatedOn() Group by the activated_on column
+ * @method     ChildCuratorQuery groupByDeactivatedOn() Group by the deactivated_on column
  *
  * @method     ChildCuratorQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildCuratorQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -61,6 +63,7 @@ use justnyt\models\Map\CuratorTableMap;
  * @method     ChildCurator findOneByToken(string $token) Return the first ChildCurator filtered by the token column
  * @method     ChildCurator findOneByCreatedOn(string $created_on) Return the first ChildCurator filtered by the created_on column
  * @method     ChildCurator findOneByActivatedOn(string $activated_on) Return the first ChildCurator filtered by the activated_on column
+ * @method     ChildCurator findOneByDeactivatedOn(string $deactivated_on) Return the first ChildCurator filtered by the deactivated_on column
  *
  * @method     ChildCurator[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildCurator objects based on current ModelCriteria
  * @method     ChildCurator[]|ObjectCollection findByCuratorId(int $curator_id) Return ChildCurator objects filtered by the curator_id column
@@ -69,6 +72,7 @@ use justnyt\models\Map\CuratorTableMap;
  * @method     ChildCurator[]|ObjectCollection findByToken(string $token) Return ChildCurator objects filtered by the token column
  * @method     ChildCurator[]|ObjectCollection findByCreatedOn(string $created_on) Return ChildCurator objects filtered by the created_on column
  * @method     ChildCurator[]|ObjectCollection findByActivatedOn(string $activated_on) Return ChildCurator objects filtered by the activated_on column
+ * @method     ChildCurator[]|ObjectCollection findByDeactivatedOn(string $deactivated_on) Return ChildCurator objects filtered by the deactivated_on column
  * @method     ChildCurator[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -158,7 +162,7 @@ abstract class CuratorQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT CURATOR_ID, CANDIDATE_ID, PROFILE_ID, TOKEN, CREATED_ON, ACTIVATED_ON FROM curator WHERE CURATOR_ID = :p0';
+        $sql = 'SELECT `CURATOR_ID`, `CANDIDATE_ID`, `PROFILE_ID`, `TOKEN`, `CREATED_ON`, `ACTIVATED_ON`, `DEACTIVATED_ON` FROM `curator` WHERE `CURATOR_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -488,6 +492,49 @@ abstract class CuratorQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(CuratorTableMap::COL_ACTIVATED_ON, $activatedOn, $comparison);
+    }
+
+    /**
+     * Filter the query on the deactivated_on column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDeactivatedOn('2011-03-14'); // WHERE deactivated_on = '2011-03-14'
+     * $query->filterByDeactivatedOn('now'); // WHERE deactivated_on = '2011-03-14'
+     * $query->filterByDeactivatedOn(array('max' => 'yesterday')); // WHERE deactivated_on > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $deactivatedOn The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildCuratorQuery The current query, for fluid interface
+     */
+    public function filterByDeactivatedOn($deactivatedOn = null, $comparison = null)
+    {
+        if (is_array($deactivatedOn)) {
+            $useMinMax = false;
+            if (isset($deactivatedOn['min'])) {
+                $this->addUsingAlias(CuratorTableMap::COL_DEACTIVATED_ON, $deactivatedOn['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($deactivatedOn['max'])) {
+                $this->addUsingAlias(CuratorTableMap::COL_DEACTIVATED_ON, $deactivatedOn['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(CuratorTableMap::COL_DEACTIVATED_ON, $deactivatedOn, $comparison);
     }
 
     /**
