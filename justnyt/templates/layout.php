@@ -22,7 +22,7 @@
         <?php $this->snippet("snippets/header") ?>
 
         <main>
-            <?php if (isset($token)): ?>
+            <?php if (isset($curator)): ?>
                 <?php $this->snippet("snippets/curator-navigation"); ?>
             <?php endif; ?>
 

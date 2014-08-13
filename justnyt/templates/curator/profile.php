@@ -1,6 +1,6 @@
 <p>Profiilin luominen on täysin vapaaehtoista, mutta edes nimimerkin täyttäminen suositeltavaa. Profiilin tiedot näytetään <a href="/kuraattorit">Kuraattorit-listassa</a>.</p>
 
-<form action="/kuraattori/<?= $token ?>/profiili" method="post">
+<form action="/kuraattori/<?= $curator->getToken() ?>/profiili" method="post">
     <div class="form-blocker hidden nomargin"></div>
 
     <p><label><span>Nimimerkki tai oma nimesi</span>

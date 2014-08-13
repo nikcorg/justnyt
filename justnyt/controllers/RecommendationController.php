@@ -74,7 +74,7 @@ class RecommendationController extends \glue\Controller
                 "recommendation/prepare",
                 array(
                     "title" => "Uusi suositus",
-                    "token" => $token,
+                    "curator" => $curator,
                     "candidateId" => $prepare->getRecommendationId(),
                     "title" => "",
                     "url" => $url,
