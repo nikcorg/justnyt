@@ -9,6 +9,8 @@
     </ol>
 <?php endif; ?>
 
+<?php if (is_null($dupCheck)): ?>
+
 <h2>Tarkista tiedot</h2>
 
 <form method="post" action="/kuraattori/<?= $curator->getToken() ?>/suosittelut/<?= $candidateId ?>" data-candidate-id="<?= $candidateId ?>" id="preview-form">
@@ -33,3 +35,12 @@
 
     <p><button type="submit" name="action" value="approve">Hyvältä näyttää, tällä mennään</button> <button type="submit" name="action" value="remove" class="cancel">Nyt tuli vikatikki, saa poistaa</button></p>
 </form>
+
+<?php else: ?>
+
+<h2>Suositus törmäyskurssilla</h2>
+
+<p>Harmi juttu, mutta suosittelemasi juttu löytyy jo listoilta.</p>
+<p>Älä kuitenkaan lannistu, olet selvästikin oikeilla linjoilla.</p>
+
+<?php endif; ?>
