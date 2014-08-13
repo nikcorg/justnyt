@@ -1,1 +1,1 @@
-<p>Suosituksesi (<a href="<?= $url ?>"><?= $title ?></a>) on lisätty.</p>
+<p>Suosituksesi (<a href="<?= $recommendation->getUrl() ?>"><?= $recommendation->getTitle() ?></a>) on lisätty.</p>
