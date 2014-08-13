@@ -50,22 +50,29 @@ class RecommendationController extends \glue\Controller
     public function prepare($token) {
         $curator = $this->getCurator($token);
         $url = $this->request->GET->url;
-        $upcoming = \justnyt\models\RecommendationQuery::create("r")
-            ->upcomingApproved()
-            ->find();
 
         if (empty($url)) {
             throw new \glue\exceptions\http\E400Exception("Empty URL");
         }
 
-        try {
-            $prepare = new \justnyt\models\Recommendation();
-            $prepare->setCurator($curator);
-            $prepare->setCreatedOn(time());
-            $prepare->setUrl($this->request->GET->url);
-            $prepare->save();
-        } catch (\Exception $e) {
-            throw new \glue\exceptions\http\E500Exception("Error saving recommendation candidate", 0, $e);
+        $upcoming = \justnyt\models\RecommendationQuery::create("r")
+            ->upcomingApproved()
+            ->find();
+        $dupCheck = \justnyt\models\RecommendationQuery::create("r")
+            ->where("r.ApprovedOn IS NOT NULL")
+            ->where("r.Url = ?", $url)
+            ->findOne();
+        $prepare = new \justnyt\models\Recommendation();
+
+        if (is_null($dupCheck)) {
+            try {
+                $prepare->setCurator($curator);
+                $prepare->setCreatedOn(time());
+                $prepare->setUrl($this->request->GET->url);
+                $prepare->save();
+            } catch (\Exception $e) {
+                throw new \glue\exceptions\http\E500Exception("Error saving recommendation candidate", 0, $e);
+            }
         }
 
         // Add scrape job to queue, include job ID in response
@@ -75,6 +82,7 @@ class RecommendationController extends \glue\Controller
                 array(
                     "title" => "Uusi suositus",
                     "curator" => $curator,
+                    "dupCheck" => $dupCheck,
                     "candidateId" => $prepare->getRecommendationId(),
                     "title" => "",
                     "url" => $url,
