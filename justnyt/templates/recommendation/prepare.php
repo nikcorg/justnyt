@@ -1,5 +1,3 @@
-<?php $this->snippet("curator/navigation") ?>
-
 <?php if (count($upcoming) > 0): ?>
     <h2>Julkaisujonossa</h2>
     <ol>
