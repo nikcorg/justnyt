@@ -20,7 +20,7 @@ class JustNytLayout
 
         $data["content"] = $view->render();
 
-        if (isset($data["token"])) {
+        if (isset($data["curator"])) {
             $pending = \justnyt\models\RecommendationQuery::create("rc")
                 ->upcomingApproved()
                 ->find();
