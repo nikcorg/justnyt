@@ -10,7 +10,8 @@ var source = require("vinyl-source-stream");
 var streamify = require("gulp-streamify");
 var uglify = require("gulp-uglify");
 var watchify = require("watchify");
-var isDevelBuild = gutil.env.type !== "production";
+var eventStream = require("event-stream");
+var isDevelBuild = global.isDevelBuild = gutil.env.type !== "production";
 
 function handleError(err) {
     notify.onError({
@@ -33,38 +34,51 @@ gulp.task("clean", function () {
     });
 });
 
-gulp.task("setWatch", function () {
-    global.isWatching = true;
-});
-
 gulp.task("browserify", function () {
-    var bundler = (global.isWatching ? watchify : browserify)({
-            entries: ["./client/app.js"],
-            extensions: [".js", ".json"],
-            debug: isDevelBuild
-        }).
-        transform(envify);
-
-    var bundle = function () {
-        console.log("bundling", Date.now());
-
-        return bundler.bundle().
-            on("error", handleError).
-            pipe(source("app.js")).
-            pipe(gulpif(! isDevelBuild, streamify(uglify({
-                preserveComments: "some",
-                warnings: true
-            })))).
-            pipe(gulp.dest("./public/assets/js"));
+    var bundles = {
+        app: {
+            src: "./client/app.js",
+            dest: "./public/assets/js",
+            filename: "app.js"
+        },
+        global: {
+            src: "./client/global.js",
+            dest: "./public/assets/js",
+            filename: "global.js"
+        }
     };
 
-    if (global.isWatching) {
-        bundler.on("update", bundle);
-    }
+    var bundlers = Object.keys(bundles).map(function (key) {
+        var opts = bundles[key];
+        var bundler = (global.isDevelBuild ? watchify : browserify)({
+                entries: [opts.src],
+                extensions: [".js", ".json"],
+                debug: isDevelBuild
+            }).
+            transform(envify);
 
-    return bundle();
+        function bundle() {
+            console.log(new Date(), "bundling", key);
+
+            return bundler.bundle().
+                on("error", handleError).
+                pipe(source(opts.filename)).
+                pipe(gulpif(! isDevelBuild, streamify(uglify({
+                    preserveComments: "some",
+                    warnings: true
+                })))).
+                pipe(gulp.dest(opts.dest));
+        }
+
+        if (global.isDevelBuild) {
+            bundler.on("update", bundle);
+        }
+
+        return bundle();
+    });
+
+    return eventStream.merge.apply(eventStream, bundlers);
 });
 
 gulp.task("build", ["browserify"]);
-gulp.task("watch", ["setWatch", "build"]);
 gulp.task("default", ["build"]);
