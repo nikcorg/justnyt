@@ -1,9 +1,22 @@
 <?php $this->snippet("curator/navigation") ?>
 
+<?php if (count($upcoming) > 0): ?>
+    <h2>Julkaisujonossa</h2>
+    <ol>
+    <?php foreach ($upcoming as $recommendation): ?>
+        <li>
+            <a href="<?= $recommendation->getUrl() ?>"><?= $recommendation->getTitle() ?></a>
+            (<?= $currentTime->diff($recommendation->getApprovedOn())->format("%R%h tuntia %i minuuttia") ?>)</li>
+    <?php endforeach; ?>
+    </ol>
+<?php endif; ?>
+
+<h2>Tarkista tiedot</h2>
+
 <form method="post" action="/kuraattori/<?= $token ?>/suosittelut/<?= $candidateId ?>" data-candidate-id="<?= $candidateId ?>" id="preview-form">
     <div class="form-blocker hidden nomargin"></div>
 
-    <p>Tarkista tiedot ennen tallentamista. Suositus aktivoituu välittömästi tallentamisen jälkeen.</p>
+    <p>Tarkista tiedot ennen tallentamista.</p>
 
     <p><label><span>URL</span>
         <input type="url" name="url" value="<?= $url ?>" required></label> (<a href="<?= $url ?>" target="_blank">Linkki</a>)</p>
