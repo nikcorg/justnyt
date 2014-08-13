@@ -23,7 +23,7 @@
 
         <main>
             <?php if (isset($token)): ?>
-                <?php $this->snippet("snippets/curator-navi"); ?>
+                <?php $this->snippet("snippets/curator-navigation"); ?>
             <?php endif; ?>
 
             <?= $content ?>
