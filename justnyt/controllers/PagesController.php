@@ -10,31 +10,34 @@ class PagesController extends \glue\Controller
 
     public function index() {
         $this->respond(
-            \glue\ui\View::quickRender("layout", array(
-                    "title" => "Parhautta &mdash; Just nyt!",
-                    "content" => \glue\ui\View::quickRender("pages/index")
+            \justnyt\views\JustNytLayout::quickRender(
+                "pages/index",
+                array(
+                    "title" => "Parhautta &mdash; Just nyt!"
+                    )
                 )
-            )
         );
     }
 
     public function volunteer() {
         $this->respond(
-            \glue\ui\View::quickRender("layout", array(
+            \justnyt\views\JustNytLayout::quickRender(
+                "pages/volunteer",
+                array(
                     "title" => "Kuraattoriksi kuraattorin paikalle",
-                    "content" => \glue\ui\View::quickRender("pages/volunteer")
+                    )
                 )
-            )
         );
     }
 
     public function faq() {
         $this->respond(
-            \glue\ui\View::quickRender("layout", array(
-                    "title" => "Kysymyksiä ja vastauksia",
-                    "content" => \glue\ui\View::quickRender("pages/faq")
+            \justnyt\views\JustNytLayout::quickRender(
+                "pages/faq",
+                array(
+                    "title" => "Kysymyksiä ja vastauksia"
+                    )
                 )
-            )
         );
     }
 
@@ -50,15 +53,13 @@ class PagesController extends \glue\Controller
             ->find();
 
         $this->respond(
-            \glue\ui\View::quickRender("layout", array(
+            \justnyt\views\JustNytLayout::quickRender(
+                "pages/curators",
+                array(
                     "title" => "Kuraattorit",
-                    "content" => \glue\ui\View::quickRender(
-                        "pages/curators", array(
-                            "curators" => $curators
-                            )
-                        )
+                    "curators" => $curators
+                    )
                 )
-            )
         );
     }
 
@@ -68,15 +69,13 @@ class PagesController extends \glue\Controller
             ->find();
 
         $this->respond(
-            \glue\ui\View::quickRender("layout", array(
+            \justnyt\views\JustNytLayout::quickRender(
+                "pages/history",
+                array(
                     "title" => "Parhauden historiaa",
-                    "content" => \glue\ui\View::quickRender(
-                        "pages/history", array(
-                            "recommendations" => $recommendations
-                            )
-                        )
+                    "recommendations" => $recommendations
+                    )
                 )
-            )
         );
     }
 }

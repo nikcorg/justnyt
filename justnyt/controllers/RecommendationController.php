@@ -69,24 +69,20 @@ class RecommendationController extends \glue\Controller
         }
 
         // Add scrape job to queue, include job ID in response
-        $this->response->setContent(\glue\ui\View::quickRender(
-            "layout",
-            array(
-                "title" => "Uusi suositus",
-                "content" => \glue\ui\View::quickRender(
-                    "recommendation/prepare",
-                    array(
-                        "token" => $token,
-                        "candidateId" => $prepare->getRecommendationId(),
-                        "title" => "",
-                        "url" => $url,
-                        "upcoming" => $upcoming,
-                        "currentTime" => new \DateTime()
-                        )
-                    ),
-                "scripts" => array("/assets/js/app.js")
+        $this->response->setContent(
+            \justnyt\views\JustNytLayout::quickRender(
+                "recommendation/prepare",
+                array(
+                    "title" => "Uusi suositus",
+                    "token" => $token,
+                    "candidateId" => $prepare->getRecommendationId(),
+                    "title" => "",
+                    "url" => $url,
+                    "upcoming" => $upcoming,
+                    "currentTime" => new \DateTime(),
+                    "scripts" => array("/assets/js/app.js")
+                    )
                 )
-            )
         );
     }
 
@@ -97,19 +93,14 @@ class RecommendationController extends \glue\Controller
             throw new \glue\exceptions\http\E500Exception("Error removing recommendation", 0, $e);
         }
 
-        $this->response->setContent(\glue\ui\View::quickRender(
-            "layout",
-            array(
-                "content" => \glue\ui\View::quickRender(
-                    "recommendation/remove",
-                    array(
-                        "title" => $pending->getTitle(),
-                        "url" => $pending->getUrl(),
-                        "token" => $curator->getToken()
-                        )
+        $this->response->setContent(
+            \justnyt\views\JustNytLayout::quickRender(
+                "recommendation/remove",
+                array(
+                    "title" => "Suositus poistettiin",
+                    "token" => $curator->getToken()
                     )
                 )
-            )
         );
     }
 
@@ -138,19 +129,15 @@ class RecommendationController extends \glue\Controller
             return $this->response->setJSONContent($pending->toJSON());
         }
 
-        $this->response->setContent(\glue\ui\View::quickRender(
-            "layout",
-            array(
-                "content" => \glue\ui\View::quickRender(
-                    "recommendation/approve",
-                    array(
-                        "title" => $pending->getTitle(),
-                        "url" => $pending->getUrl(),
-                        "token" => $token
-                        )
+        $this->response->setContent(
+            \justnyt\views\JustNytLayout::quickRender(
+                "recommendation/approve",
+                array(
+                    "title" => $pending->getTitle(),
+                    "url" => $pending->getUrl(),
+                    "token" => $token
                     )
                 )
-            )
         );
     }
 }
