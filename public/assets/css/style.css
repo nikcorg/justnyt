@@ -79,6 +79,7 @@ body > :last-child {
 }
 
 main, footer, header {
+    display: block;
     padding-left: 1rem;
     padding-right: 1rem;
 }
