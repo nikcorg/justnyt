@@ -23,12 +23,14 @@ use justnyt\models\Map\ProfileTableMap;
  * @method     ChildProfileQuery orderByProfileId($order = Criteria::ASC) Order by the profile_id column
  * @method     ChildProfileQuery orderByAlias($order = Criteria::ASC) Order by the alias column
  * @method     ChildProfileQuery orderByHomepage($order = Criteria::ASC) Order by the homepage column
+ * @method     ChildProfileQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     ChildProfileQuery orderByImage($order = Criteria::ASC) Order by the image column
  * @method     ChildProfileQuery orderByDescription($order = Criteria::ASC) Order by the description column
  *
  * @method     ChildProfileQuery groupByProfileId() Group by the profile_id column
  * @method     ChildProfileQuery groupByAlias() Group by the alias column
  * @method     ChildProfileQuery groupByHomepage() Group by the homepage column
+ * @method     ChildProfileQuery groupByEmail() Group by the email column
  * @method     ChildProfileQuery groupByImage() Group by the image column
  * @method     ChildProfileQuery groupByDescription() Group by the description column
  *
@@ -48,6 +50,7 @@ use justnyt\models\Map\ProfileTableMap;
  * @method     ChildProfile findOneByProfileId(int $profile_id) Return the first ChildProfile filtered by the profile_id column
  * @method     ChildProfile findOneByAlias(string $alias) Return the first ChildProfile filtered by the alias column
  * @method     ChildProfile findOneByHomepage(string $homepage) Return the first ChildProfile filtered by the homepage column
+ * @method     ChildProfile findOneByEmail(string $email) Return the first ChildProfile filtered by the email column
  * @method     ChildProfile findOneByImage(string $image) Return the first ChildProfile filtered by the image column
  * @method     ChildProfile findOneByDescription(string $description) Return the first ChildProfile filtered by the description column
  *
@@ -55,6 +58,7 @@ use justnyt\models\Map\ProfileTableMap;
  * @method     ChildProfile[]|ObjectCollection findByProfileId(int $profile_id) Return ChildProfile objects filtered by the profile_id column
  * @method     ChildProfile[]|ObjectCollection findByAlias(string $alias) Return ChildProfile objects filtered by the alias column
  * @method     ChildProfile[]|ObjectCollection findByHomepage(string $homepage) Return ChildProfile objects filtered by the homepage column
+ * @method     ChildProfile[]|ObjectCollection findByEmail(string $email) Return ChildProfile objects filtered by the email column
  * @method     ChildProfile[]|ObjectCollection findByImage(string $image) Return ChildProfile objects filtered by the image column
  * @method     ChildProfile[]|ObjectCollection findByDescription(string $description) Return ChildProfile objects filtered by the description column
  * @method     ChildProfile[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -146,7 +150,7 @@ abstract class ProfileQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT PROFILE_ID, ALIAS, HOMEPAGE, IMAGE, DESCRIPTION FROM profile WHERE PROFILE_ID = :p0';
+        $sql = 'SELECT `PROFILE_ID`, `ALIAS`, `HOMEPAGE`, `EMAIL`, `IMAGE`, `DESCRIPTION` FROM `profile` WHERE `PROFILE_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -333,6 +337,35 @@ abstract class ProfileQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ProfileTableMap::COL_HOMEPAGE, $homepage, $comparison);
+    }
+
+    /**
+     * Filter the query on the email column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
+     * $query->filterByEmail('%fooValue%'); // WHERE email LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $email The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildProfileQuery The current query, for fluid interface
+     */
+    public function filterByEmail($email = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($email)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $email)) {
+                $email = str_replace('*', '%', $email);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ProfileTableMap::COL_EMAIL, $email, $comparison);
     }
 
     /**

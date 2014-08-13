@@ -28,6 +28,13 @@ use justnyt\models\Recommendation as ChildRecommendation;
 use justnyt\models\RecommendationQuery as ChildRecommendationQuery;
 use justnyt\models\Map\CuratorTableMap;
 
+/**
+ * Base class that represents a row from the 'curator' table.
+ *
+ *
+ *
+* @package    propel.generator.justnyt.models.Base
+*/
 abstract class Curator implements ActiveRecordInterface
 {
     /**
@@ -97,6 +104,12 @@ abstract class Curator implements ActiveRecordInterface
      * @var        \DateTime
      */
     protected $activated_on;
+
+    /**
+     * The value for the deactivated_on field.
+     * @var        \DateTime
+     */
+    protected $deactivated_on;
 
     /**
      * @var        ChildCandidate
@@ -390,9 +403,9 @@ abstract class Curator implements ActiveRecordInterface
      *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -410,9 +423,9 @@ abstract class Curator implements ActiveRecordInterface
      *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -422,6 +435,26 @@ abstract class Curator implements ActiveRecordInterface
             return $this->activated_on;
         } else {
             return $this->activated_on instanceof \DateTime ? $this->activated_on->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [deactivated_on] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getDeactivatedOn($format = NULL)
+    {
+        if ($format === null) {
+            return $this->deactivated_on;
+        } else {
+            return $this->deactivated_on instanceof \DateTime ? $this->deactivated_on->format($format) : null;
         }
     }
 
@@ -477,13 +510,19 @@ abstract class Curator implements ActiveRecordInterface
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
-            $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CuratorTableMap::translateFieldName('ActivatedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
-            $this->activated_on = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+            $this->activated_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CuratorTableMap::translateFieldName('DeactivatedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->deactivated_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -492,7 +531,7 @@ abstract class Curator implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = CuratorTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = CuratorTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Curator'), 0, $e);
@@ -619,7 +658,7 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function setCreatedOn($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->created_on !== null || $dt !== null) {
             if ($dt !== $this->created_on) {
                 $this->created_on = $dt;
@@ -639,7 +678,7 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function setActivatedOn($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->activated_on !== null || $dt !== null) {
             if ($dt !== $this->activated_on) {
                 $this->activated_on = $dt;
@@ -649,6 +688,26 @@ abstract class Curator implements ActiveRecordInterface
 
         return $this;
     } // setActivatedOn()
+
+    /**
+     * Sets the value of [deactivated_on] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
+     */
+    public function setDeactivatedOn($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->deactivated_on !== null || $dt !== null) {
+            if ($dt !== $this->deactivated_on) {
+                $this->deactivated_on = $dt;
+                $this->modifiedColumns[CuratorTableMap::COL_DEACTIVATED_ON] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setDeactivatedOn()
 
     /**
      * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
@@ -865,26 +924,29 @@ abstract class Curator implements ActiveRecordInterface
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(CuratorTableMap::COL_CURATOR_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'CURATOR_ID';
+            $modifiedColumns[':p' . $index++]  = '`CURATOR_ID`';
         }
         if ($this->isColumnModified(CuratorTableMap::COL_CANDIDATE_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'CANDIDATE_ID';
+            $modifiedColumns[':p' . $index++]  = '`CANDIDATE_ID`';
         }
         if ($this->isColumnModified(CuratorTableMap::COL_PROFILE_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'PROFILE_ID';
+            $modifiedColumns[':p' . $index++]  = '`PROFILE_ID`';
         }
         if ($this->isColumnModified(CuratorTableMap::COL_TOKEN)) {
-            $modifiedColumns[':p' . $index++]  = 'TOKEN';
+            $modifiedColumns[':p' . $index++]  = '`TOKEN`';
         }
         if ($this->isColumnModified(CuratorTableMap::COL_CREATED_ON)) {
-            $modifiedColumns[':p' . $index++]  = 'CREATED_ON';
+            $modifiedColumns[':p' . $index++]  = '`CREATED_ON`';
         }
         if ($this->isColumnModified(CuratorTableMap::COL_ACTIVATED_ON)) {
-            $modifiedColumns[':p' . $index++]  = 'ACTIVATED_ON';
+            $modifiedColumns[':p' . $index++]  = '`ACTIVATED_ON`';
+        }
+        if ($this->isColumnModified(CuratorTableMap::COL_DEACTIVATED_ON)) {
+            $modifiedColumns[':p' . $index++]  = '`DEACTIVATED_ON`';
         }
 
         $sql = sprintf(
-            'INSERT INTO curator (%s) VALUES (%s)',
+            'INSERT INTO `curator` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -893,23 +955,26 @@ abstract class Curator implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'CURATOR_ID':
+                    case '`CURATOR_ID`':
                         $stmt->bindValue($identifier, $this->curator_id, PDO::PARAM_INT);
                         break;
-                    case 'CANDIDATE_ID':
+                    case '`CANDIDATE_ID`':
                         $stmt->bindValue($identifier, $this->candidate_id, PDO::PARAM_INT);
                         break;
-                    case 'PROFILE_ID':
+                    case '`PROFILE_ID`':
                         $stmt->bindValue($identifier, $this->profile_id, PDO::PARAM_INT);
                         break;
-                    case 'TOKEN':
+                    case '`TOKEN`':
                         $stmt->bindValue($identifier, $this->token, PDO::PARAM_STR);
                         break;
-                    case 'CREATED_ON':
+                    case '`CREATED_ON`':
                         $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
-                    case 'ACTIVATED_ON':
+                    case '`ACTIVATED_ON`':
                         $stmt->bindValue($identifier, $this->activated_on ? $this->activated_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case '`DEACTIVATED_ON`':
+                        $stmt->bindValue($identifier, $this->deactivated_on ? $this->deactivated_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -991,6 +1056,9 @@ abstract class Curator implements ActiveRecordInterface
             case 5:
                 return $this->getActivatedOn();
                 break;
+            case 6:
+                return $this->getDeactivatedOn();
+                break;
             default:
                 return null;
                 break;
@@ -1014,10 +1082,11 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['Curator'][$this->getPrimaryKey()])) {
+
+        if (isset($alreadyDumpedObjects['Curator'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Curator'][$this->getPrimaryKey()] = true;
+        $alreadyDumpedObjects['Curator'][$this->hashCode()] = true;
         $keys = CuratorTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getCuratorId(),
@@ -1026,6 +1095,7 @@ abstract class Curator implements ActiveRecordInterface
             $keys[3] => $this->getToken(),
             $keys[4] => $this->getCreatedOn(),
             $keys[5] => $this->getActivatedOn(),
+            $keys[6] => $this->getDeactivatedOn(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1034,13 +1104,49 @@ abstract class Curator implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->aCandidate) {
-                $result['Candidate'] = $this->aCandidate->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'candidate';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'candidate';
+                        break;
+                    default:
+                        $key = 'Candidate';
+                }
+
+                $result[$key] = $this->aCandidate->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aProfile) {
-                $result['Profile'] = $this->aProfile->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'profile';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'profile';
+                        break;
+                    default:
+                        $key = 'Profile';
+                }
+
+                $result[$key] = $this->aProfile->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->collRecommendations) {
-                $result['Recommendations'] = $this->collRecommendations->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'recommendations';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'recommendations';
+                        break;
+                    default:
+                        $key = 'Recommendations';
+                }
+
+                $result[$key] = $this->collRecommendations->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1094,6 +1200,9 @@ abstract class Curator implements ActiveRecordInterface
             case 5:
                 $this->setActivatedOn($value);
                 break;
+            case 6:
+                $this->setDeactivatedOn($value);
+                break;
         } // switch()
 
         return $this;
@@ -1137,6 +1246,9 @@ abstract class Curator implements ActiveRecordInterface
         }
         if (array_key_exists($keys[5], $arr)) {
             $this->setActivatedOn($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setDeactivatedOn($arr[$keys[6]]);
         }
     }
 
@@ -1190,6 +1302,9 @@ abstract class Curator implements ActiveRecordInterface
         }
         if ($this->isColumnModified(CuratorTableMap::COL_ACTIVATED_ON)) {
             $criteria->add(CuratorTableMap::COL_ACTIVATED_ON, $this->activated_on);
+        }
+        if ($this->isColumnModified(CuratorTableMap::COL_DEACTIVATED_ON)) {
+            $criteria->add(CuratorTableMap::COL_DEACTIVATED_ON, $this->deactivated_on);
         }
 
         return $criteria;
@@ -1282,6 +1397,7 @@ abstract class Curator implements ActiveRecordInterface
         $copyObj->setToken($this->getToken());
         $copyObj->setCreatedOn($this->getCreatedOn());
         $copyObj->setActivatedOn($this->getActivatedOn());
+        $copyObj->setDeactivatedOn($this->getDeactivatedOn());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1679,6 +1795,7 @@ abstract class Curator implements ActiveRecordInterface
         $this->token = null;
         $this->created_on = null;
         $this->activated_on = null;
+        $this->deactivated_on = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
