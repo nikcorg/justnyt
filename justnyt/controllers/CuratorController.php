@@ -35,12 +35,12 @@ class CuratorController extends \glue\Controller
         }
 
         $this->response->setContent(
-            \glue\ui\View::quickRender(
-                "layout", array(
-                    "title" => "Olet jonossa",
-                    "content" => \glue\ui\View::quickRender("curator/volunteer")
+            \justnyt\views\JustNytLayout::quickRender(
+                "curator/volunteer",
+                array(
+                    "title" => "Olet jonossa"
+                    )
                 )
-            )
         );
     }
 
@@ -59,18 +59,13 @@ class CuratorController extends \glue\Controller
         }
 
         $this->response->setContent(
-            \glue\ui\View::quickRender(
-                "layout",
+            \justnyt\views\JustNytLayout::quickRender(
+                "curator/activate",
                 array(
                     "title" => "Aktivoi tilisi",
-                    "content" => \glue\ui\View::quickRender(
-                        "curator/activate",
-                        array(
-                            "token" => $token
-                        )
+                    "token" => $token
                     )
                 )
-            )
         );
     }
 
@@ -120,21 +115,16 @@ class CuratorController extends \glue\Controller
         }
 
         $this->response->setContent(
-            \glue\ui\View::quickRender(
-                "layout",
+            \justnyt\views\JustNytLayout::quickRender(
+                "curator/create-token",
                 array(
                     "title" => "Kutsu seuraava kuraattori",
-                    "content" => \glue\ui\View::quickRender(
-                        "curator/create-token",
-                        array(
-                            "token" => $token,
-                            "mailSent" => $mailSent,
-                            "activationUrl" => $activationUrl,
-                            "volunteers" => ! is_null($volunteer)
-                        )
+                    "token" => $token,
+                    "mailSent" => $mailSent,
+                    "activationUrl" => $activationUrl,
+                    "volunteers" => ! is_null($volunteer)
                     )
                 )
-            )
         );
     }
 
@@ -160,19 +150,16 @@ class CuratorController extends \glue\Controller
         }
 
         $this->response->setContent(
-            \glue\ui\View::quickRender(
-                "layout", array(
+            \justnyt\views\JustNytLayout::quickRender(
+                "curator/profile",
+                array(
                     "title" => "Muokkaa profiiliasi",
-                    "content" => \glue\ui\View::quickRender(
-                        "curator/profile", array(
-                            "token" => $token,
-                            "alias" => $profile->getAlias(),
-                            "homepage" => $profile->getHomepage(),
-                            "description" => $profile->getDescription()
-                            )
-                        )
+                    "token" => $token,
+                    "alias" => $profile->getAlias(),
+                    "homepage" => $profile->getHomepage(),
+                    "description" => $profile->getDescription()
+                    )
                 )
-            )
         );
     }
 
@@ -184,17 +171,14 @@ class CuratorController extends \glue\Controller
         }
 
         $this->response->setContent(
-            \glue\ui\View::quickRender(
-                "layout", array(
-                    "content" => \glue\ui\View::quickRender(
-                        "curator/home", array(
-                            "token" => $token,
-                            "host" => $_SERVER["HTTP_HOST"]
-                            )
-                        ),
-                    "title" => "Tervetuloa kuraattorikaudellesi"
+            \justnyt\views\JustNytLayout::quickRender(
+                "curator/home",
+                array(
+                    "title" => "Tervetuloa kuraattorikaudellesi",
+                    "token" => $token,
+                    "host" => $_SERVER["HTTP_HOST"]
+                    )
                 )
-            )
         );
     }
 }
