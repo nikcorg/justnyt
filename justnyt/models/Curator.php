@@ -12,6 +12,12 @@ class Curator extends BaseCurator
         return $this->save();
     }
 
+    public function deactivate() {
+        $this->setDeactivatedOn(time());
+
+        return $this->save();
+    }
+
     public function generateToken($tokenlen = 5) {
         $candidates = 5;
         $tokens = array();

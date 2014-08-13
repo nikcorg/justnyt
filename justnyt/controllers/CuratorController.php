@@ -54,7 +54,18 @@ class CuratorController extends \glue\Controller
         }
 
         if ($this->request->isPost()) {
-            $curator->activate();
+            $currentCurator = \justnyt\models\CuratorQuery::create("cr")
+                ->where("cr.ActivatedOn IS NOT NULL")
+                ->orderByActivatedOn("DESC")
+                ->findOne();
+
+            try {
+                $curator->activate();
+                $currentCurator->deactivate();
+            } catch (\Exception $e) {
+                throw new \glue\exceptions\http\E500Exception("Error activating curator", 0, $e);
+            }
+
             throw new \glue\exceptions\http\E303Exception("/kuraattori/$token/tervetuloa");
         }
 
