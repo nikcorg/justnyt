@@ -7,6 +7,7 @@ CREATE TABLE `profile` (
     `profile_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `alias` VARCHAR (80) NOT NULL,
     `homepage` VARCHAR (255),
+    `email` VARCHAR (255),
     `image` VARCHAR (40),
     `description` TEXT,
 
@@ -32,6 +33,7 @@ CREATE TABLE `curator` (
     `token` VARCHAR (32) NOT NULL,
     `created_on` DATETIME,
     `activated_on` DATETIME,
+    `deactivated_on` DATETIME,
 
     PRIMARY KEY (`curator_id`),
 
