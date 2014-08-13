@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<config>
+    <propel>
+        <database>
+            <connections>
+                <connection id="justnyt">
+                    <adapter>mysql</adapter>
+                    <classname>Propel\Runtime\Connection\ConnectionWrapper</classname>
+                    <dsn> mysql:host=localhost;dbname=justnyt</dsn>
+                    <user>justnyt</user>
+                    <password>justnyt</password>
+                </connection>
+            </connections>
+        </database>
+        <runtime>
+            <defaultConnection>justnyt</defaultConnection>
+            <connection>justnyt</connection>
+        </runtime>
+        <generator>
+            <defaultConnection>justnyt</defaultConnection>
+            <connection>justnyt</connection>
+        </generator>
+    </propel>
+</config>
