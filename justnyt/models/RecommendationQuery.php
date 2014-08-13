@@ -17,5 +17,20 @@ use justnyt\models\Base\RecommendationQuery as BaseRecommendationQuery;
  */
 class RecommendationQuery extends BaseRecommendationQuery
 {
+    public function upcomingApproved() {
+        $modelAlias = $this->getModelAlias();
+
+        return $this->where($modelAlias . ".ApprovedOn IS NOT NULL")
+            ->where($modelAlias . ".ApprovedOn > ?", new \DateTime())
+            ->orderByApprovedOn("ASC");
+    }
+
+    public function latestApproved() {
+        $modelAlias = $this->getModelAlias();
+
+        return $this->where($modelAlias . ".ApprovedOn IS NOT NULL")
+            ->where($modelAlias . ".ApprovedOn <= ?", new \DateTime())
+            ->orderByApprovedOn("DESC");
+    }
 
 } // RecommendationQuery

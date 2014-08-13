@@ -13,6 +13,7 @@ class RedirectController extends \glue\Controller
         $newestRecommendation = \justnyt\models\RecommendationQuery::create("r")
             ->orderByCreatedOn(\Propel\Runtime\ActiveQuery\Criteria::DESC)
             ->where("r.ApprovedOn IS NOT NULL")
+            ->where("r.ApprovedOn <= ?", new \DateTime())
             ->findOne();
 
         if (! $newestRecommendation) {

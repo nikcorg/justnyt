@@ -65,6 +65,7 @@ class PagesController extends \glue\Controller
     public function history() {
         $recommendations = \justnyt\models\RecommendationQuery::create("r")
             ->where("r.ApprovedOn IS NOT NULL")
+            ->where("r.ApprovedOn <= ?", new \DateTime())
             ->orderByApprovedOn("DESC")
             ->find();
 
