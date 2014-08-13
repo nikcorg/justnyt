@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config>
+  <propel>
+    <datasources default="justnyt">
+      <datasource id="justnyt">
+        <adapter>mysql</adapter>
+        <connection>
+          <dsn>mysql:host=localhost;dbname=justnyt</dsn>
+          <user>justnyt</user>
+          <password>justnyt</password>
+          <options>
+            <option id="ATTR_PERSISTENT">false</option>
+          </options>
+          <settings>
+            <setting id="charset">utf8</setting>
+          </settings>
+        </connection>
+      </datasource>
+    </datasources>
+  </propel>
+</config>
