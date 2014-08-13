@@ -58,6 +58,15 @@ class RecommendationController extends \glue\Controller
             throw new \glue\exceptions\http\E400Exception("Empty URL");
         }
 
+        $check = \justnyt\models\RecommendationQuery::create("r")
+            ->where("r.ApprovedOn IS NOT NULL")
+            ->where("r.Url = ?", $url)
+            ->findOne();
+
+        if (! is_null($check)) {
+            // TODO: display error message here
+        }
+
         try {
             $prepare = new \justnyt\models\Recommendation();
             $prepare->setCurator($curator);
