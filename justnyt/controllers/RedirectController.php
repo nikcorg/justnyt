@@ -23,8 +23,8 @@ class RedirectController extends \glue\Controller
 
     public function hashLookup($hash) {
         $recommendation = \justnyt\models\RecommendationQuery::create("r")
+            ->approved()
             ->filterByShortlink($hash)
-            ->where("r.ApprovedOn IS NOT NULL")
             ->findOne();
 
         if (is_null($recommendation)) {

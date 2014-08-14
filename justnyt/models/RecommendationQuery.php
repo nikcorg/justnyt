@@ -25,11 +25,17 @@ class RecommendationQuery extends BaseRecommendationQuery
             ->orderByApprovedOn("ASC");
     }
 
-    public function latestApproved() {
+    public function approved() {
         $modelAlias = $this->getModelAlias();
 
         return $this->where($modelAlias . ".ApprovedOn IS NOT NULL")
-            ->where($modelAlias . ".ApprovedOn <= ?", new \DateTime())
+            ->where($modelAlias . ".ApprovedOn <= ?", new \DateTime());
+    }
+
+    public function latestApproved() {
+        $modelAlias = $this->getModelAlias();
+
+        return $this->approved()
             ->orderByApprovedOn("DESC");
     }
 
