@@ -18,6 +18,8 @@
 
 <?php if (is_null($profiles)): ?>
 
+<p><?= $sessionBegin->format("j.n.Y H:i") ?>&ndash;<?= is_null($sessionEnd) ? "" : $sessionEnd->format("j.n.Y H:i") ?></p>
+
 <ol>
 <?php foreach ($recommendations as $recommendation): ?>
     <li><a href="/s/<?= $recommendation->getShortlink() ?>"><?= $recommendation->getTitle() ?></a></li>

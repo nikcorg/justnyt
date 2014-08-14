@@ -42,6 +42,8 @@ class ProfileController extends \glue\Controller
                 "profile/profile",
                 array(
                     "title" => $profile->getAlias(),
+                    "sessionBegin" => $curator->getActivatedOn(),
+                    "sessionEnd" => $curator->getDeactivatedOn(),
                     "profile" => $profile,
                     "recommendations" => $recommendations,
                     "profiles" => $profiles
