@@ -107,6 +107,13 @@ abstract class Recommendation implements ActiveRecordInterface
     protected $shortlink;
 
     /**
+     * The value for the visits field.
+     * Note: this column has a database default value of: 0
+     * @var        int
+     */
+    protected $visits;
+
+    /**
      * The value for the url field.
      * @var        string
      */
@@ -140,6 +147,7 @@ abstract class Recommendation implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->graphic_content = false;
+        $this->visits = 0;
     }
 
     /**
@@ -472,6 +480,16 @@ abstract class Recommendation implements ActiveRecordInterface
     }
 
     /**
+     * Get the [visits] column value.
+     *
+     * @return int
+     */
+    public function getVisits()
+    {
+        return $this->visits;
+    }
+
+    /**
      * Get the [url] column value.
      *
      * @return string
@@ -502,6 +520,10 @@ abstract class Recommendation implements ActiveRecordInterface
     public function hasOnlyDefaultValues()
     {
             if ($this->graphic_content !== false) {
+                return false;
+            }
+
+            if ($this->visits !== 0) {
                 return false;
             }
 
@@ -561,10 +583,13 @@ abstract class Recommendation implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : RecommendationTableMap::translateFieldName('Shortlink', TableMap::TYPE_PHPNAME, $indexType)];
             $this->shortlink = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : RecommendationTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : RecommendationTableMap::translateFieldName('Visits', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->visits = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : RecommendationTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
             $this->url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : RecommendationTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : RecommendationTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
             $this->title = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -574,7 +599,7 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 9; // 9 = RecommendationTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = RecommendationTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Recommendation'), 0, $e);
@@ -752,6 +777,26 @@ abstract class Recommendation implements ActiveRecordInterface
 
         return $this;
     } // setShortlink()
+
+    /**
+     * Set the value of [visits] column.
+     *
+     * @param  int $v new value
+     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
+     */
+    public function setVisits($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->visits !== $v) {
+            $this->visits = $v;
+            $this->modifiedColumns[RecommendationTableMap::COL_VISITS] = true;
+        }
+
+        return $this;
+    } // setVisits()
 
     /**
      * Set the value of [url] column.
@@ -1000,6 +1045,9 @@ abstract class Recommendation implements ActiveRecordInterface
         if ($this->isColumnModified(RecommendationTableMap::COL_SHORTLINK)) {
             $modifiedColumns[':p' . $index++]  = '`SHORTLINK`';
         }
+        if ($this->isColumnModified(RecommendationTableMap::COL_VISITS)) {
+            $modifiedColumns[':p' . $index++]  = '`VISITS`';
+        }
         if ($this->isColumnModified(RecommendationTableMap::COL_URL)) {
             $modifiedColumns[':p' . $index++]  = '`URL`';
         }
@@ -1037,6 +1085,9 @@ abstract class Recommendation implements ActiveRecordInterface
                         break;
                     case '`SHORTLINK`':
                         $stmt->bindValue($identifier, $this->shortlink, PDO::PARAM_STR);
+                        break;
+                    case '`VISITS`':
+                        $stmt->bindValue($identifier, $this->visits, PDO::PARAM_INT);
                         break;
                     case '`URL`':
                         $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
@@ -1128,9 +1179,12 @@ abstract class Recommendation implements ActiveRecordInterface
                 return $this->getShortlink();
                 break;
             case 7:
-                return $this->getUrl();
+                return $this->getVisits();
                 break;
             case 8:
+                return $this->getUrl();
+                break;
+            case 9:
                 return $this->getTitle();
                 break;
             default:
@@ -1170,8 +1224,9 @@ abstract class Recommendation implements ActiveRecordInterface
             $keys[4] => $this->getApprovedOn(),
             $keys[5] => $this->getGraphicContent(),
             $keys[6] => $this->getShortlink(),
-            $keys[7] => $this->getUrl(),
-            $keys[8] => $this->getTitle(),
+            $keys[7] => $this->getVisits(),
+            $keys[8] => $this->getUrl(),
+            $keys[9] => $this->getTitle(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1250,9 +1305,12 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->setShortlink($value);
                 break;
             case 7:
-                $this->setUrl($value);
+                $this->setVisits($value);
                 break;
             case 8:
+                $this->setUrl($value);
+                break;
+            case 9:
                 $this->setTitle($value);
                 break;
         } // switch()
@@ -1303,10 +1361,13 @@ abstract class Recommendation implements ActiveRecordInterface
             $this->setShortlink($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setUrl($arr[$keys[7]]);
+            $this->setVisits($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setTitle($arr[$keys[8]]);
+            $this->setUrl($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setTitle($arr[$keys[9]]);
         }
     }
 
@@ -1363,6 +1424,9 @@ abstract class Recommendation implements ActiveRecordInterface
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_SHORTLINK)) {
             $criteria->add(RecommendationTableMap::COL_SHORTLINK, $this->shortlink);
+        }
+        if ($this->isColumnModified(RecommendationTableMap::COL_VISITS)) {
+            $criteria->add(RecommendationTableMap::COL_VISITS, $this->visits);
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_URL)) {
             $criteria->add(RecommendationTableMap::COL_URL, $this->url);
@@ -1462,6 +1526,7 @@ abstract class Recommendation implements ActiveRecordInterface
         $copyObj->setApprovedOn($this->getApprovedOn());
         $copyObj->setGraphicContent($this->getGraphicContent());
         $copyObj->setShortlink($this->getShortlink());
+        $copyObj->setVisits($this->getVisits());
         $copyObj->setUrl($this->getUrl());
         $copyObj->setTitle($this->getTitle());
         if ($makeNew) {
@@ -1560,6 +1625,7 @@ abstract class Recommendation implements ActiveRecordInterface
         $this->approved_on = null;
         $this->graphic_content = null;
         $this->shortlink = null;
+        $this->visits = null;
         $this->url = null;
         $this->title = null;
         $this->alreadyInSave = false;

@@ -27,6 +27,7 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendationQuery orderByApprovedOn($order = Criteria::ASC) Order by the approved_on column
  * @method     ChildRecommendationQuery orderByGraphicContent($order = Criteria::ASC) Order by the graphic_content column
  * @method     ChildRecommendationQuery orderByShortlink($order = Criteria::ASC) Order by the shortlink column
+ * @method     ChildRecommendationQuery orderByVisits($order = Criteria::ASC) Order by the visits column
  * @method     ChildRecommendationQuery orderByUrl($order = Criteria::ASC) Order by the url column
  * @method     ChildRecommendationQuery orderByTitle($order = Criteria::ASC) Order by the title column
  *
@@ -37,6 +38,7 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendationQuery groupByApprovedOn() Group by the approved_on column
  * @method     ChildRecommendationQuery groupByGraphicContent() Group by the graphic_content column
  * @method     ChildRecommendationQuery groupByShortlink() Group by the shortlink column
+ * @method     ChildRecommendationQuery groupByVisits() Group by the visits column
  * @method     ChildRecommendationQuery groupByUrl() Group by the url column
  * @method     ChildRecommendationQuery groupByTitle() Group by the title column
  *
@@ -60,6 +62,7 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendation findOneByApprovedOn(string $approved_on) Return the first ChildRecommendation filtered by the approved_on column
  * @method     ChildRecommendation findOneByGraphicContent(boolean $graphic_content) Return the first ChildRecommendation filtered by the graphic_content column
  * @method     ChildRecommendation findOneByShortlink(string $shortlink) Return the first ChildRecommendation filtered by the shortlink column
+ * @method     ChildRecommendation findOneByVisits(int $visits) Return the first ChildRecommendation filtered by the visits column
  * @method     ChildRecommendation findOneByUrl(string $url) Return the first ChildRecommendation filtered by the url column
  * @method     ChildRecommendation findOneByTitle(string $title) Return the first ChildRecommendation filtered by the title column
  *
@@ -71,6 +74,7 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendation[]|ObjectCollection findByApprovedOn(string $approved_on) Return ChildRecommendation objects filtered by the approved_on column
  * @method     ChildRecommendation[]|ObjectCollection findByGraphicContent(boolean $graphic_content) Return ChildRecommendation objects filtered by the graphic_content column
  * @method     ChildRecommendation[]|ObjectCollection findByShortlink(string $shortlink) Return ChildRecommendation objects filtered by the shortlink column
+ * @method     ChildRecommendation[]|ObjectCollection findByVisits(int $visits) Return ChildRecommendation objects filtered by the visits column
  * @method     ChildRecommendation[]|ObjectCollection findByUrl(string $url) Return ChildRecommendation objects filtered by the url column
  * @method     ChildRecommendation[]|ObjectCollection findByTitle(string $title) Return ChildRecommendation objects filtered by the title column
  * @method     ChildRecommendation[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -162,7 +166,7 @@ abstract class RecommendationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT `RECOMMENDATION_ID`, `CURATOR_ID`, `CREATED_ON`, `SCRAPED_ON`, `APPROVED_ON`, `GRAPHIC_CONTENT`, `SHORTLINK`, `URL`, `TITLE` FROM `recommendation` WHERE `RECOMMENDATION_ID` = :p0';
+        $sql = 'SELECT `RECOMMENDATION_ID`, `CURATOR_ID`, `CREATED_ON`, `SCRAPED_ON`, `APPROVED_ON`, `GRAPHIC_CONTENT`, `SHORTLINK`, `VISITS`, `URL`, `TITLE` FROM `recommendation` WHERE `RECOMMENDATION_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -519,6 +523,47 @@ abstract class RecommendationQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(RecommendationTableMap::COL_SHORTLINK, $shortlink, $comparison);
+    }
+
+    /**
+     * Filter the query on the visits column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByVisits(1234); // WHERE visits = 1234
+     * $query->filterByVisits(array(12, 34)); // WHERE visits IN (12, 34)
+     * $query->filterByVisits(array('min' => 12)); // WHERE visits > 12
+     * </code>
+     *
+     * @param     mixed $visits The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildRecommendationQuery The current query, for fluid interface
+     */
+    public function filterByVisits($visits = null, $comparison = null)
+    {
+        if (is_array($visits)) {
+            $useMinMax = false;
+            if (isset($visits['min'])) {
+                $this->addUsingAlias(RecommendationTableMap::COL_VISITS, $visits['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($visits['max'])) {
+                $this->addUsingAlias(RecommendationTableMap::COL_VISITS, $visits['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecommendationTableMap::COL_VISITS, $visits, $comparison);
     }
 
     /**
