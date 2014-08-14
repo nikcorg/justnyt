@@ -152,6 +152,7 @@ class CuratorController extends \glue\Controller
                 $profile->setAlias($this->request->POST->alias);
                 $profile->setHomepage($this->request->POST->homepage);
                 $profile->setDescription($this->request->POST->description);
+                $profile->setEmail($this->request->POST->email);
 
                 $curator->setProfile($profile);
                 $curator->save();
@@ -168,7 +169,8 @@ class CuratorController extends \glue\Controller
                     "curator" => $curator,
                     "alias" => $profile->getAlias(),
                     "homepage" => $profile->getHomepage(),
-                    "description" => $profile->getDescription()
+                    "description" => $profile->getDescription(),
+                    "email" => $profile->getEmail()
                     )
                 )
         );

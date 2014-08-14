@@ -25,6 +25,7 @@ Router::addRoute(
     ->addAction("kuraattoriksi", null, RequestMethods::GET, "volunteer")
     ->addAction("kuraattorit", null, RequestMethods::GET, "curators")
     ->addAction("historiaa", null, RequestMethods::GET, "history")
+    ->addAction("email-info", null, RequestMethods::GET, "emailInfo")
 );
 
 Router::addRoute(

@@ -9,6 +9,9 @@
     <p><label><span>Nettiosoitteesi</span>
         <input type="url" name="homepage" maxlength="255" value="<?= $homepage ?>" placeholder="Blogisi, Twitterisi tms"></label></p>
 
+    <p><label><span>Sähköpostiosoitteesi</span>
+        <input type="email" name="email" maxlength="255" value="<?= $email ?>" placeholder="sinun.oma@osoitteesi.fi"></label> (<a href="/email-info" target="_blank">Mihin osoitettani käytetään?</a>)</p>
+
     <p><label><span>Kuvausteksti</span>
         <textarea name="description" rows="8"><?= $description ?></textarea></label>
 
