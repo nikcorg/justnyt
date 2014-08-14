@@ -5,27 +5,17 @@
 >
 <channel>
     <title>JustNyt!</title>
-    <link>http://justnyt.fi</link>
+    <link>http://<?= $host ?></link>
     <atom:link href="http://<?= $host ?>/feed/rss" rel="self" type="application/rss+xml" />
     <description>Parhautta - Just Nyt!</description>
     <?php foreach ($items as $item): ?>
         <item>
-            <guid isPermaLink="true">http://justnyt.fi/s/<?= $item->getShortLink() ?></guid>
+            <guid isPermaLink="true">http://<?= $host ?>/s/<?= $item->getShortLink() ?></guid>
             <pubDate><?= $item->getApprovedOn()->setTimezone(new DateTimeZone("UTC"))->format("D, d M Y H:i:s O") ?></pubDate>
             <title><?= $item->getTitle() ?></title>
-            <link><?= $item->getUrl() ?></link>
-            <description>
-            <![CDATA[
-                <?= $item->getTitle() . PHP_EOL ?>
-                <?= $item->getUrl() . PHP_EOL ?>
-            ]]>
-            </description>
-            <content:encoded>
-            <![CDATA[
-                <?= $item->getTitle() . PHP_EOL ?>
-                <?= $item->getUrl() . PHP_EOL ?>
-            ]]>
-            </content:encoded>
+            <link>http://<?= $host ?>/s/<?= $item->getShortLink() ?></link>
+            <description><![CDATA[<?= $item->getTitle() ?> http://<?= $host ?>/s/<?= $item->getShortLink() ?>]]></description>
+            <content:encoded><![CDATA[<?= $item->getTitle() ?> http://<?= $host ?>/s/<?= $item->getShortLink() ?>]]></content:encoded>
         </item>
     <?php endforeach; ?>
 </channel>
