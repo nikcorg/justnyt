@@ -63,6 +63,7 @@ CREATE TABLE `recommendation` (
     `approved_on` DATETIME,
     `graphic_content` TINYINT(1) DEFAULT 0,
     `shortlink` VARCHAR (32),
+    `visits` INT UNSIGNED DEFAULT 0,
     `url` VARCHAR (1024),
     `title` VARCHAR (512),
 
