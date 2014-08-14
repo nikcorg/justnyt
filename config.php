@@ -30,6 +30,25 @@ Router::addRoute(
 
 Router::addRoute(
     Route::factory(
+        "/profiilit",
+        "\\justnyt\\controllers\\ProfileController",
+        RequestMethods::NONE,
+        null
+        )
+    ->addAction(
+        ":cid-:pid/:alias",
+        array(
+            "cid" => RouteVariableTypes::NUMBER,
+            "pid" => RouteVariableTypes::NUMBER,
+            "alias" => RouteVariableTypes::SLUG
+            ),
+        RequestMethods::GET,
+        "profile"
+        )
+);
+
+Router::addRoute(
+    Route::factory(
         "/feed",
         "\\justnyt\\controllers\\FeedController",
         RequestMethods::GET,
