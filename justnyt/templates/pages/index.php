@@ -1,11 +1,13 @@
-<p>JustNyt.fi auttaa sinua löytämään mielenkiintoista luettavaa.</p>
+<p>JustNyt.fi haluaa auttaa sinua löytämään mielenkiintoista luettavaa.</p>
 
 <h2>Miten se toimii?</h2>
 
-<p>Tarvitset vain yhden kirjanmerkin selaimeesi: <a href="/parhautta">justnyt.fi/parhautta</a>. Se ohjaa sinut aina viimeisimpään suositukseen. Se, kuinka usein sisältö päivittyy, riippuu täysin kuraattorista.</p>
+<p>Just Nyt on vain välityspalvelu. Minne, sen päättää kuraattori. Kuraattori on blogien lukija, joka mielenkiintoiseen juttuun törmätessään suosittelee sitä muille Just Nytin avulla.</p>
 
-<p>Suositeltujen historiaa voit selailla <a href="/historiaa">Historia-sivulta</a>. Aikaisemmat kuraattorit näet <a href="/kuraattorit">Kuraattorit-sivulta</a>.
+<p>Sinulle kaikki on hyvin helppoa. Tarvitset vain yhden kirjanmerkin selaimeesi: <a href="/parhautta">justnyt.fi/parhautta</a>. Se ohjaa sinut aina suoraan viimeisimpään suositukseen. Se, kuinka usein sisältö päivittyy, riippuu  kuraattorista.</p>
 
-<p>Mikäli mielesi tekee kuraattorinhattua, asetu <a href="/kuraattoriksi">jonoon vapaaehtoiseksi</a>.</p>
+<p>Suositeltujen historiaa voit selailla <a href="/historiaa">Arkisto</a>-sivulta. Kuraattorien historian näet <a href="/kuraattorit">Kuraattorit</a>-sivulta.
 
-<p>Seuraa suosituksia Twitterissä: <a href="http://twitter.com/justnytfi">@JustNytFi</a></p>
+<p>Mikäli mielesi tekee kuraattorinhattua, ilmoittaudu <a href="/kuraattoriksi">vapaaehtoiseksi</a>.</p>
+
+<p>Voit myös seurata suosituksia <a href="http://twitter.com/justnytfi">Twitterissä</a></p>
