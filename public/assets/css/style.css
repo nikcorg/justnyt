@@ -99,6 +99,15 @@ main, nav, footer, header {
     margin-bottom: 1.5rem;
 }
 
+/* Site Alignment */
+
+.site-block {
+    max-width: 800px;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* List styles */
 
 main ol {
