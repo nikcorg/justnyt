@@ -78,4 +78,15 @@ class PagesController extends \glue\Controller
                 )
         );
     }
+
+    public function emailInfo() {
+        $this->respond(
+            \justnyt\views\JustNytLayout::quickRender(
+                "pages/email-info",
+                array(
+                    "title" => "Mihin sähköpostiosoitettasi tarvitaan"
+                    )
+                )
+            );
+    }
 }
