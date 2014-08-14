@@ -1,4 +1,4 @@
-<footer>
+<footer class="site-block">
     <nav class="centered">
         <ul>
             <li><a href="/parhautta" rel="nofollow">Parhautta</a></li>

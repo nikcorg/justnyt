@@ -20,7 +20,7 @@
     <script src="/assets/js/global.js"></script>
 </head>
 <body>
-    <div class="wrapper">
+    <div class="wrapper site-block">
         <?php $this->snippet("snippets/header") ?>
 
         <main>
