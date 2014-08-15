@@ -3,12 +3,6 @@
 <ol reversed class="collapsed">
 <?php foreach ($curators as $curator): ?>
     <?php $profile = $curator->getProfile(); ?>
-    <li>
-    <?php if (trim($profile->getHomepage()) != ""): ?>
-        <a href="<?= $profile->getHomepage() ?>" rel="nofollow"><?= $profile->getAlias() ?></a></li>
-    <?php else: ?>
-        <?= $profile->getAlias() ?>
-    <?php endif; ?>
-
+    <li><a href="/profiilit/<?= $curator->getCuratorId() ?>-<?= $profile->getProfileId() ?>/<?= \glue\utils\StringInflector::factory($profile->getAlias())->slug() ?>" rel="nofollow"><?= $profile->getAlias() ?></a></li>
 <?php endforeach; ?>
 </ol>
