@@ -30,6 +30,14 @@ Router::addRoute(
 
 Router::addRoute(
     Route::factory(
+        "/profiles",
+        "\\justnyt\\controllers\\ProfileController",
+        RequestMethods::GET,
+        "lookup"
+        )
+);
+Router::addRoute(
+    Route::factory(
         "/profiilit",
         "\\justnyt\\controllers\\ProfileController",
         RequestMethods::NONE,
