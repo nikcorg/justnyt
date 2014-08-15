@@ -396,11 +396,11 @@ main nav .blurb {
     border-top: 2px double #f00;
     font-weight: bold;
 
-    -webkit-box-shadow: 10px 5px 5px 5px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 10px 5px 5px 5px rgba(0, 0, 0, 0.3);
-    -ms-box-shadow: 10px 5px 5px 5px rgba(0, 0, 0, 0.3);
-    -o-box-shadow: 10px 5px 5px 5px rgba(0, 0, 0, 0.3);
-    box-shadow: 10px 5px 5px 5px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 5px 0 10px 0 rgba(255, 255, 255, 0.4);
+    -moz-box-shadow: 5px 0 10px 0 rgba(255, 255, 255, 0.4);
+    -ms-box-shadow: 5px 0 10px 0 rgba(255, 255, 255, 0.4);
+    -o-box-shadow: 5px 0 10px 0 rgba(255, 255, 255, 0.4);
+    box-shadow: 5px 0 10px 0 rgba(255, 255, 255, 0.4);
 
     -webkit-transform: rotate(35deg);
     -moz-transform: rotate(35deg);
@@ -412,15 +412,15 @@ main nav .blurb {
 /* Profile */
 
 .mugshot {
-    background-color: #ddd;
+    background-color: #eee;
     padding: 1rem;
     border-radius: 1rem;
 
-    -webkit-box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
-    -ms-box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
-    -o-box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
+    -ms-box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
+    -o-box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
 }
 
 .mugshot > :last-child {
