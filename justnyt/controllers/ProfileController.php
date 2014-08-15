@@ -9,6 +9,7 @@ class ProfileController extends \glue\Controller
             ->joinProfile("pr")
             ->where("pr.Alias IS NOT NULL")
             ->where("pr.Alias != ''")
+            ->where("pr.ProfileId = ?", $profileId)
             ->where("cr.CuratorId = ?", $curatorId)
             ->findOne();
 
