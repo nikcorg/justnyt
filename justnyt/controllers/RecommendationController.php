@@ -84,7 +84,6 @@ class RecommendationController extends \glue\Controller
                     "curator" => $curator,
                     "dupCheck" => $dupCheck,
                     "candidateId" => $prepare->getRecommendationId(),
-                    "title" => "",
                     "url" => $url,
                     "upcoming" => $upcoming,
                     "currentTime" => new \DateTime(),
