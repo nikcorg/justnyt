@@ -170,7 +170,8 @@ class CuratorController extends \glue\Controller
                     "alias" => $profile->getAlias(),
                     "homepage" => $profile->getHomepage(),
                     "description" => $profile->getDescription(),
-                    "email" => $profile->getEmail()
+                    "email" => $profile->getEmail(),
+                    "scripts" => array("/assets/js/app.js")
                     )
                 )
         );
