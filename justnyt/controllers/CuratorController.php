@@ -148,19 +148,61 @@ class CuratorController extends \glue\Controller
         }
 
         if ($this->request->isPost()) {
-            /* TODO: */
-            /* if email is set, it needs to be checked it matches the alias or no other reserved alias */
-            /* if email is not set, alias needs to be verified it's not reserved */
-            try {
-                $profile->setAlias($this->request->POST->alias);
-                $profile->setHomepage($this->request->POST->homepage);
-                $profile->setDescription($this->request->POST->description);
-                $profile->setEmail($this->request->POST->email);
+            $alias = trim($this->request->POST->alias);
+            $email = trim($this->request->POST->email);
+            $homepage = trim($this->request->POST->homepage);
+            $description = trim(strip_tags($this->request->POST->description));
 
-                $curator->setProfile($profile);
-                $curator->save();
-            } catch (\Exception $e) {
-                throw new \glue\exceptions\http\E500Exception("Error saving profile", 0, $e);
+            $aliasIsSet = null != $alias;
+            $emailIsSet = null != $email;
+
+            $check = true;
+
+            // TODO: reduce number of queries, even though this is probably a rarely invoked action
+            if ($emailIsSet) {
+                /* if email is set, it needs to be checked it matches the alias or no other reserved alias */
+                $bothMatch = $aliasIsSet && count(\justnyt\models\ProfileQuery::create("pr")
+                    ->where("pr.Alias = ?", $alias)
+                    ->where("pr.Email = ?", $email)
+                    ->find()) == 1;
+                $aliasNotReserved = count(\justnyt\models\ProfileQuery::create("pr")
+                    ->where("pr.Alias = ?", $alias)
+                    ->where("pr.Email IS NOT NULL")
+                    ->find()) == 0;
+
+                $check = $bothMatch || $aliasNotReserved;
+            } else {
+                /* if email is not set, alias needs to be verified it's not reserved */
+                $aliasNotReserved = count(\justnyt\models\ProfileQuery::create("pr")
+                    ->where("pr.Alias = ?", $alias)
+                    ->where("pr.Email IS NOT NULL")
+                    ->find()) == 0;
+
+                $check = $aliasNotReserved;
+            }
+
+            if ($check) {
+                $emailExists = \justnyt\models\ProfileQuery::create("pr")
+                    ->where("pr.Email = ?", $email)
+                    ->findOne();
+
+                if (null != $emailExists) {
+                    $profile = $emailExists;
+                }
+
+                try {
+                    $profile->setAlias($this->request->POST->alias);
+                    $profile->setHomepage($this->request->POST->homepage);
+                    $profile->setDescription($this->request->POST->description);
+                    $profile->setEmail($this->request->POST->email);
+
+                    $curator->setProfile($profile);
+                    $curator->save();
+                } catch (\Exception $e) {
+                    throw new \glue\exceptions\http\E500Exception("Error saving profile", 0, $e);
+                }
+            } else {
+                // TODO: display an error message
             }
         }
 
