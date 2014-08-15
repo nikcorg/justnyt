@@ -148,6 +148,9 @@ class CuratorController extends \glue\Controller
         }
 
         if ($this->request->isPost()) {
+            /* TODO: */
+            /* if email is set, it needs to be checked it matches the alias or no other reserved alias */
+            /* if email is not set, alias needs to be verified it's not reserved */
             try {
                 $profile->setAlias($this->request->POST->alias);
                 $profile->setHomepage($this->request->POST->homepage);
