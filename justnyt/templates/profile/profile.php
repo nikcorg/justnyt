@@ -20,7 +20,7 @@
 
 <p><?= $sessionBegin->format("j.n.Y H:i") ?>&ndash;<?= is_null($sessionEnd) ? "" : $sessionEnd->format("j.n.Y H:i") ?></p>
 
-<ol>
+<ol reversed>
 <?php foreach ($recommendations as $recommendation): ?>
     <li><a href="/s/<?= $recommendation->getShortlink() ?>"><?= $recommendation->getTitle() ?></a></li>
 <?php endforeach; ?>
@@ -34,7 +34,7 @@
     $end = $profile->getCurators()[0]->getDeactivatedOn();
     ?>
     <p><?= $begin->format("j.n.Y H:i") ?>&ndash;<?= is_null($end) ? "" : $end->format("j.n.Y H:i") ?></p>
-    <ol>
+    <ol reversed>
     <?php foreach ($profile->getCurators()[0]->getRecommendations() as $recommendation): ?>
         <li><a href="/s/<?= $recommendation->getShortlink() ?>"><?= $recommendation->getTitle() ?></a></li>
     <?php endforeach; ?>
