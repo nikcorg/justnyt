@@ -7,14 +7,7 @@ var form = require("./form-tools")(document.querySelector("#profile-form"));
 
 var ERR_ALIAS_RESERVED = 1;
 var ERR_ALIAS_EMAIL_MISMATCH = 2;
-
-var alias = Bacon.fromEventTarget(form.findInput("alias"), "change").merge(
-        Bacon.fromEventTarget(form.findInput("alias"), "keyup")
-    );
-var email = Bacon.fromEventTarget(form.findInput("email"), "change").merge(
-        Bacon.fromEventTarget(form.findInput("email"), "keyup")
-    );
-// var formHasChanged = alias.merge(email).toProperty(false);
+var ERR_ALIAS_RESERVED_OR_EMAIL_MISMATCH = 3;
 
 function validAlias(alias) {
     return alias.length > 3 && alias;
@@ -32,15 +25,23 @@ function identity(val) {
     return val;
 }
 
-var alias = alias.
+var alias = Bacon.fromEventTarget(form.findInput("alias"), "change").
+    merge(
+        Bacon.fromEventTarget(form.findInput("alias"), "keyup")
+    ).
     map(".target").
     map(".value").
-    skipDuplicates();
+    skipDuplicates().
+    toProperty(form.findInput("alias").value);
 
-var email = email.
+var email = Bacon.fromEventTarget(form.findInput("email"), "change").
+    merge(
+        Bacon.fromEventTarget(form.findInput("email"), "keyup")
+    ).
     map(".target").
     map(".value").
-    skipDuplicates();
+    skipDuplicates().
+    toProperty(form.findInput("email").value);
 
 var aliasProfiles = alias.
     debounce(600).
@@ -76,14 +77,12 @@ var emailMatchesAlias = Bacon.combineTemplate({
             return profile.ProfileId === emailProfile.ProfileId;
         });
 
-        return !!val;
-    });
+        return val;
+    }).
+    map(toBool);
 
-alias.onValue(form.clearErrorMessages);
-email.onValue(form.clearErrorMessages);
-
-var aliasHasValue = alias.map(toBool);
-var emailHasValue = email.map(toBool);
+var aliasHasValue = alias.changes().map(toBool);
+var emailHasValue = email.changes().map(toBool);
 
 /*
     if alias has value and email is empty and alias is reserved: ERR_ALIAS_RESERVED
@@ -101,27 +100,38 @@ var aliasEmailMismatchErr = aliasHasValue.
         and(emailHasValue.toProperty(false)).
         and(emailMatchesAlias.not());
 
-aliasReservedErr.or(aliasEmailMismatchErr).changes().onValue(function (v) {
-    if (! v) {
-        form.clearErrorMessages();
-    }
-});
+// alias.onValue(form.clearErrorMessages);
+// email.onValue(form.clearErrorMessages);
 
-aliasReservedErr.onValue(function (v) {
-    debug("alias reserved err", v);
-    if (v) {
-        raiseFormError(ERR_ALIAS_RESERVED);
-    }
-});
+// aliasReservedErr.or(aliasEmailMismatchErr).changes().onValue(function (v) {
+//     if (! v) {
+//         form.clearErrorMessages();
+//     }
+// });
 
-aliasEmailMismatchErr.onValue(function (v) {
-    debug("alias/email mismatch err", v);
-    if (v) {
-        raiseFormError(ERR_ALIAS_EMAIL_MISMATCH);
-    }
-});
+// aliasReservedErr.onValue(function (v) {
+//     debug("alias reserved err", v);
+//     if (v) {
+//         raiseFormError(ERR_ALIAS_RESERVED);
+//     }
+// });
+
+// aliasEmailMismatchErr.onValue(function (v) {
+//     debug("alias/email mismatch err", v);
+//     if (v) {
+//         raiseFormError(ERR_ALIAS_EMAIL_MISMATCH);
+//     }
+// });
 
 emailMatchesAlias.not().onValue(function (v) {
+    if (v) {
+        debug("email/alias mismatch", v);
+        raiseFormError(ERR_ALIAS_RESERVED_OR_EMAIL_MISMATCH);
+    } else {
+        debug("email matches alias or alias is unreserved", v);
+        form.clearErrorMessages();
+    }
+
     form.node.querySelector("button").disabled = v;
 });
 
@@ -145,6 +155,10 @@ function raiseFormError(err) {
 
         case ERR_ALIAS_EMAIL_MISMATCH:
             form.flashErrorMessage("Antamasi sähköpostiosoite ei täsmää varattuun nimimerkkiin.");
+            break;
+
+        case ERR_ALIAS_RESERVED_OR_EMAIL_MISMATCH:
+            form.flashErrorMessage("Valitsemasi nimimerkki on varattu. Tarkista sähköpostiosoite.");
             break;
     }
 }
