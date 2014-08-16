@@ -9,11 +9,11 @@ var ERR_ALIAS_RESERVED = 1;
 var ERR_ALIAS_EMAIL_MISMATCH = 2;
 var ERR_ALIAS_RESERVED_OR_EMAIL_MISMATCH = 3;
 
-function validAlias(alias) {
+function isValidAlias(alias) {
     return alias.length > 0 && alias;
 }
 
-function validEmail(email) {
+function isValidEmail(email) {
     return /^[^@]+@([^.]+\.)+([a-z]{2,})$/.test(email);
 }
 
@@ -25,12 +25,15 @@ function identity(val) {
     return val;
 }
 
+function eventTargetValue(ev) {
+    return ev.target.value;
+}
+
 var alias = Bacon.fromEventTarget(form.findInput("alias"), "change").
     merge(
         Bacon.fromEventTarget(form.findInput("alias"), "keyup")
     ).
-    map(".target").
-    map(".value").
+    map(eventTargetValue).
     skipDuplicates().
     toProperty(form.findInput("alias").value);
 
@@ -38,25 +41,32 @@ var email = Bacon.fromEventTarget(form.findInput("email"), "change").
     merge(
         Bacon.fromEventTarget(form.findInput("email"), "keyup")
     ).
-    map(".target").
-    map(".value").
+    map(eventTargetValue).
     skipDuplicates().
     toProperty(form.findInput("email").value);
 
 var aliasProfiles = alias.
     debounce(600).
-    filter(validAlias).
+    filter(isValidAlias).
     flatMapLatest(funz.compose(Bacon.fromPromise.bind(Bacon), fetchProfilesByAlias)).
     toProperty(null);
 
 var emailProfile = email.
     debounce(600).
-    filter(validEmail).
+    filter(isValidEmail).
     flatMapLatest(funz.compose(Bacon.fromPromise.bind(Bacon), fetchProfileByEmail)).
     toProperty(null);
 
-var aliasIsReserved = aliasProfiles.filter(identity).flatMap(function (profiles) {
-        return profiles.some(function (profile) {
+var validEmail = email.map(isValidEmail).map(toBool).flatMap(function (v) {
+    return v ? emailProfile : null;
+});
+
+var validAlias = alias.map(isValidAlias).map(toBool).flatMap(function (v) {
+    return v ? aliasProfiles : null;
+});
+
+var aliasIsReserved = validAlias.flatMap(function (profiles) {
+        return Array.isArray(profiles) && profiles.some(function (profile) {
             return parseInt(profile.Reserved, 10) === 1;
         });
     }).
@@ -64,64 +74,23 @@ var aliasIsReserved = aliasProfiles.filter(identity).flatMap(function (profiles)
 
 var emailMatchesAlias = Bacon.combineTemplate({
         reserved: aliasIsReserved,
-        aliases: aliasProfiles,
-        email: emailProfile
+        aliases: validAlias,
+        email: validEmail
     }).
     changes().
+    debounce(600).
     map(function (props) {
         var reserved = props.reserved;
         var aliasProfiles = props.aliases;
         var emailProfile = props.email;
 
-        var val = !reserved || aliasProfiles && emailProfile && aliasProfiles.some(function (profile) {
+        var val = !reserved || (emailProfile && aliasProfiles && Array.isArray(aliasProfiles) && aliasProfiles.some(function (profile) {
             return profile.ProfileId === emailProfile.ProfileId;
-        });
+        }));
 
         return val;
     }).
     map(toBool);
-
-var aliasHasValue = alias.changes().map(toBool);
-var emailHasValue = email.changes().map(toBool);
-
-/*
-    if alias has value and email is empty and alias is reserved: ERR_ALIAS_RESERVED
-*/
-var aliasReservedErr = aliasHasValue.
-        toProperty(false).
-        and(emailHasValue.not().toProperty(true)).
-        and(aliasIsReserved);
-
-/*
-    if alias has value and email has value and not email matches alias: ERR_ALIAS_EMAIL_MISMATCH
- */
-var aliasEmailMismatchErr = aliasHasValue.
-        toProperty(false).
-        and(emailHasValue.toProperty(false)).
-        and(emailMatchesAlias.not());
-
-// alias.onValue(form.clearErrorMessages);
-// email.onValue(form.clearErrorMessages);
-
-// aliasReservedErr.or(aliasEmailMismatchErr).changes().onValue(function (v) {
-//     if (! v) {
-//         form.clearErrorMessages();
-//     }
-// });
-
-// aliasReservedErr.onValue(function (v) {
-//     debug("alias reserved err", v);
-//     if (v) {
-//         raiseFormError(ERR_ALIAS_RESERVED);
-//     }
-// });
-
-// aliasEmailMismatchErr.onValue(function (v) {
-//     debug("alias/email mismatch err", v);
-//     if (v) {
-//         raiseFormError(ERR_ALIAS_EMAIL_MISMATCH);
-//     }
-// });
 
 emailMatchesAlias.not().onValue(function (v) {
     if (v) {
