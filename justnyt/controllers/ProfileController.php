@@ -46,7 +46,7 @@ class ProfileController extends \glue\Controller
                     ->endUse()
                 ->where("pr.Email = ?", $profile->getEmail())
                 ->orderBy("cr.ActivatedOn", "DESC")
-                ->orderBy("re.ApprovedOn", "ASC")
+                ->orderBy("re.ApprovedOn", "DESC")
                 ->find();
         } else {
             $profiles = null;
