@@ -10,7 +10,7 @@ var ERR_ALIAS_EMAIL_MISMATCH = 2;
 var ERR_ALIAS_RESERVED_OR_EMAIL_MISMATCH = 3;
 
 function validAlias(alias) {
-    return alias.length > 3 && alias;
+    return alias.length > 0 && alias;
 }
 
 function validEmail(email) {
