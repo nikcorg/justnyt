@@ -141,6 +141,10 @@ ol.collapsed {
     float: right;
 }
 
+.notify {
+    color: lightcoral;
+}
+
 /* Columns helpers */
 
 footer,

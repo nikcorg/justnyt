@@ -3,6 +3,22 @@ namespace justnyt\controllers;
 
 class ProfileController extends \glue\Controller
 {
+    public function lookup() {
+        $profiles = \justnyt\models\ProfileQuery::create()
+            ->select(array("ProfileId", "Alias", "Homepage", "Description"))
+            ->withColumn("Email IS NOT NULL", "Reserved");
+
+        if (null != $this->request->GET->email) {
+            $profiles->filterByEmail($this->request->GET->email);
+        }
+
+        if (null != $this->request->GET->alias) {
+            $profiles->filterByAlias($this->request->GET->alias);
+        }
+
+        $this->response->setJSONContent($profiles->find()->toJSON());
+    }
+
     public function profile($curatorId, $profileId, $alias) {
         $curator = \justnyt\models\CuratorQuery::create("cr")
             ->joinWith("Profile")

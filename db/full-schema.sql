@@ -11,7 +11,10 @@ CREATE TABLE `profile` (
     `image` VARCHAR (40),
     `description` TEXT,
 
-    PRIMARY KEY (`profile_id`)
+    PRIMARY KEY (`profile_id`),
+
+    CONSTRAINT `profile_unique_email`
+        UNIQUE INDEX (`email`)
 ) ENGINE=INNODB DEFAULT CHARACTER SET=utf8;
 
 

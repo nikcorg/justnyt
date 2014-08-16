@@ -36,6 +36,8 @@
     "bluebird": "~2.2.2",
     "debug": "~1.0.4",
     "superagent": "~0.18.2",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "funz": "~0.1.4",
+    "baconjs": "~0.7.21"
   }
 }

@@ -52,12 +52,12 @@ gulp.task("browserify", function () {
         var opts = bundles[key];
         var bundler = (global.isDevelBuild ? watchify : browserify)({
                 entries: [opts.src],
-                extensions: [".js", ".json"],
-                debug: isDevelBuild
+                extensions: [".js", ".json"]
             }).
             transform(envify);
 
         function bundle() {
+            var options = isDevelBuild ? { debug: true } : undefined;
             console.log(new Date(), "bundling", key);
 
             return bundler.bundle().
