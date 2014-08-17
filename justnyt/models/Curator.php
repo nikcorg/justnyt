@@ -6,6 +6,14 @@ use justnyt\models\Base\Curator as BaseCurator;
 
 class Curator extends BaseCurator
 {
+    public function getApprovedRecommendations() {
+        return \justnyt\models\RecommendationQuery::create("rc")
+            ->filterByCurator($this)
+            ->where("rc.ApprovedOn < NOW()")
+            ->orderByApprovedOn("DESC")
+            ->find();
+    }
+
     public function activate() {
         $this->setActivatedOn(time());
 

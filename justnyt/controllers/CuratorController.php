@@ -241,6 +241,22 @@ class CuratorController extends \glue\Controller
         );
     }
 
+    public function approved($token) {
+        $curator = $this->getCurator($token);
+        $approved = $curator->getApprovedRecommendations();
+
+        $this->response->setContent(
+            \justnyt\views\JustNytLayout::quickRender(
+                "curator/approved",
+                array(
+                    "title" => "Julkaistut suositukset",
+                    "curator" => $curator,
+                    "approved" => $approved
+                    )
+                )
+        );
+    }
+
     public function home($token) {
         $curator = $this->getCurator($token, false);
 
