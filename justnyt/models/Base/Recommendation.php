@@ -10,6 +10,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -19,7 +20,10 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 use justnyt\models\Curator as ChildCurator;
 use justnyt\models\CuratorQuery as ChildCuratorQuery;
+use justnyt\models\Recommendation as ChildRecommendation;
 use justnyt\models\RecommendationQuery as ChildRecommendationQuery;
+use justnyt\models\Visit as ChildVisit;
+use justnyt\models\VisitQuery as ChildVisitQuery;
 use justnyt\models\Map\RecommendationTableMap;
 
 /**
@@ -107,13 +111,6 @@ abstract class Recommendation implements ActiveRecordInterface
     protected $shortlink;
 
     /**
-     * The value for the visits field.
-     * Note: this column has a database default value of: 0
-     * @var        int
-     */
-    protected $visits;
-
-    /**
      * The value for the url field.
      * @var        string
      */
@@ -131,12 +128,24 @@ abstract class Recommendation implements ActiveRecordInterface
     protected $aCurator;
 
     /**
+     * @var        ObjectCollection|ChildVisit[] Collection to store aggregation of ChildVisit objects.
+     */
+    protected $collVisits;
+    protected $collVisitsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildVisit[]
+     */
+    protected $visitsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -147,7 +156,6 @@ abstract class Recommendation implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->graphic_content = false;
-        $this->visits = 0;
     }
 
     /**
@@ -480,16 +488,6 @@ abstract class Recommendation implements ActiveRecordInterface
     }
 
     /**
-     * Get the [visits] column value.
-     *
-     * @return int
-     */
-    public function getVisits()
-    {
-        return $this->visits;
-    }
-
-    /**
      * Get the [url] column value.
      *
      * @return string
@@ -520,10 +518,6 @@ abstract class Recommendation implements ActiveRecordInterface
     public function hasOnlyDefaultValues()
     {
             if ($this->graphic_content !== false) {
-                return false;
-            }
-
-            if ($this->visits !== 0) {
                 return false;
             }
 
@@ -583,13 +577,10 @@ abstract class Recommendation implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : RecommendationTableMap::translateFieldName('Shortlink', TableMap::TYPE_PHPNAME, $indexType)];
             $this->shortlink = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : RecommendationTableMap::translateFieldName('Visits', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->visits = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : RecommendationTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : RecommendationTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
             $this->url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : RecommendationTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : RecommendationTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
             $this->title = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -599,7 +590,7 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 10; // 10 = RecommendationTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = RecommendationTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Recommendation'), 0, $e);
@@ -779,26 +770,6 @@ abstract class Recommendation implements ActiveRecordInterface
     } // setShortlink()
 
     /**
-     * Set the value of [visits] column.
-     *
-     * @param  int $v new value
-     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
-     */
-    public function setVisits($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->visits !== $v) {
-            $this->visits = $v;
-            $this->modifiedColumns[RecommendationTableMap::COL_VISITS] = true;
-        }
-
-        return $this;
-    } // setVisits()
-
-    /**
      * Set the value of [url] column.
      *
      * @param  string $v new value
@@ -876,6 +847,8 @@ abstract class Recommendation implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aCurator = null;
+            $this->collVisits = null;
+
         } // if (deep)
     }
 
@@ -998,6 +971,23 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->visitsScheduledForDeletion !== null) {
+                if (!$this->visitsScheduledForDeletion->isEmpty()) {
+                    \justnyt\models\VisitQuery::create()
+                        ->filterByPrimaryKeys($this->visitsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->visitsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collVisits !== null) {
+                foreach ($this->collVisits as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -1045,9 +1035,6 @@ abstract class Recommendation implements ActiveRecordInterface
         if ($this->isColumnModified(RecommendationTableMap::COL_SHORTLINK)) {
             $modifiedColumns[':p' . $index++]  = '`SHORTLINK`';
         }
-        if ($this->isColumnModified(RecommendationTableMap::COL_VISITS)) {
-            $modifiedColumns[':p' . $index++]  = '`VISITS`';
-        }
         if ($this->isColumnModified(RecommendationTableMap::COL_URL)) {
             $modifiedColumns[':p' . $index++]  = '`URL`';
         }
@@ -1085,9 +1072,6 @@ abstract class Recommendation implements ActiveRecordInterface
                         break;
                     case '`SHORTLINK`':
                         $stmt->bindValue($identifier, $this->shortlink, PDO::PARAM_STR);
-                        break;
-                    case '`VISITS`':
-                        $stmt->bindValue($identifier, $this->visits, PDO::PARAM_INT);
                         break;
                     case '`URL`':
                         $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
@@ -1179,12 +1163,9 @@ abstract class Recommendation implements ActiveRecordInterface
                 return $this->getShortlink();
                 break;
             case 7:
-                return $this->getVisits();
-                break;
-            case 8:
                 return $this->getUrl();
                 break;
-            case 9:
+            case 8:
                 return $this->getTitle();
                 break;
             default:
@@ -1224,9 +1205,8 @@ abstract class Recommendation implements ActiveRecordInterface
             $keys[4] => $this->getApprovedOn(),
             $keys[5] => $this->getGraphicContent(),
             $keys[6] => $this->getShortlink(),
-            $keys[7] => $this->getVisits(),
-            $keys[8] => $this->getUrl(),
-            $keys[9] => $this->getTitle(),
+            $keys[7] => $this->getUrl(),
+            $keys[8] => $this->getTitle(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1248,6 +1228,21 @@ abstract class Recommendation implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aCurator->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collVisits) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'visits';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'visits';
+                        break;
+                    default:
+                        $key = 'Visits';
+                }
+
+                $result[$key] = $this->collVisits->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1305,12 +1300,9 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->setShortlink($value);
                 break;
             case 7:
-                $this->setVisits($value);
-                break;
-            case 8:
                 $this->setUrl($value);
                 break;
-            case 9:
+            case 8:
                 $this->setTitle($value);
                 break;
         } // switch()
@@ -1361,13 +1353,10 @@ abstract class Recommendation implements ActiveRecordInterface
             $this->setShortlink($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setVisits($arr[$keys[7]]);
+            $this->setUrl($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setUrl($arr[$keys[8]]);
-        }
-        if (array_key_exists($keys[9], $arr)) {
-            $this->setTitle($arr[$keys[9]]);
+            $this->setTitle($arr[$keys[8]]);
         }
     }
 
@@ -1424,9 +1413,6 @@ abstract class Recommendation implements ActiveRecordInterface
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_SHORTLINK)) {
             $criteria->add(RecommendationTableMap::COL_SHORTLINK, $this->shortlink);
-        }
-        if ($this->isColumnModified(RecommendationTableMap::COL_VISITS)) {
-            $criteria->add(RecommendationTableMap::COL_VISITS, $this->visits);
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_URL)) {
             $criteria->add(RecommendationTableMap::COL_URL, $this->url);
@@ -1526,9 +1512,22 @@ abstract class Recommendation implements ActiveRecordInterface
         $copyObj->setApprovedOn($this->getApprovedOn());
         $copyObj->setGraphicContent($this->getGraphicContent());
         $copyObj->setShortlink($this->getShortlink());
-        $copyObj->setVisits($this->getVisits());
         $copyObj->setUrl($this->getUrl());
         $copyObj->setTitle($this->getTitle());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getVisits() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addVisit($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setRecommendationId(NULL); // this is a auto-increment column, so set to default value
@@ -1608,6 +1607,240 @@ abstract class Recommendation implements ActiveRecordInterface
         return $this->aCurator;
     }
 
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('Visit' == $relationName) {
+            return $this->initVisits();
+        }
+    }
+
+    /**
+     * Clears out the collVisits collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addVisits()
+     */
+    public function clearVisits()
+    {
+        $this->collVisits = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collVisits collection loaded partially.
+     */
+    public function resetPartialVisits($v = true)
+    {
+        $this->collVisitsPartial = $v;
+    }
+
+    /**
+     * Initializes the collVisits collection.
+     *
+     * By default this just sets the collVisits collection to an empty array (like clearcollVisits());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initVisits($overrideExisting = true)
+    {
+        if (null !== $this->collVisits && !$overrideExisting) {
+            return;
+        }
+        $this->collVisits = new ObjectCollection();
+        $this->collVisits->setModel('\justnyt\models\Visit');
+    }
+
+    /**
+     * Gets an array of ChildVisit objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildRecommendation is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildVisit[] List of ChildVisit objects
+     * @throws PropelException
+     */
+    public function getVisits(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collVisitsPartial && !$this->isNew();
+        if (null === $this->collVisits || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collVisits) {
+                // return empty collection
+                $this->initVisits();
+            } else {
+                $collVisits = ChildVisitQuery::create(null, $criteria)
+                    ->filterByRecommendation($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collVisitsPartial && count($collVisits)) {
+                        $this->initVisits(false);
+
+                        foreach ($collVisits as $obj) {
+                            if (false == $this->collVisits->contains($obj)) {
+                                $this->collVisits->append($obj);
+                            }
+                        }
+
+                        $this->collVisitsPartial = true;
+                    }
+
+                    return $collVisits;
+                }
+
+                if ($partial && $this->collVisits) {
+                    foreach ($this->collVisits as $obj) {
+                        if ($obj->isNew()) {
+                            $collVisits[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collVisits = $collVisits;
+                $this->collVisitsPartial = false;
+            }
+        }
+
+        return $this->collVisits;
+    }
+
+    /**
+     * Sets a collection of ChildVisit objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $visits A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildRecommendation The current object (for fluent API support)
+     */
+    public function setVisits(Collection $visits, ConnectionInterface $con = null)
+    {
+        /** @var ChildVisit[] $visitsToDelete */
+        $visitsToDelete = $this->getVisits(new Criteria(), $con)->diff($visits);
+
+
+        $this->visitsScheduledForDeletion = $visitsToDelete;
+
+        foreach ($visitsToDelete as $visitRemoved) {
+            $visitRemoved->setRecommendation(null);
+        }
+
+        $this->collVisits = null;
+        foreach ($visits as $visit) {
+            $this->addVisit($visit);
+        }
+
+        $this->collVisits = $visits;
+        $this->collVisitsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Visit objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Visit objects.
+     * @throws PropelException
+     */
+    public function countVisits(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collVisitsPartial && !$this->isNew();
+        if (null === $this->collVisits || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collVisits) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getVisits());
+            }
+
+            $query = ChildVisitQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRecommendation($this)
+                ->count($con);
+        }
+
+        return count($this->collVisits);
+    }
+
+    /**
+     * Method called to associate a ChildVisit object to this object
+     * through the ChildVisit foreign key attribute.
+     *
+     * @param  ChildVisit $l ChildVisit
+     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
+     */
+    public function addVisit(ChildVisit $l)
+    {
+        if ($this->collVisits === null) {
+            $this->initVisits();
+            $this->collVisitsPartial = true;
+        }
+
+        if (!$this->collVisits->contains($l)) {
+            $this->doAddVisit($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildVisit $visit The ChildVisit object to add.
+     */
+    protected function doAddVisit(ChildVisit $visit)
+    {
+        $this->collVisits[]= $visit;
+        $visit->setRecommendation($this);
+    }
+
+    /**
+     * @param  ChildVisit $visit The ChildVisit object to remove.
+     * @return $this|ChildRecommendation The current object (for fluent API support)
+     */
+    public function removeVisit(ChildVisit $visit)
+    {
+        if ($this->getVisits()->contains($visit)) {
+            $pos = $this->collVisits->search($visit);
+            $this->collVisits->remove($pos);
+            if (null === $this->visitsScheduledForDeletion) {
+                $this->visitsScheduledForDeletion = clone $this->collVisits;
+                $this->visitsScheduledForDeletion->clear();
+            }
+            $this->visitsScheduledForDeletion[]= $visit;
+            $visit->setRecommendation(null);
+        }
+
+        return $this;
+    }
+
     /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
@@ -1625,7 +1858,6 @@ abstract class Recommendation implements ActiveRecordInterface
         $this->approved_on = null;
         $this->graphic_content = null;
         $this->shortlink = null;
-        $this->visits = null;
         $this->url = null;
         $this->title = null;
         $this->alreadyInSave = false;
@@ -1647,8 +1879,14 @@ abstract class Recommendation implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collVisits) {
+                foreach ($this->collVisits as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collVisits = null;
         $this->aCurator = null;
     }
 

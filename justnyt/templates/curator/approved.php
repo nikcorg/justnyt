@@ -2,8 +2,10 @@
 
 <ol reversed>
 
-<?php foreach ($approved as $recommendation): ?>
-    <li><a href="<?= $recommendation->getUrl() ?>"><?= $recommendation->getTitle() ?></a> (<?= $recommendation->getVisits() ?>)</li>
-<?php endforeach; ?>
+<?php while ($recommendation = $approved->fetch(\PDO::FETCH_OBJ)): ?>
+    <li><a href="<?= $recommendation->URL ?>"><?= $recommendation->TITLE ?></a>
+    (<?= $recommendation->CLICKS ?> klikkausta
+    <?= $recommendation->VISITORS ?> kävijältä)</li>
+<?php endwhile; ?>
 
 </ol>

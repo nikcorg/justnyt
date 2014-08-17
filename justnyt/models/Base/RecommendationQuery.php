@@ -27,7 +27,6 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendationQuery orderByApprovedOn($order = Criteria::ASC) Order by the approved_on column
  * @method     ChildRecommendationQuery orderByGraphicContent($order = Criteria::ASC) Order by the graphic_content column
  * @method     ChildRecommendationQuery orderByShortlink($order = Criteria::ASC) Order by the shortlink column
- * @method     ChildRecommendationQuery orderByVisits($order = Criteria::ASC) Order by the visits column
  * @method     ChildRecommendationQuery orderByUrl($order = Criteria::ASC) Order by the url column
  * @method     ChildRecommendationQuery orderByTitle($order = Criteria::ASC) Order by the title column
  *
@@ -38,7 +37,6 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendationQuery groupByApprovedOn() Group by the approved_on column
  * @method     ChildRecommendationQuery groupByGraphicContent() Group by the graphic_content column
  * @method     ChildRecommendationQuery groupByShortlink() Group by the shortlink column
- * @method     ChildRecommendationQuery groupByVisits() Group by the visits column
  * @method     ChildRecommendationQuery groupByUrl() Group by the url column
  * @method     ChildRecommendationQuery groupByTitle() Group by the title column
  *
@@ -50,7 +48,11 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendationQuery rightJoinCurator($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Curator relation
  * @method     ChildRecommendationQuery innerJoinCurator($relationAlias = null) Adds a INNER JOIN clause to the query using the Curator relation
  *
- * @method     \justnyt\models\CuratorQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildRecommendationQuery leftJoinVisit($relationAlias = null) Adds a LEFT JOIN clause to the query using the Visit relation
+ * @method     ChildRecommendationQuery rightJoinVisit($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Visit relation
+ * @method     ChildRecommendationQuery innerJoinVisit($relationAlias = null) Adds a INNER JOIN clause to the query using the Visit relation
+ *
+ * @method     \justnyt\models\CuratorQuery|\justnyt\models\VisitQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildRecommendation findOne(ConnectionInterface $con = null) Return the first ChildRecommendation matching the query
  * @method     ChildRecommendation findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRecommendation matching the query, or a new ChildRecommendation object populated from the query conditions when no match is found
@@ -62,7 +64,6 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendation findOneByApprovedOn(string $approved_on) Return the first ChildRecommendation filtered by the approved_on column
  * @method     ChildRecommendation findOneByGraphicContent(boolean $graphic_content) Return the first ChildRecommendation filtered by the graphic_content column
  * @method     ChildRecommendation findOneByShortlink(string $shortlink) Return the first ChildRecommendation filtered by the shortlink column
- * @method     ChildRecommendation findOneByVisits(int $visits) Return the first ChildRecommendation filtered by the visits column
  * @method     ChildRecommendation findOneByUrl(string $url) Return the first ChildRecommendation filtered by the url column
  * @method     ChildRecommendation findOneByTitle(string $title) Return the first ChildRecommendation filtered by the title column
  *
@@ -74,7 +75,6 @@ use justnyt\models\Map\RecommendationTableMap;
  * @method     ChildRecommendation[]|ObjectCollection findByApprovedOn(string $approved_on) Return ChildRecommendation objects filtered by the approved_on column
  * @method     ChildRecommendation[]|ObjectCollection findByGraphicContent(boolean $graphic_content) Return ChildRecommendation objects filtered by the graphic_content column
  * @method     ChildRecommendation[]|ObjectCollection findByShortlink(string $shortlink) Return ChildRecommendation objects filtered by the shortlink column
- * @method     ChildRecommendation[]|ObjectCollection findByVisits(int $visits) Return ChildRecommendation objects filtered by the visits column
  * @method     ChildRecommendation[]|ObjectCollection findByUrl(string $url) Return ChildRecommendation objects filtered by the url column
  * @method     ChildRecommendation[]|ObjectCollection findByTitle(string $title) Return ChildRecommendation objects filtered by the title column
  * @method     ChildRecommendation[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -166,7 +166,7 @@ abstract class RecommendationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT `RECOMMENDATION_ID`, `CURATOR_ID`, `CREATED_ON`, `SCRAPED_ON`, `APPROVED_ON`, `GRAPHIC_CONTENT`, `SHORTLINK`, `VISITS`, `URL`, `TITLE` FROM `recommendation` WHERE `RECOMMENDATION_ID` = :p0';
+        $sql = 'SELECT `RECOMMENDATION_ID`, `CURATOR_ID`, `CREATED_ON`, `SCRAPED_ON`, `APPROVED_ON`, `GRAPHIC_CONTENT`, `SHORTLINK`, `URL`, `TITLE` FROM `recommendation` WHERE `RECOMMENDATION_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -526,47 +526,6 @@ abstract class RecommendationQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the visits column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByVisits(1234); // WHERE visits = 1234
-     * $query->filterByVisits(array(12, 34)); // WHERE visits IN (12, 34)
-     * $query->filterByVisits(array('min' => 12)); // WHERE visits > 12
-     * </code>
-     *
-     * @param     mixed $visits The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildRecommendationQuery The current query, for fluid interface
-     */
-    public function filterByVisits($visits = null, $comparison = null)
-    {
-        if (is_array($visits)) {
-            $useMinMax = false;
-            if (isset($visits['min'])) {
-                $this->addUsingAlias(RecommendationTableMap::COL_VISITS, $visits['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($visits['max'])) {
-                $this->addUsingAlias(RecommendationTableMap::COL_VISITS, $visits['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(RecommendationTableMap::COL_VISITS, $visits, $comparison);
-    }
-
-    /**
      * Filter the query on the url column
      *
      * Example usage:
@@ -697,6 +656,79 @@ abstract class RecommendationQuery extends ModelCriteria
         return $this
             ->joinCurator($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Curator', '\justnyt\models\CuratorQuery');
+    }
+
+    /**
+     * Filter the query by a related \justnyt\models\Visit object
+     *
+     * @param \justnyt\models\Visit|ObjectCollection $visit  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildRecommendationQuery The current query, for fluid interface
+     */
+    public function filterByVisit($visit, $comparison = null)
+    {
+        if ($visit instanceof \justnyt\models\Visit) {
+            return $this
+                ->addUsingAlias(RecommendationTableMap::COL_RECOMMENDATION_ID, $visit->getRecommendationId(), $comparison);
+        } elseif ($visit instanceof ObjectCollection) {
+            return $this
+                ->useVisitQuery()
+                ->filterByPrimaryKeys($visit->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByVisit() only accepts arguments of type \justnyt\models\Visit or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Visit relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildRecommendationQuery The current query, for fluid interface
+     */
+    public function joinVisit($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Visit');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Visit');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Visit relation Visit object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \justnyt\models\VisitQuery A secondary query class using the current class as primary query
+     */
+    public function useVisitQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinVisit($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Visit', '\justnyt\models\VisitQuery');
     }
 
     /**

@@ -7,11 +7,45 @@ use justnyt\models\Base\Curator as BaseCurator;
 class Curator extends BaseCurator
 {
     public function getApprovedRecommendations() {
-        return \justnyt\models\RecommendationQuery::create("rc")
-            ->filterByCurator($this)
-            ->where("rc.ApprovedOn < NOW()")
-            ->orderByApprovedOn("DESC")
-            ->find();
+        $curatorId = $this->getCuratorId();
+        $query = <<<EOQUERY
+SELECT
+    r.RECOMMENDATION_ID, r.CURATOR_ID, r.CREATED_ON, r.SCRAPED_ON, r.APPROVED_ON, r.GRAPHIC_CONTENT, r.SHORTLINK, r.URL, r.TITLE,
+    COALESCE(SUM(visitorclicks), 0) AS CLICKS, COUNT(visitorclicks) AS VISITORS
+FROM
+    recommendation r
+LEFT JOIN (
+    SELECT
+        v.recommendation_id, COUNT(1) AS `visitorclicks`
+    FROM
+        visit v
+    GROUP BY
+        v.recommendation_id,
+        v.`visitor_id`
+) v ON v.recommendation_id = r.recommendation_id
+WHERE
+    r.curator_id = :curator_id
+GROUP BY
+    r.recommendation_id
+ORDER BY
+    r.approved_on DESC
+EOQUERY;
+        $con = \Propel\Runtime\Propel::getConnection();
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(":curator_id", $curatorId);
+        $res = $stmt->execute();
+
+        return $stmt;
+        // return \justnyt\models\RecommendationQuery::create()
+        //     ->joinWith("Recommendation.Visit")
+        //     ->useVisitQuery(null, "INNER JOIN")
+        //         ->withColumn("COUNT(1)", "VisitorClicks")
+        //         ->endUse()
+        //     ->filterByCurator($this)
+        //     ->where("Recommendation.ApprovedOn < NOW()")
+        //     ->groupBy("Visit.VisitorId")
+        //     ->orderByApprovedOn("DESC")
+        //     ->find();
     }
 
     public function activate() {

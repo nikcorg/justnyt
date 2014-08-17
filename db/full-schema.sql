@@ -66,7 +66,6 @@ CREATE TABLE `recommendation` (
     `approved_on` DATETIME,
     `graphic_content` TINYINT(1) DEFAULT 0,
     `shortlink` VARCHAR (32),
-    `visits` INT UNSIGNED DEFAULT 0,
     `url` VARCHAR (1024),
     `title` VARCHAR (512),
 
@@ -84,3 +83,19 @@ CREATE TABLE `recommendation` (
 
 ) ENGINE=INNODB DEFAULT CHARACTER SET=utf8;
 
+
+
+
+CREATE TABLE `visit`(
+    `visit_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `recorded_on` DATETIME NOT NULL,
+    `visitor_id` VARCHAR (32) NOT NULL,
+    `recommendation_id` INT UNSIGNED,
+
+    PRIMARY KEY (`visit_id`),
+
+    CONSTRAINT `visit_recommendation_id`
+        FOREIGN KEY (`recommendation_id`) REFERENCES `recommendation` (`recommendation_id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=INNODB DEFAULT CHARACTER SET=utf8;
