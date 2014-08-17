@@ -1,6 +1,6 @@
 <p>Suluissa oleva luku on klikkausten lukumäärä.</p>
 
-<ol>
+<ol reversed>
 
 <?php foreach ($approved as $recommendation): ?>
     <li><a href="<?= $recommendation->getUrl() ?>"><?= $recommendation->getTitle() ?></a> (<?= $recommendation->getVisits() ?>)</li>
