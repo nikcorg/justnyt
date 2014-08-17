@@ -29,16 +29,18 @@
 <?php else: ?>
 
 <?php foreach ($profiles as $profile): ?>
-    <?php
-    $begin = $profile->getCurators()[0]->getActivatedOn();
-    $end = $profile->getCurators()[0]->getDeactivatedOn();
-    ?>
-    <p><?= $begin->format("j.n.Y H:i") ?>&ndash;<?= is_null($end) ? "" : $end->format("j.n.Y H:i") ?></p>
-    <ol reversed>
-    <?php foreach ($profile->getCurators()[0]->getRecommendations() as $recommendation): ?>
-        <li><a href="/s/<?= $recommendation->getShortlink() ?>"><?= $recommendation->getTitle() ?></a></li>
+    <?php foreach ($profile->getCurators() as $curator): ?>
+        <?php
+        $begin = $curator->getActivatedOn();
+        $end = $curator->getDeactivatedOn();
+        ?>
+        <p><?= $begin->format("j.n.Y H:i") ?>&ndash;<?= is_null($end) ? "" : $end->format("j.n.Y H:i") ?></p>
+        <ol reversed>
+        <?php foreach ($curator->getRecommendations() as $recommendation): ?>
+            <li><a href="/s/<?= $recommendation->getShortlink() ?>"><?= $recommendation->getTitle() ?></a></li>
+        <?php endforeach; ?>
+        </ol>
     <?php endforeach; ?>
-    </ol>
 <?php endforeach; ?>
 
 <?php endif; ?>
