@@ -40,13 +40,11 @@ class ProfileController extends \glue\Controller
             $profiles = \justnyt\models\ProfileQuery::create("pr")
                 ->joinWith("Profile.Curator")
                 ->joinWith("Curator.Recommendation")
-                ->useCuratorQuery("cr")
-                    ->useRecommendationQuery("re")
-                        ->endUse()
-                    ->endUse()
-                ->where("pr.Email = ?", $profile->getEmail())
-                ->orderBy("cr.ActivatedOn", "DESC")
-                ->orderBy("re.ApprovedOn", "DESC")
+                ->where("Profile.Email = ?", $profile->getEmail())
+                ->where("Recommendation.ApprovedOn IS NOT NULL")
+                ->where("Recommendation.ApprovedOn < NOW()")
+                ->orderBy("Curator.ActivatedOn", "DESC")
+                ->orderBy("Recommendation.ApprovedOn", "DESC")
                 ->find();
         } else {
             $profiles = null;
