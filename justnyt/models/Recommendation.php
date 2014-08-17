@@ -6,11 +6,6 @@ use justnyt\models\Base\Recommendation as BaseRecommendation;
 
 class Recommendation extends BaseRecommendation
 {
-    public function addVisit() {
-        $this->setVisits($this->getVisits() + 1);
-        return $this->save();
-    }
-
     public function generateShortLink($tokenlen = 3) {
         $candidates = 5;
         $hash = sha1($this->getUrl() . microtime(true) . rand());

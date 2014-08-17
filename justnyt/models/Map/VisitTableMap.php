@@ -11,12 +11,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use justnyt\models\Recommendation;
-use justnyt\models\RecommendationQuery;
+use justnyt\models\Visit;
+use justnyt\models\VisitQuery;
 
 
 /**
- * This class defines the structure of the 'recommendation' table.
+ * This class defines the structure of the 'visit' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use justnyt\models\RecommendationQuery;
  * (i.e. if it's a text column type).
  *
  */
-class RecommendationTableMap extends TableMap
+class VisitTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class RecommendationTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'justnyt.models.Map.RecommendationTableMap';
+    const CLASS_NAME = 'justnyt.models.Map.VisitTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class RecommendationTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'recommendation';
+    const TABLE_NAME = 'visit';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\justnyt\\models\\Recommendation';
+    const OM_CLASS = '\\justnyt\\models\\Visit';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'justnyt.models.Recommendation';
+    const CLASS_DEFAULT = 'justnyt.models.Visit';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 9;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -69,52 +69,27 @@ class RecommendationTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 9;
+    const NUM_HYDRATE_COLUMNS = 4;
+
+    /**
+     * the column name for the VISIT_ID field
+     */
+    const COL_VISIT_ID = 'visit.VISIT_ID';
+
+    /**
+     * the column name for the RECORDED_ON field
+     */
+    const COL_RECORDED_ON = 'visit.RECORDED_ON';
+
+    /**
+     * the column name for the VISITOR_ID field
+     */
+    const COL_VISITOR_ID = 'visit.VISITOR_ID';
 
     /**
      * the column name for the RECOMMENDATION_ID field
      */
-    const COL_RECOMMENDATION_ID = 'recommendation.RECOMMENDATION_ID';
-
-    /**
-     * the column name for the CURATOR_ID field
-     */
-    const COL_CURATOR_ID = 'recommendation.CURATOR_ID';
-
-    /**
-     * the column name for the CREATED_ON field
-     */
-    const COL_CREATED_ON = 'recommendation.CREATED_ON';
-
-    /**
-     * the column name for the SCRAPED_ON field
-     */
-    const COL_SCRAPED_ON = 'recommendation.SCRAPED_ON';
-
-    /**
-     * the column name for the APPROVED_ON field
-     */
-    const COL_APPROVED_ON = 'recommendation.APPROVED_ON';
-
-    /**
-     * the column name for the GRAPHIC_CONTENT field
-     */
-    const COL_GRAPHIC_CONTENT = 'recommendation.GRAPHIC_CONTENT';
-
-    /**
-     * the column name for the SHORTLINK field
-     */
-    const COL_SHORTLINK = 'recommendation.SHORTLINK';
-
-    /**
-     * the column name for the URL field
-     */
-    const COL_URL = 'recommendation.URL';
-
-    /**
-     * the column name for the TITLE field
-     */
-    const COL_TITLE = 'recommendation.TITLE';
+    const COL_RECOMMENDATION_ID = 'visit.RECOMMENDATION_ID';
 
     /**
      * The default string format for model objects of the related table
@@ -128,12 +103,12 @@ class RecommendationTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('RecommendationId', 'CuratorId', 'CreatedOn', 'ScrapedOn', 'ApprovedOn', 'GraphicContent', 'Shortlink', 'Url', 'Title', ),
-        self::TYPE_STUDLYPHPNAME => array('recommendationId', 'curatorId', 'createdOn', 'scrapedOn', 'approvedOn', 'graphicContent', 'shortlink', 'url', 'title', ),
-        self::TYPE_COLNAME       => array(RecommendationTableMap::COL_RECOMMENDATION_ID, RecommendationTableMap::COL_CURATOR_ID, RecommendationTableMap::COL_CREATED_ON, RecommendationTableMap::COL_SCRAPED_ON, RecommendationTableMap::COL_APPROVED_ON, RecommendationTableMap::COL_GRAPHIC_CONTENT, RecommendationTableMap::COL_SHORTLINK, RecommendationTableMap::COL_URL, RecommendationTableMap::COL_TITLE, ),
-        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_ID', 'COL_CURATOR_ID', 'COL_CREATED_ON', 'COL_SCRAPED_ON', 'COL_APPROVED_ON', 'COL_GRAPHIC_CONTENT', 'COL_SHORTLINK', 'COL_URL', 'COL_TITLE', ),
-        self::TYPE_FIELDNAME     => array('recommendation_id', 'curator_id', 'created_on', 'scraped_on', 'approved_on', 'graphic_content', 'shortlink', 'url', 'title', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('VisitId', 'RecordedOn', 'VisitorId', 'RecommendationId', ),
+        self::TYPE_STUDLYPHPNAME => array('visitId', 'recordedOn', 'visitorId', 'recommendationId', ),
+        self::TYPE_COLNAME       => array(VisitTableMap::COL_VISIT_ID, VisitTableMap::COL_RECORDED_ON, VisitTableMap::COL_VISITOR_ID, VisitTableMap::COL_RECOMMENDATION_ID, ),
+        self::TYPE_RAW_COLNAME   => array('COL_VISIT_ID', 'COL_RECORDED_ON', 'COL_VISITOR_ID', 'COL_RECOMMENDATION_ID', ),
+        self::TYPE_FIELDNAME     => array('visit_id', 'recorded_on', 'visitor_id', 'recommendation_id', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -143,12 +118,12 @@ class RecommendationTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('RecommendationId' => 0, 'CuratorId' => 1, 'CreatedOn' => 2, 'ScrapedOn' => 3, 'ApprovedOn' => 4, 'GraphicContent' => 5, 'Shortlink' => 6, 'Url' => 7, 'Title' => 8, ),
-        self::TYPE_STUDLYPHPNAME => array('recommendationId' => 0, 'curatorId' => 1, 'createdOn' => 2, 'scrapedOn' => 3, 'approvedOn' => 4, 'graphicContent' => 5, 'shortlink' => 6, 'url' => 7, 'title' => 8, ),
-        self::TYPE_COLNAME       => array(RecommendationTableMap::COL_RECOMMENDATION_ID => 0, RecommendationTableMap::COL_CURATOR_ID => 1, RecommendationTableMap::COL_CREATED_ON => 2, RecommendationTableMap::COL_SCRAPED_ON => 3, RecommendationTableMap::COL_APPROVED_ON => 4, RecommendationTableMap::COL_GRAPHIC_CONTENT => 5, RecommendationTableMap::COL_SHORTLINK => 6, RecommendationTableMap::COL_URL => 7, RecommendationTableMap::COL_TITLE => 8, ),
-        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_ID' => 0, 'COL_CURATOR_ID' => 1, 'COL_CREATED_ON' => 2, 'COL_SCRAPED_ON' => 3, 'COL_APPROVED_ON' => 4, 'COL_GRAPHIC_CONTENT' => 5, 'COL_SHORTLINK' => 6, 'COL_URL' => 7, 'COL_TITLE' => 8, ),
-        self::TYPE_FIELDNAME     => array('recommendation_id' => 0, 'curator_id' => 1, 'created_on' => 2, 'scraped_on' => 3, 'approved_on' => 4, 'graphic_content' => 5, 'shortlink' => 6, 'url' => 7, 'title' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('VisitId' => 0, 'RecordedOn' => 1, 'VisitorId' => 2, 'RecommendationId' => 3, ),
+        self::TYPE_STUDLYPHPNAME => array('visitId' => 0, 'recordedOn' => 1, 'visitorId' => 2, 'recommendationId' => 3, ),
+        self::TYPE_COLNAME       => array(VisitTableMap::COL_VISIT_ID => 0, VisitTableMap::COL_RECORDED_ON => 1, VisitTableMap::COL_VISITOR_ID => 2, VisitTableMap::COL_RECOMMENDATION_ID => 3, ),
+        self::TYPE_RAW_COLNAME   => array('COL_VISIT_ID' => 0, 'COL_RECORDED_ON' => 1, 'COL_VISITOR_ID' => 2, 'COL_RECOMMENDATION_ID' => 3, ),
+        self::TYPE_FIELDNAME     => array('visit_id' => 0, 'recorded_on' => 1, 'visitor_id' => 2, 'recommendation_id' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -161,21 +136,16 @@ class RecommendationTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('recommendation');
-        $this->setPhpName('Recommendation');
-        $this->setClassName('\\justnyt\\models\\Recommendation');
+        $this->setName('visit');
+        $this->setPhpName('Visit');
+        $this->setClassName('\\justnyt\\models\\Visit');
         $this->setPackage('justnyt.models');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('RECOMMENDATION_ID', 'RecommendationId', 'INTEGER', true, 10, null);
-        $this->addForeignKey('CURATOR_ID', 'CuratorId', 'INTEGER', 'curator', 'CURATOR_ID', false, 10, null);
-        $this->addColumn('CREATED_ON', 'CreatedOn', 'TIMESTAMP', false, null, null);
-        $this->addColumn('SCRAPED_ON', 'ScrapedOn', 'TIMESTAMP', false, null, null);
-        $this->addColumn('APPROVED_ON', 'ApprovedOn', 'TIMESTAMP', false, null, null);
-        $this->addColumn('GRAPHIC_CONTENT', 'GraphicContent', 'BOOLEAN', false, 1, false);
-        $this->addColumn('SHORTLINK', 'Shortlink', 'VARCHAR', false, 32, null);
-        $this->addColumn('URL', 'Url', 'VARCHAR', false, 1024, null);
-        $this->addColumn('TITLE', 'Title', 'VARCHAR', false, 512, null);
+        $this->addPrimaryKey('VISIT_ID', 'VisitId', 'INTEGER', true, 10, null);
+        $this->addColumn('RECORDED_ON', 'RecordedOn', 'TIMESTAMP', true, null, null);
+        $this->addColumn('VISITOR_ID', 'VisitorId', 'VARCHAR', true, 32, null);
+        $this->addForeignKey('RECOMMENDATION_ID', 'RecommendationId', 'INTEGER', 'recommendation', 'RECOMMENDATION_ID', false, 10, null);
     } // initialize()
 
     /**
@@ -183,18 +153,8 @@ class RecommendationTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Curator', '\\justnyt\\models\\Curator', RelationMap::MANY_TO_ONE, array('curator_id' => 'curator_id', ), 'SET NULL', 'CASCADE');
-        $this->addRelation('Visit', '\\justnyt\\models\\Visit', RelationMap::ONE_TO_MANY, array('recommendation_id' => 'recommendation_id', ), 'CASCADE', 'CASCADE', 'Visits');
+        $this->addRelation('Recommendation', '\\justnyt\\models\\Recommendation', RelationMap::MANY_TO_ONE, array('recommendation_id' => 'recommendation_id', ), 'CASCADE', 'CASCADE');
     } // buildRelations()
-    /**
-     * Method to invalidate the instance pool of all tables related to recommendation     * by a foreign key with ON DELETE CASCADE
-     */
-    public static function clearRelatedInstancePool()
-    {
-        // Invalidate objects in related instance pools,
-        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        VisitTableMap::clearInstancePool();
-    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -212,11 +172,11 @@ class RecommendationTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RecommendationId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('VisitId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RecommendationId', TableMap::TYPE_PHPNAME, $indexType)];
+        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('VisitId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -236,7 +196,7 @@ class RecommendationTableMap extends TableMap
         return (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('RecommendationId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('VisitId', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
 
@@ -253,7 +213,7 @@ class RecommendationTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? RecommendationTableMap::CLASS_DEFAULT : RecommendationTableMap::OM_CLASS;
+        return $withPrefix ? VisitTableMap::CLASS_DEFAULT : VisitTableMap::OM_CLASS;
     }
 
     /**
@@ -267,22 +227,22 @@ class RecommendationTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Recommendation object, last column rank)
+     * @return array           (Visit object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = RecommendationTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = RecommendationTableMap::getInstanceFromPool($key))) {
+        $key = VisitTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = VisitTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + RecommendationTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + VisitTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = RecommendationTableMap::OM_CLASS;
-            /** @var Recommendation $obj */
+            $cls = VisitTableMap::OM_CLASS;
+            /** @var Visit $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            RecommendationTableMap::addInstanceToPool($obj, $key);
+            VisitTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -305,18 +265,18 @@ class RecommendationTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = RecommendationTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = RecommendationTableMap::getInstanceFromPool($key))) {
+            $key = VisitTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = VisitTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Recommendation $obj */
+                /** @var Visit $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                RecommendationTableMap::addInstanceToPool($obj, $key);
+                VisitTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -337,25 +297,15 @@ class RecommendationTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(RecommendationTableMap::COL_RECOMMENDATION_ID);
-            $criteria->addSelectColumn(RecommendationTableMap::COL_CURATOR_ID);
-            $criteria->addSelectColumn(RecommendationTableMap::COL_CREATED_ON);
-            $criteria->addSelectColumn(RecommendationTableMap::COL_SCRAPED_ON);
-            $criteria->addSelectColumn(RecommendationTableMap::COL_APPROVED_ON);
-            $criteria->addSelectColumn(RecommendationTableMap::COL_GRAPHIC_CONTENT);
-            $criteria->addSelectColumn(RecommendationTableMap::COL_SHORTLINK);
-            $criteria->addSelectColumn(RecommendationTableMap::COL_URL);
-            $criteria->addSelectColumn(RecommendationTableMap::COL_TITLE);
+            $criteria->addSelectColumn(VisitTableMap::COL_VISIT_ID);
+            $criteria->addSelectColumn(VisitTableMap::COL_RECORDED_ON);
+            $criteria->addSelectColumn(VisitTableMap::COL_VISITOR_ID);
+            $criteria->addSelectColumn(VisitTableMap::COL_RECOMMENDATION_ID);
         } else {
+            $criteria->addSelectColumn($alias . '.VISIT_ID');
+            $criteria->addSelectColumn($alias . '.RECORDED_ON');
+            $criteria->addSelectColumn($alias . '.VISITOR_ID');
             $criteria->addSelectColumn($alias . '.RECOMMENDATION_ID');
-            $criteria->addSelectColumn($alias . '.CURATOR_ID');
-            $criteria->addSelectColumn($alias . '.CREATED_ON');
-            $criteria->addSelectColumn($alias . '.SCRAPED_ON');
-            $criteria->addSelectColumn($alias . '.APPROVED_ON');
-            $criteria->addSelectColumn($alias . '.GRAPHIC_CONTENT');
-            $criteria->addSelectColumn($alias . '.SHORTLINK');
-            $criteria->addSelectColumn($alias . '.URL');
-            $criteria->addSelectColumn($alias . '.TITLE');
         }
     }
 
@@ -368,7 +318,7 @@ class RecommendationTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(RecommendationTableMap::DATABASE_NAME)->getTable(RecommendationTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(VisitTableMap::DATABASE_NAME)->getTable(VisitTableMap::TABLE_NAME);
     }
 
     /**
@@ -376,16 +326,16 @@ class RecommendationTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(RecommendationTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(RecommendationTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new RecommendationTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(VisitTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(VisitTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new VisitTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Recommendation or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Visit or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Recommendation object or primary key or array of primary keys
+     * @param mixed               $values Criteria or Visit object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -396,27 +346,27 @@ class RecommendationTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(RecommendationTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(VisitTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \justnyt\models\Recommendation) { // it's a model object
+        } elseif ($values instanceof \justnyt\models\Visit) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(RecommendationTableMap::DATABASE_NAME);
-            $criteria->add(RecommendationTableMap::COL_RECOMMENDATION_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(VisitTableMap::DATABASE_NAME);
+            $criteria->add(VisitTableMap::COL_VISIT_ID, (array) $values, Criteria::IN);
         }
 
-        $query = RecommendationQuery::create()->mergeWith($criteria);
+        $query = VisitQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            RecommendationTableMap::clearInstancePool();
+            VisitTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                RecommendationTableMap::removeInstanceFromPool($singleval);
+                VisitTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -424,20 +374,20 @@ class RecommendationTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the recommendation table.
+     * Deletes all rows from the visit table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return RecommendationQuery::create()->doDeleteAll($con);
+        return VisitQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Recommendation or Criteria object.
+     * Performs an INSERT on the database, given a Visit or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Recommendation object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or Visit object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -446,22 +396,22 @@ class RecommendationTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(RecommendationTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(VisitTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Recommendation object
+            $criteria = $criteria->buildCriteria(); // build Criteria from Visit object
         }
 
-        if ($criteria->containsKey(RecommendationTableMap::COL_RECOMMENDATION_ID) && $criteria->keyContainsValue(RecommendationTableMap::COL_RECOMMENDATION_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.RecommendationTableMap::COL_RECOMMENDATION_ID.')');
+        if ($criteria->containsKey(VisitTableMap::COL_VISIT_ID) && $criteria->keyContainsValue(VisitTableMap::COL_VISIT_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.VisitTableMap::COL_VISIT_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = RecommendationQuery::create()->mergeWith($criteria);
+        $query = VisitQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -470,7 +420,7 @@ class RecommendationTableMap extends TableMap
         });
     }
 
-} // RecommendationTableMap
+} // VisitTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-RecommendationTableMap::buildTableMap();
+VisitTableMap::buildTableMap();
