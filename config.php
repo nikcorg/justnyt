@@ -130,6 +130,12 @@ Router::addRoute(
         "pending"
         )
     ->addAction(
+        ":token/julkaistut",
+        array("token" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET,
+        "approved"
+        )
+    ->addAction(
         ":token/seuraava",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET | RequestMethods::POST,
