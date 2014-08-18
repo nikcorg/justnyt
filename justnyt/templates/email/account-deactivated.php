@@ -1,6 +1,6 @@
 Hei,
 
-Seuraava kuraattori on aktivoinut tilins ja kuraattorikautesi on nyt päättynyt.
+Seuraava kuraattori on aktivoinut tilinsä ja kuraattorikautesi on nyt päättynyt.
 Jätä nimesi jonoon, kun kaipaat kuraattorinhattua jälleen päätäsi koristamaan.
 
 Alla vielä julkaisemasi suositukset kävijämäärineen.
