@@ -63,21 +63,24 @@ class CuratorController extends \glue\Controller
                 $curator->activate();
 
                 $currentCurator->deactivate();
-                $approved = $curator->getApprovedRecommendations();
 
-                $msg = new \Nette\Mail\Message();
-                $msg->setFrom("JustNyt <justnytfi@gmail.com>")
-                    ->addTo($currentCurator->getEmail())
-                    ->setSubject("Kuraattorinkautesi on päättynyt")
-                    ->setBody(\glue\ui\View::quickRender(
-                        "email/account-deactivated", array(
-                            "approved" => $approved
+                if (null != $currentCurator->getProfile()->getEmail()) {
+                    $approved = $curator->getApprovedRecommendations();
+
+                    $msg = new \Nette\Mail\Message();
+                    $msg->setFrom("JustNyt <justnytfi@gmail.com>")
+                        ->addTo($currentCurator->getProfile()->getEmail())
+                        ->setSubject("Kuraattorinkautesi on päättynyt")
+                        ->setBody(\glue\ui\View::quickRender(
+                            "email/account-deactivated", array(
+                                "approved" => $approved
+                                )
                             )
-                        )
-                    );
+                        );
 
-                $mailer = new \Nette\Mail\SendmailMailer();
-                $mailer->send($msg);
+                    $mailer = new \Nette\Mail\SendmailMailer();
+                    $mailer->send($msg);
+                }
             } catch (\Exception $e) {
                 throw new \glue\exceptions\http\E500Exception("Error activating curator", 0, $e);
             }
