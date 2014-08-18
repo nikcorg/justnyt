@@ -7,7 +7,7 @@
 <p>Valitettavasti mobiilisuosittelu on vielä työn alla. Voit tietysti käyttää samaa mekanismia myös mobiilissa kuin pöytäkoneellasi, mutta se on ärsyttävän työlästä. Toimiva, helppo ratkaisu on etsinnässä.</p>
 
 <h2>Mitä suosittelisit</h2>
-<p>Suosittele mitä tahansa sinusta suosittelun arvoista, johon voi linkata suoraan. Suosi kuitenkin ensisijaisesti blogisisältöä ja mielellään suomenkielistä. Tärkein kriteeri on kuitenkin se, että suositus vie suoraan sisältöön, eikä esimerkiksi etusivulle.</p>
+<p>Suosittele mitä tahansa sinusta suosittelun arvoista, johon voi linkata suoraan. Suosi kuitenkin ensisijaisesti blogisisältöä. Tärkein kriteeri on kuitenkin se, että suositus vie suoraan sisältöön, eikä esimerkiksi etusivulle.</p>
 
 <h2>Kuinka päätät kuraattorikautesi</h2>
 <p>Kuraattorikautesi pituuden päätät sinä itse. Kun et enää haluat pitää kuraattorinhattua, voit jakaa sen seuraavalle kahdella tapaa: voit antaa sen suoraan jollekulle, tai poimia seuraavan vapaaehtoisen jonosta.</p>
