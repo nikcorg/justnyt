@@ -125,7 +125,7 @@ class CuratorController extends \glue\Controller
                 ->addTo($volunteer->getEmail())
                 ->setSubject("JustNyt tarvitsee kuraattoria")
                 ->setBody(\glue\ui\View::quickRender(
-                    "curator/email-body", array(
+                    "email/curator-invite", array(
                         "url" => $activationUrl
                         )
                     )
