@@ -65,7 +65,7 @@ class CuratorController extends \glue\Controller
                 $currentCurator->deactivate();
 
                 if (null != $currentCurator->getProfile()->getEmail()) {
-                    $approved = $curator->getApprovedRecommendations();
+                    $approved = $currentCurator->getApprovedRecommendations();
 
                     $msg = new \Nette\Mail\Message();
                     $msg->setFrom("JustNyt <justnytfi@gmail.com>")
