@@ -20,7 +20,9 @@ class RedirectController extends \glue\Controller
     }
 
     protected function redirectTo($recommendation) {
-        $recommendation->addVisit($this->createVisit())->save();
+        if (null == $this->request->GET->notrack) {
+            $recommendation->addVisit($this->createVisit())->save();
+        }
 
         $url = $recommendation->getUrl();
         $url .= (strpos($url, "?") === false ? "?" : "&") . "utm_source=justnyt.fi";
