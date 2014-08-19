@@ -25,6 +25,8 @@ LEFT JOIN (
 ) v ON v.recommendation_id = r.recommendation_id
 WHERE
     r.curator_id = :curator_id
+AND
+    r.approved_on < NOW()
 GROUP BY
     r.recommendation_id
 ORDER BY
