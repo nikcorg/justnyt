@@ -22,7 +22,7 @@
 
 <ol reversed>
 <?php foreach ($recommendations as $recommendation): ?>
-    <li><a href="/s/<?= $recommendation->getShortlink() ?>"><?= $recommendation->getTitle() ?></a></li>
+    <li><a href="/s/<?= $recommendation->getShortlink() ?>" rel="nofollow"><?= $recommendation->getTitle() ?></a></li>
 <?php endforeach; ?>
 </ol>
 
@@ -37,7 +37,7 @@
         <p><?= $begin->format("j.n.Y H:i") ?>&ndash;<?= is_null($end) ? "" : $end->format("j.n.Y H:i") ?></p>
         <ol reversed>
         <?php foreach ($curator->getRecommendations() as $recommendation): ?>
-            <li><a href="/s/<?= $recommendation->getShortlink() ?>"><?= $recommendation->getTitle() ?></a></li>
+            <li><a href="/s/<?= $recommendation->getShortlink() ?>" rel="nofollow"><?= $recommendation->getTitle() ?></a></li>
         <?php endforeach; ?>
         </ol>
     <?php endforeach; ?>
