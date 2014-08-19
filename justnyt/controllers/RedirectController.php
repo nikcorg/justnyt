@@ -3,7 +3,7 @@ namespace justnyt\controllers;
 
 class RedirectController extends \glue\Controller
 {
-    protected function createVisit() {
+    protected function getVisitorId() {
         $visitorId = $this->request->COOKIES->vid;
 
         if (null == $visitorId) {
@@ -13,6 +13,10 @@ class RedirectController extends \glue\Controller
         // Update the cookie lifetime
         setcookie("vid", $visitorId, time() + 2592000 /* 30 days */, "/", $_SERVER["HTTP_HOST"], false, true);
 
+        return $visitorId;
+    }
+
+    protected function createVisit($visitorId) {
         $visit = new \justnyt\models\Visit();
         $visit->setVisitorId($visitorId)->setRecordedOn($_SERVER["REQUEST_TIME"]);
 
@@ -20,7 +24,11 @@ class RedirectController extends \glue\Controller
     }
 
     protected function redirectTo($recommendation) {
-        $recommendation->addVisit($this->createVisit())->save();
+        $visitorId = $this->getVisitorId();
+
+        if (null == $this->request->GET->notrack) {
+            $recommendation->addVisit($this->createVisit($visitorId))->save();
+        }
 
         $url = $recommendation->getUrl();
         $url .= (strpos($url, "?") === false ? "?" : "&") . "utm_source=justnyt.fi";
