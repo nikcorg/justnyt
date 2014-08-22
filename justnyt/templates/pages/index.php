@@ -10,4 +10,4 @@
 
 <p>Mikäli mielesi tekee kuraattorinhattua, ilmoittaudu <a href="/kuraattoriksi">vapaaehtoiseksi</a>.</p>
 
-<p>Voit myös seurata suosituksia <a href="http://twitter.com/justnytfi">Twitterissä</a></p>
+<p>Voit myös seurata suosituksia <a href="http://twitter.com/justnytfi">Twitterissä</a> ja <a href="https://www.facebook.com/justnytfi">Facebookissa</a>.</p>
