@@ -6,9 +6,11 @@ Jätä nimesi jonoon, kun kaipaat kuraattorinhattua jälleen päätäsi koristam
 Alla vielä julkaisemasi suositukset kävijämäärineen.
 
 <?php while ($recommendation = $approved->fetch(\PDO::FETCH_OBJ)): ?>
-    <?= $recommendation->TITLE ?>
-    <?= $recommendation->URL ?>
-    <?= $recommendation->CLICKS ?> klikkausta <?= $recommendation->VISITORS ?> kävijältä
+
+<?= $recommendation->TITLE . PHP_EOL ?>
+<?= $recommendation->URL . PHP_EOL  ?>
+<?= $recommendation->CLICKS ?> klikkausta <?= $recommendation->VISITORS ?> kävijältä <?= PHP_EOL . PHP_EOL  ?>
+
 <?php endwhile; ?>
 
 Kiitos ajastasi.
