@@ -14,6 +14,21 @@ if (file_exists(GLUE_APPHOME . DIRECTORY_SEPARATOR . "config.local.php")) {
     include GLUE_APPHOME . DIRECTORY_SEPARATOR . "config.local.php";
 }
 
+\glue\utils\Config::setConfig(
+    array(
+        "minOnline" => new \DateInterval("PT3H"),
+        "delays" => array(
+            "Heti" => new \DateInterval("PT0H"),
+            "+1h" => new \DateInterval("PT1H"),
+            "+3h" => new \DateInterval("PT3H"),
+            "+6h" => new \DateInterval("PT6H"),
+            "+9h" => new \DateInterval("PT9H"),
+            "+12h" => new \DateInterval("PT12H")
+            )
+        ),
+    "recommendations"
+);
+
 Router::addRoute(
     Route::factory(
         "/",
