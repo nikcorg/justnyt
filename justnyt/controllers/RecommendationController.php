@@ -13,6 +13,19 @@ class RecommendationController extends \glue\Controller
         return $curator;
     }
 
+    public function create($token) {
+        $curator = $this->getCurator($token);
+        $this->response->setContent(
+            \justnyt\views\JustNytLayout::quickRender(
+                "recommendation/create",
+                array(
+                    "title" => "Uusi suositus",
+                    "curator" => $curator
+                    )
+                )
+        );
+    }
+
     public function scrape($token, $id) {
         $curator = $this->getCurator($token);
         $pending = \justnyt\models\RecommendationQuery::create()->findOneByRecommendationId($id);

@@ -150,6 +150,12 @@ Router::addRoute(
         RequestMethods::NONE
         )
     ->addAction(
+        ":token/uusi-suositus",
+        array("token" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET,
+        "create"
+        )
+    ->addAction(
         ":token/esikatsele",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET,
