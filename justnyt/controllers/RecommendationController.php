@@ -68,6 +68,9 @@ class RecommendationController extends \glue\Controller
             throw new \glue\exceptions\http\E400Exception("Empty URL");
         }
 
+        $mostRecent = \justnyt\models\RecommendationQuery::create("r")
+            ->latestApproved()
+            ->findOne();
         $upcoming = \justnyt\models\RecommendationQuery::create("r")
             ->upcomingApproved()
             ->find();
@@ -88,12 +91,29 @@ class RecommendationController extends \glue\Controller
             }
         }
 
+        $config = \glue\utils\Config::getDomain("recommendations");
+        $delays = $config->getValue("delays");
+
+        if (null != $mostRecent) {
+            $earliestPubTime = $mostRecent->getApprovedOn()->add($config->getValue("minOnline"));
+            $delays = array_filter(
+                $config->getValue("delays"),
+                function ($delay) use ($earliestPubTime) {
+                    return (
+                        $earliestPubTime <
+                        \DateTime::createFromFormat("U", $_SERVER["REQUEST_TIME"])->add($delay)
+                    );
+                }
+            );
+        }
+
         // Add scrape job to queue, include job ID in response
         $this->response->setContent(
             \justnyt\views\JustNytLayout::quickRender(
                 "recommendation/prepare",
                 array(
                     "title" => "Tarkista suosituksen tiedot",
+                    "delays" => $delays,
                     "curator" => $curator,
                     "dupCheck" => $dupCheck,
                     "candidateId" => $prepare->getRecommendationId(),
