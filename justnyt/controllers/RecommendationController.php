@@ -159,6 +159,7 @@ class RecommendationController extends \glue\Controller
         try {
             $pending->setTitle($this->request->POST->title);
             $pending->setUrl($this->request->POST->url);
+            // TODO: check that this is indeed within configured boundaries
             $pending->setApprovedOn(time() + max(0, min(intval($this->request->POST->delay), 43200)));
             $pending->save();
         } catch (\Exception $e) {
