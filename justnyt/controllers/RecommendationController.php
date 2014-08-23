@@ -80,7 +80,7 @@ class RecommendationController extends \glue\Controller
             \justnyt\views\JustNytLayout::quickRender(
                 "recommendation/prepare",
                 array(
-                    "title" => "Uusi suositus",
+                    "title" => "Tarkista suosituksen tiedot",
                     "curator" => $curator,
                     "dupCheck" => $dupCheck,
                     "candidateId" => $prepare->getRecommendationId(),
