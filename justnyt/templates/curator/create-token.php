@@ -1,4 +1,5 @@
 <p>Lähetä alle oleva linkki seuraajallesi, tai seuravalle jonossa olevalle vapaaehtoiselle.</p>
+<p>Muistathan, että voit jatkaa omaa kauttasi siihen asti, että seuraajasi aloittaa oman kautensa. Täyttämällä profiiliisi sähköpostiosoitteen saat ilmoituksen sähköpostitse kun kautesi päättyy.</p>
 
 <form action="" method="post">
     <div class="form-blocker hidden nomargin"></div>
