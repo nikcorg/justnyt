@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
     <link rel="shortcut icon" href="/assets/img/glyphicons_054_clock.png" type="image/png">
+    <link rel="alternate" href="/feed/rss" type="application/rss+xml">
     <title><?= isset($title) ? preg_replace("/\s+?(-|&mdash;) Just Nyt!$/i", "", $title) . " - " : "" ?>Just Nyt!</title>
     <meta name="google-site-verification" content="EpMiQogg3lp02uS0ozMODwsMHemGQgE7F10LZm0wDUc" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
