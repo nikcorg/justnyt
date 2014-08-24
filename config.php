@@ -33,13 +33,13 @@ Router::addRoute(
     Route::factory(
         "/",
         "\\justnyt\\controllers\\PagesController",
-        RequestMethods::GET,
+        RequestMethods::GET | RequestMethods::HEAD,
         "index"
         )
-    ->addAction("faq", null, RequestMethods::GET, "faq")
-    ->addAction("kuraattoriksi", null, RequestMethods::GET, "volunteer")
-    ->addAction("kuraattorit", null, RequestMethods::GET, "curators")
-    ->addAction("historiaa", null, RequestMethods::GET, "history")
+    ->addAction("faq", null, RequestMethods::GET | RequestMethods::HEAD, "faq")
+    ->addAction("kuraattoriksi", null, RequestMethods::GET | RequestMethods::HEAD, "volunteer")
+    ->addAction("kuraattorit", null, RequestMethods::GET | RequestMethods::HEAD, "curators")
+    ->addAction("historiaa", null, RequestMethods::GET | RequestMethods::HEAD, "history")
     ->addAction("email-info", null, RequestMethods::GET, "emailInfo")
 );
 
@@ -65,7 +65,7 @@ Router::addRoute(
             "pid" => RouteVariableTypes::NUMBER,
             "alias" => RouteVariableTypes::SLUG
             ),
-        RequestMethods::GET,
+        RequestMethods::GET | RequestMethods::HEAD,
         "profile"
         )
 );
@@ -74,13 +74,13 @@ Router::addRoute(
     Route::factory(
         "/feed",
         "\\justnyt\\controllers\\FeedController",
-        RequestMethods::GET,
+        RequestMethods::GET | RequestMethods::HEAD,
         "index"
         )
     ->addAction(
         "rss",
         null,
-        RequestMethods::GET,
+        RequestMethods::GET | RequestMethods::HEAD,
         "rss"
         )
 );
@@ -103,7 +103,7 @@ Router::addRoute(
     ->addAction(
         ":hash",
         array("hash" => RouteVariableTypes::ALNUM),
-        RequestMethods::GET,
+        RequestMethods::GET | RequestMethods::HEAD,
         "hashlookup"
         )
 );
