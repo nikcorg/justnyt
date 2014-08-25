@@ -149,7 +149,7 @@ class CuratorController extends \glue\Controller
 
         $this->response->setContent(
             \justnyt\views\JustNytLayout::quickRender(
-                "curator/create-token",
+                "curator/invite-successor",
                 array(
                     "title" => "Kutsu seuraava kuraattori",
                     "curator" => $curator,
