@@ -119,8 +119,12 @@ class CuratorController extends \glue\Controller
             $candidate->save();
         }
 
-        $activationUrl = sprintf("http://%s/kuraattori/%s/tervetuloa", $_SERVER["HTTP_HOST"], $candidate->getToken());
         $mailSent = false;
+        $activationUrl = sprintf(
+            "http://%s/kuraattori/%s/tervetuloa",
+            $_SERVER["HTTP_HOST"],
+            $candidate->getInviteToken()
+            );
 
         if ($this->request->isPost() && intval($this->request->POST->volunteer) == 1) {
             $msg = new \Nette\Mail\Message();
