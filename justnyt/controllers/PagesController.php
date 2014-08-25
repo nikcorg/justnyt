@@ -48,6 +48,9 @@ class PagesController extends \glue\Controller
                 ->where("pr.Alias != ''")
                 ->endUse()
             ->joinProfile("pr")
+            ->joinRecommendation("re")
+            ->groupBy("pr.ProfileId")
+            ->having("COUNT(re.RecommendationId) > 0")
             ->where("cr.ActivatedOn IS NOT NULL")
             ->orderByActivatedOn("DESC")
             ->find();
