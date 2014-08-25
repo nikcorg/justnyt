@@ -23,6 +23,8 @@ CREATE TABLE `candidate` (
     `candidate_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `created_on` DATETIME NOT NULL,
     `invited_on` DATETIME,
+    `invite_redacted_on` DATETIME,
+    `invites_sent` INT UNSIGNED DEFAULT 0,
     `email` VARCHAR (255) NOT NULL,
 
     PRIMARY KEY (`candidate_id`)
