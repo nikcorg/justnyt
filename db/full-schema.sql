@@ -22,6 +22,7 @@ CREATE TABLE `profile` (
 CREATE TABLE `candidate` (
     `candidate_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `created_on` DATETIME NOT NULL,
+    `invited_on` DATETIME,
     `email` VARCHAR (255) NOT NULL,
 
     PRIMARY KEY (`candidate_id`)
