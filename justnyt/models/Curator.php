@@ -63,7 +63,7 @@ EOQUERY;
     }
 
     public function generateToken($tokenlen = 5) {
-        $candidates = 5;
+        $candidates = 10;
         $tokens = array();
 
         for ($i = 0; $i < $candidates; $i++) {
@@ -81,10 +81,11 @@ EOQUERY;
 
         // If all collide, increase token length
         // TODO: add alert for this event
-        if (count($tokens) === 0) {
+        if (count($tokens) < 2) {
             return $this->generateToken($tokenlen + 1);
         }
 
         $this->setToken(array_pop($tokens));
+        $this->setInviteToken(array_pop($tokens));
     }
 }
