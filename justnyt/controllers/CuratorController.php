@@ -47,7 +47,7 @@ class CuratorController extends \glue\Controller
     public function activate($token) {
         $curator = \justnyt\models\CuratorQuery::create("cr")
             ->where("cr.ActivatedOn IS NULL")
-            ->findOneByToken($token);
+            ->findOneByInviteToken($token);
 
         if (is_null($curator)) {
             throw new \glue\exceptions\http\E404Exception("Token not found");
