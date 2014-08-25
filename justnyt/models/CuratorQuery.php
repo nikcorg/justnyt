@@ -24,7 +24,7 @@ class CuratorQuery extends BaseCuratorQuery
         }
 
         $sql = <<<EOQ
-SELECT `curator_id`, `candidate_id`, `profile_id`, `token`, `created_on`, `activated_on`, `deactivated_on`
+SELECT `curator_id`, `candidate_id`, `profile_id`, `token`, `invite_token`, `created_on`, `activated_on`, `deactivated_on`
 FROM `curator`
 INNER JOIN (
     SELECT MAX(`activated_on`) AS `most_recent_activation` FROM `curator`
