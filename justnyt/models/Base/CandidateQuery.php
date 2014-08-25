@@ -23,11 +23,15 @@ use justnyt\models\Map\CandidateTableMap;
  * @method     ChildCandidateQuery orderByCandidateId($order = Criteria::ASC) Order by the candidate_id column
  * @method     ChildCandidateQuery orderByCreatedOn($order = Criteria::ASC) Order by the created_on column
  * @method     ChildCandidateQuery orderByInvitedOn($order = Criteria::ASC) Order by the invited_on column
+ * @method     ChildCandidateQuery orderByInviteRedactedOn($order = Criteria::ASC) Order by the invite_redacted_on column
+ * @method     ChildCandidateQuery orderByInvitesSent($order = Criteria::ASC) Order by the invites_sent column
  * @method     ChildCandidateQuery orderByEmail($order = Criteria::ASC) Order by the email column
  *
  * @method     ChildCandidateQuery groupByCandidateId() Group by the candidate_id column
  * @method     ChildCandidateQuery groupByCreatedOn() Group by the created_on column
  * @method     ChildCandidateQuery groupByInvitedOn() Group by the invited_on column
+ * @method     ChildCandidateQuery groupByInviteRedactedOn() Group by the invite_redacted_on column
+ * @method     ChildCandidateQuery groupByInvitesSent() Group by the invites_sent column
  * @method     ChildCandidateQuery groupByEmail() Group by the email column
  *
  * @method     ChildCandidateQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -46,12 +50,16 @@ use justnyt\models\Map\CandidateTableMap;
  * @method     ChildCandidate findOneByCandidateId(int $candidate_id) Return the first ChildCandidate filtered by the candidate_id column
  * @method     ChildCandidate findOneByCreatedOn(string $created_on) Return the first ChildCandidate filtered by the created_on column
  * @method     ChildCandidate findOneByInvitedOn(string $invited_on) Return the first ChildCandidate filtered by the invited_on column
+ * @method     ChildCandidate findOneByInviteRedactedOn(string $invite_redacted_on) Return the first ChildCandidate filtered by the invite_redacted_on column
+ * @method     ChildCandidate findOneByInvitesSent(int $invites_sent) Return the first ChildCandidate filtered by the invites_sent column
  * @method     ChildCandidate findOneByEmail(string $email) Return the first ChildCandidate filtered by the email column
  *
  * @method     ChildCandidate[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildCandidate objects based on current ModelCriteria
  * @method     ChildCandidate[]|ObjectCollection findByCandidateId(int $candidate_id) Return ChildCandidate objects filtered by the candidate_id column
  * @method     ChildCandidate[]|ObjectCollection findByCreatedOn(string $created_on) Return ChildCandidate objects filtered by the created_on column
  * @method     ChildCandidate[]|ObjectCollection findByInvitedOn(string $invited_on) Return ChildCandidate objects filtered by the invited_on column
+ * @method     ChildCandidate[]|ObjectCollection findByInviteRedactedOn(string $invite_redacted_on) Return ChildCandidate objects filtered by the invite_redacted_on column
+ * @method     ChildCandidate[]|ObjectCollection findByInvitesSent(int $invites_sent) Return ChildCandidate objects filtered by the invites_sent column
  * @method     ChildCandidate[]|ObjectCollection findByEmail(string $email) Return ChildCandidate objects filtered by the email column
  * @method     ChildCandidate[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -142,7 +150,7 @@ abstract class CandidateQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT `CANDIDATE_ID`, `CREATED_ON`, `INVITED_ON`, `EMAIL` FROM `candidate` WHERE `CANDIDATE_ID` = :p0';
+        $sql = 'SELECT `CANDIDATE_ID`, `CREATED_ON`, `INVITED_ON`, `INVITE_REDACTED_ON`, `INVITES_SENT`, `EMAIL` FROM `candidate` WHERE `CANDIDATE_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -357,6 +365,90 @@ abstract class CandidateQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(CandidateTableMap::COL_INVITED_ON, $invitedOn, $comparison);
+    }
+
+    /**
+     * Filter the query on the invite_redacted_on column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByInviteRedactedOn('2011-03-14'); // WHERE invite_redacted_on = '2011-03-14'
+     * $query->filterByInviteRedactedOn('now'); // WHERE invite_redacted_on = '2011-03-14'
+     * $query->filterByInviteRedactedOn(array('max' => 'yesterday')); // WHERE invite_redacted_on > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $inviteRedactedOn The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildCandidateQuery The current query, for fluid interface
+     */
+    public function filterByInviteRedactedOn($inviteRedactedOn = null, $comparison = null)
+    {
+        if (is_array($inviteRedactedOn)) {
+            $useMinMax = false;
+            if (isset($inviteRedactedOn['min'])) {
+                $this->addUsingAlias(CandidateTableMap::COL_INVITE_REDACTED_ON, $inviteRedactedOn['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($inviteRedactedOn['max'])) {
+                $this->addUsingAlias(CandidateTableMap::COL_INVITE_REDACTED_ON, $inviteRedactedOn['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(CandidateTableMap::COL_INVITE_REDACTED_ON, $inviteRedactedOn, $comparison);
+    }
+
+    /**
+     * Filter the query on the invites_sent column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByInvitesSent(1234); // WHERE invites_sent = 1234
+     * $query->filterByInvitesSent(array(12, 34)); // WHERE invites_sent IN (12, 34)
+     * $query->filterByInvitesSent(array('min' => 12)); // WHERE invites_sent > 12
+     * </code>
+     *
+     * @param     mixed $invitesSent The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildCandidateQuery The current query, for fluid interface
+     */
+    public function filterByInvitesSent($invitesSent = null, $comparison = null)
+    {
+        if (is_array($invitesSent)) {
+            $useMinMax = false;
+            if (isset($invitesSent['min'])) {
+                $this->addUsingAlias(CandidateTableMap::COL_INVITES_SENT, $invitesSent['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($invitesSent['max'])) {
+                $this->addUsingAlias(CandidateTableMap::COL_INVITES_SENT, $invitesSent['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(CandidateTableMap::COL_INVITES_SENT, $invitesSent, $comparison);
     }
 
     /**
