@@ -35,6 +35,7 @@ CREATE TABLE `curator` (
     `candidate_id` INT UNSIGNED,
     `profile_id` INT UNSIGNED,
     `token` VARCHAR (32) NOT NULL,
+    `invite_token` VARCHAR (32) NOT NULL,
     `created_on` DATETIME,
     `activated_on` DATETIME,
     `deactivated_on` DATETIME,
