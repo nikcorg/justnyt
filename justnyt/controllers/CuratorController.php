@@ -105,7 +105,7 @@ class CuratorController extends \glue\Controller
             ->where("cr.ActivatedOn IS NULL")
             ->findOne();
 
-        $volunteer = $check = \justnyt\models\CandidateQuery::create("cd")
+        $volunteer = \justnyt\models\CandidateQuery::create("cd")
             ->joinCurator("cr")
             ->useCuratorQuery("cr")
                 ->where("cr.ActivatedOn IS NULL")
