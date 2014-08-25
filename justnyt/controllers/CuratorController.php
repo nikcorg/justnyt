@@ -61,7 +61,6 @@ class CuratorController extends \glue\Controller
 
             try {
                 $curator->activate();
-
                 $currentCurator->deactivate();
 
                 if (null != $currentCurator->getProfile()->getEmail()) {
