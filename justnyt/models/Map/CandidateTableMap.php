@@ -59,7 +59,7 @@ class CandidateTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class CandidateTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the CANDIDATE_ID field
@@ -80,6 +80,11 @@ class CandidateTableMap extends TableMap
      * the column name for the CREATED_ON field
      */
     const COL_CREATED_ON = 'candidate.CREATED_ON';
+
+    /**
+     * the column name for the INVITED_ON field
+     */
+    const COL_INVITED_ON = 'candidate.INVITED_ON';
 
     /**
      * the column name for the EMAIL field
@@ -98,12 +103,12 @@ class CandidateTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('CandidateId', 'CreatedOn', 'Email', ),
-        self::TYPE_STUDLYPHPNAME => array('candidateId', 'createdOn', 'email', ),
-        self::TYPE_COLNAME       => array(CandidateTableMap::COL_CANDIDATE_ID, CandidateTableMap::COL_CREATED_ON, CandidateTableMap::COL_EMAIL, ),
-        self::TYPE_RAW_COLNAME   => array('COL_CANDIDATE_ID', 'COL_CREATED_ON', 'COL_EMAIL', ),
-        self::TYPE_FIELDNAME     => array('candidate_id', 'created_on', 'email', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('CandidateId', 'CreatedOn', 'InvitedOn', 'Email', ),
+        self::TYPE_STUDLYPHPNAME => array('candidateId', 'createdOn', 'invitedOn', 'email', ),
+        self::TYPE_COLNAME       => array(CandidateTableMap::COL_CANDIDATE_ID, CandidateTableMap::COL_CREATED_ON, CandidateTableMap::COL_INVITED_ON, CandidateTableMap::COL_EMAIL, ),
+        self::TYPE_RAW_COLNAME   => array('COL_CANDIDATE_ID', 'COL_CREATED_ON', 'COL_INVITED_ON', 'COL_EMAIL', ),
+        self::TYPE_FIELDNAME     => array('candidate_id', 'created_on', 'invited_on', 'email', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -113,12 +118,12 @@ class CandidateTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('CandidateId' => 0, 'CreatedOn' => 1, 'Email' => 2, ),
-        self::TYPE_STUDLYPHPNAME => array('candidateId' => 0, 'createdOn' => 1, 'email' => 2, ),
-        self::TYPE_COLNAME       => array(CandidateTableMap::COL_CANDIDATE_ID => 0, CandidateTableMap::COL_CREATED_ON => 1, CandidateTableMap::COL_EMAIL => 2, ),
-        self::TYPE_RAW_COLNAME   => array('COL_CANDIDATE_ID' => 0, 'COL_CREATED_ON' => 1, 'COL_EMAIL' => 2, ),
-        self::TYPE_FIELDNAME     => array('candidate_id' => 0, 'created_on' => 1, 'email' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('CandidateId' => 0, 'CreatedOn' => 1, 'InvitedOn' => 2, 'Email' => 3, ),
+        self::TYPE_STUDLYPHPNAME => array('candidateId' => 0, 'createdOn' => 1, 'invitedOn' => 2, 'email' => 3, ),
+        self::TYPE_COLNAME       => array(CandidateTableMap::COL_CANDIDATE_ID => 0, CandidateTableMap::COL_CREATED_ON => 1, CandidateTableMap::COL_INVITED_ON => 2, CandidateTableMap::COL_EMAIL => 3, ),
+        self::TYPE_RAW_COLNAME   => array('COL_CANDIDATE_ID' => 0, 'COL_CREATED_ON' => 1, 'COL_INVITED_ON' => 2, 'COL_EMAIL' => 3, ),
+        self::TYPE_FIELDNAME     => array('candidate_id' => 0, 'created_on' => 1, 'invited_on' => 2, 'email' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -139,6 +144,7 @@ class CandidateTableMap extends TableMap
         // columns
         $this->addPrimaryKey('CANDIDATE_ID', 'CandidateId', 'INTEGER', true, 10, null);
         $this->addColumn('CREATED_ON', 'CreatedOn', 'TIMESTAMP', true, null, null);
+        $this->addColumn('INVITED_ON', 'InvitedOn', 'TIMESTAMP', false, null, null);
         $this->addColumn('EMAIL', 'Email', 'VARCHAR', true, 255, null);
     } // initialize()
 
@@ -302,10 +308,12 @@ class CandidateTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(CandidateTableMap::COL_CANDIDATE_ID);
             $criteria->addSelectColumn(CandidateTableMap::COL_CREATED_ON);
+            $criteria->addSelectColumn(CandidateTableMap::COL_INVITED_ON);
             $criteria->addSelectColumn(CandidateTableMap::COL_EMAIL);
         } else {
             $criteria->addSelectColumn($alias . '.CANDIDATE_ID');
             $criteria->addSelectColumn($alias . '.CREATED_ON');
+            $criteria->addSelectColumn($alias . '.INVITED_ON');
             $criteria->addSelectColumn($alias . '.EMAIL');
         }
     }
