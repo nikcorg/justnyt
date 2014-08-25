@@ -24,6 +24,7 @@ use justnyt\models\Map\CuratorTableMap;
  * @method     ChildCuratorQuery orderByCandidateId($order = Criteria::ASC) Order by the candidate_id column
  * @method     ChildCuratorQuery orderByProfileId($order = Criteria::ASC) Order by the profile_id column
  * @method     ChildCuratorQuery orderByToken($order = Criteria::ASC) Order by the token column
+ * @method     ChildCuratorQuery orderByInviteToken($order = Criteria::ASC) Order by the invite_token column
  * @method     ChildCuratorQuery orderByCreatedOn($order = Criteria::ASC) Order by the created_on column
  * @method     ChildCuratorQuery orderByActivatedOn($order = Criteria::ASC) Order by the activated_on column
  * @method     ChildCuratorQuery orderByDeactivatedOn($order = Criteria::ASC) Order by the deactivated_on column
@@ -32,6 +33,7 @@ use justnyt\models\Map\CuratorTableMap;
  * @method     ChildCuratorQuery groupByCandidateId() Group by the candidate_id column
  * @method     ChildCuratorQuery groupByProfileId() Group by the profile_id column
  * @method     ChildCuratorQuery groupByToken() Group by the token column
+ * @method     ChildCuratorQuery groupByInviteToken() Group by the invite_token column
  * @method     ChildCuratorQuery groupByCreatedOn() Group by the created_on column
  * @method     ChildCuratorQuery groupByActivatedOn() Group by the activated_on column
  * @method     ChildCuratorQuery groupByDeactivatedOn() Group by the deactivated_on column
@@ -61,6 +63,7 @@ use justnyt\models\Map\CuratorTableMap;
  * @method     ChildCurator findOneByCandidateId(int $candidate_id) Return the first ChildCurator filtered by the candidate_id column
  * @method     ChildCurator findOneByProfileId(int $profile_id) Return the first ChildCurator filtered by the profile_id column
  * @method     ChildCurator findOneByToken(string $token) Return the first ChildCurator filtered by the token column
+ * @method     ChildCurator findOneByInviteToken(string $invite_token) Return the first ChildCurator filtered by the invite_token column
  * @method     ChildCurator findOneByCreatedOn(string $created_on) Return the first ChildCurator filtered by the created_on column
  * @method     ChildCurator findOneByActivatedOn(string $activated_on) Return the first ChildCurator filtered by the activated_on column
  * @method     ChildCurator findOneByDeactivatedOn(string $deactivated_on) Return the first ChildCurator filtered by the deactivated_on column
@@ -70,6 +73,7 @@ use justnyt\models\Map\CuratorTableMap;
  * @method     ChildCurator[]|ObjectCollection findByCandidateId(int $candidate_id) Return ChildCurator objects filtered by the candidate_id column
  * @method     ChildCurator[]|ObjectCollection findByProfileId(int $profile_id) Return ChildCurator objects filtered by the profile_id column
  * @method     ChildCurator[]|ObjectCollection findByToken(string $token) Return ChildCurator objects filtered by the token column
+ * @method     ChildCurator[]|ObjectCollection findByInviteToken(string $invite_token) Return ChildCurator objects filtered by the invite_token column
  * @method     ChildCurator[]|ObjectCollection findByCreatedOn(string $created_on) Return ChildCurator objects filtered by the created_on column
  * @method     ChildCurator[]|ObjectCollection findByActivatedOn(string $activated_on) Return ChildCurator objects filtered by the activated_on column
  * @method     ChildCurator[]|ObjectCollection findByDeactivatedOn(string $deactivated_on) Return ChildCurator objects filtered by the deactivated_on column
@@ -162,7 +166,7 @@ abstract class CuratorQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT `CURATOR_ID`, `CANDIDATE_ID`, `PROFILE_ID`, `TOKEN`, `CREATED_ON`, `ACTIVATED_ON`, `DEACTIVATED_ON` FROM `curator` WHERE `CURATOR_ID` = :p0';
+        $sql = 'SELECT `CURATOR_ID`, `CANDIDATE_ID`, `PROFILE_ID`, `TOKEN`, `INVITE_TOKEN`, `CREATED_ON`, `ACTIVATED_ON`, `DEACTIVATED_ON` FROM `curator` WHERE `CURATOR_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -406,6 +410,35 @@ abstract class CuratorQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(CuratorTableMap::COL_TOKEN, $token, $comparison);
+    }
+
+    /**
+     * Filter the query on the invite_token column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByInviteToken('fooValue');   // WHERE invite_token = 'fooValue'
+     * $query->filterByInviteToken('%fooValue%'); // WHERE invite_token LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $inviteToken The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildCuratorQuery The current query, for fluid interface
+     */
+    public function filterByInviteToken($inviteToken = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($inviteToken)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $inviteToken)) {
+                $inviteToken = str_replace('*', '%', $inviteToken);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(CuratorTableMap::COL_INVITE_TOKEN, $inviteToken, $comparison);
     }
 
     /**

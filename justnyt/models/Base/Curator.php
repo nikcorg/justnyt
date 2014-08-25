@@ -94,6 +94,12 @@ abstract class Curator implements ActiveRecordInterface
     protected $token;
 
     /**
+     * The value for the invite_token field.
+     * @var        string
+     */
+    protected $invite_token;
+
+    /**
      * The value for the created_on field.
      * @var        \DateTime
      */
@@ -399,6 +405,16 @@ abstract class Curator implements ActiveRecordInterface
     }
 
     /**
+     * Get the [invite_token] column value.
+     *
+     * @return string
+     */
+    public function getInviteToken()
+    {
+        return $this->invite_token;
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_on] column value.
      *
      *
@@ -506,19 +522,22 @@ abstract class Curator implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : CuratorTableMap::translateFieldName('Token', TableMap::TYPE_PHPNAME, $indexType)];
             $this->token = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CuratorTableMap::translateFieldName('CreatedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CuratorTableMap::translateFieldName('InviteToken', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->invite_token = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CuratorTableMap::translateFieldName('CreatedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CuratorTableMap::translateFieldName('ActivatedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CuratorTableMap::translateFieldName('ActivatedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->activated_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CuratorTableMap::translateFieldName('DeactivatedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : CuratorTableMap::translateFieldName('DeactivatedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -531,7 +550,7 @@ abstract class Curator implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = CuratorTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = CuratorTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Curator'), 0, $e);
@@ -648,6 +667,26 @@ abstract class Curator implements ActiveRecordInterface
 
         return $this;
     } // setToken()
+
+    /**
+     * Set the value of [invite_token] column.
+     *
+     * @param  string $v new value
+     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
+     */
+    public function setInviteToken($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->invite_token !== $v) {
+            $this->invite_token = $v;
+            $this->modifiedColumns[CuratorTableMap::COL_INVITE_TOKEN] = true;
+        }
+
+        return $this;
+    } // setInviteToken()
 
     /**
      * Sets the value of [created_on] column to a normalized version of the date/time value specified.
@@ -935,6 +974,9 @@ abstract class Curator implements ActiveRecordInterface
         if ($this->isColumnModified(CuratorTableMap::COL_TOKEN)) {
             $modifiedColumns[':p' . $index++]  = '`TOKEN`';
         }
+        if ($this->isColumnModified(CuratorTableMap::COL_INVITE_TOKEN)) {
+            $modifiedColumns[':p' . $index++]  = '`INVITE_TOKEN`';
+        }
         if ($this->isColumnModified(CuratorTableMap::COL_CREATED_ON)) {
             $modifiedColumns[':p' . $index++]  = '`CREATED_ON`';
         }
@@ -966,6 +1008,9 @@ abstract class Curator implements ActiveRecordInterface
                         break;
                     case '`TOKEN`':
                         $stmt->bindValue($identifier, $this->token, PDO::PARAM_STR);
+                        break;
+                    case '`INVITE_TOKEN`':
+                        $stmt->bindValue($identifier, $this->invite_token, PDO::PARAM_STR);
                         break;
                     case '`CREATED_ON`':
                         $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
@@ -1051,12 +1096,15 @@ abstract class Curator implements ActiveRecordInterface
                 return $this->getToken();
                 break;
             case 4:
-                return $this->getCreatedOn();
+                return $this->getInviteToken();
                 break;
             case 5:
-                return $this->getActivatedOn();
+                return $this->getCreatedOn();
                 break;
             case 6:
+                return $this->getActivatedOn();
+                break;
+            case 7:
                 return $this->getDeactivatedOn();
                 break;
             default:
@@ -1093,9 +1141,10 @@ abstract class Curator implements ActiveRecordInterface
             $keys[1] => $this->getCandidateId(),
             $keys[2] => $this->getProfileId(),
             $keys[3] => $this->getToken(),
-            $keys[4] => $this->getCreatedOn(),
-            $keys[5] => $this->getActivatedOn(),
-            $keys[6] => $this->getDeactivatedOn(),
+            $keys[4] => $this->getInviteToken(),
+            $keys[5] => $this->getCreatedOn(),
+            $keys[6] => $this->getActivatedOn(),
+            $keys[7] => $this->getDeactivatedOn(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1195,12 +1244,15 @@ abstract class Curator implements ActiveRecordInterface
                 $this->setToken($value);
                 break;
             case 4:
-                $this->setCreatedOn($value);
+                $this->setInviteToken($value);
                 break;
             case 5:
-                $this->setActivatedOn($value);
+                $this->setCreatedOn($value);
                 break;
             case 6:
+                $this->setActivatedOn($value);
+                break;
+            case 7:
                 $this->setDeactivatedOn($value);
                 break;
         } // switch()
@@ -1242,13 +1294,16 @@ abstract class Curator implements ActiveRecordInterface
             $this->setToken($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setCreatedOn($arr[$keys[4]]);
+            $this->setInviteToken($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setActivatedOn($arr[$keys[5]]);
+            $this->setCreatedOn($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setDeactivatedOn($arr[$keys[6]]);
+            $this->setActivatedOn($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setDeactivatedOn($arr[$keys[7]]);
         }
     }
 
@@ -1296,6 +1351,9 @@ abstract class Curator implements ActiveRecordInterface
         }
         if ($this->isColumnModified(CuratorTableMap::COL_TOKEN)) {
             $criteria->add(CuratorTableMap::COL_TOKEN, $this->token);
+        }
+        if ($this->isColumnModified(CuratorTableMap::COL_INVITE_TOKEN)) {
+            $criteria->add(CuratorTableMap::COL_INVITE_TOKEN, $this->invite_token);
         }
         if ($this->isColumnModified(CuratorTableMap::COL_CREATED_ON)) {
             $criteria->add(CuratorTableMap::COL_CREATED_ON, $this->created_on);
@@ -1395,6 +1453,7 @@ abstract class Curator implements ActiveRecordInterface
         $copyObj->setCandidateId($this->getCandidateId());
         $copyObj->setProfileId($this->getProfileId());
         $copyObj->setToken($this->getToken());
+        $copyObj->setInviteToken($this->getInviteToken());
         $copyObj->setCreatedOn($this->getCreatedOn());
         $copyObj->setActivatedOn($this->getActivatedOn());
         $copyObj->setDeactivatedOn($this->getDeactivatedOn());
@@ -1793,6 +1852,7 @@ abstract class Curator implements ActiveRecordInterface
         $this->candidate_id = null;
         $this->profile_id = null;
         $this->token = null;
+        $this->invite_token = null;
         $this->created_on = null;
         $this->activated_on = null;
         $this->deactivated_on = null;
