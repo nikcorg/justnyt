@@ -98,7 +98,7 @@ class CuratorController extends \glue\Controller
         );
     }
 
-    public function createToken($token) {
+    public function invite($token) {
         $curator = $this->getCurator($token);
         $candidate = \justnyt\models\CuratorQuery::create("cr")
             ->where("cr.ActivatedOn IS NULL")

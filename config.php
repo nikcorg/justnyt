@@ -154,7 +154,7 @@ Router::addRoute(
         ":token/seuraava",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET | RequestMethods::POST,
-        "createToken"
+        "invite"
         )
 );
 
