@@ -98,53 +98,135 @@ class CuratorController extends \glue\Controller
         );
     }
 
-    public function invite($token) {
-        $curator = $this->getCurator($token);
-        $candidate = \justnyt\models\CuratorQuery::create("cr")
-            ->where("cr.ActivatedOn IS NULL")
-            ->findOne();
-
+    protected function getFreeCandidate() {
         $volunteer = \justnyt\models\CandidateQuery::create("cd")
+            ->nextFree()
             ->joinCurator("cr")
             ->useCuratorQuery("cr")
                 ->where("cr.ActivatedOn IS NULL")
                 ->endUse()
-            ->orderByCreatedOn("ASC")
             ->findOne();
 
-        if (is_null($candidate)) {
-            $candidate = new \justnyt\models\Curator();
-            $candidate->generateToken();
-            $candidate->save();
-        }
+        return $volunteer;
+    }
 
-        $mailSent = false;
-        $activationUrl = sprintf(
-            "http://%s/kuraattori/%s/tervetuloa",
-            $_SERVER["HTTP_HOST"],
-            $candidate->getInviteToken()
+    protected function getInvitedCandidate() {
+        $volunteer = \justnyt\models\CandidateQuery::create("cd")
+            ->invitePending()
+            ->joinCurator("cr")
+            ->useCuratorQuery("cr")
+                ->where("cr.ActivatedOn IS NULL")
+                ->endUse()
+            ->findOne();
+
+        return $volunteer;
+    }
+
+    protected function getInactiveCurator() {
+        $curator = \justnyt\models\CuratorQuery::create("cr")
+            ->where("cr.ActivatedOn IS NULL")
+            ->findOne();
+
+        // if (is_null($curator)) {
+        //     $curator = new \justnyt\models\Curator();
+        //     $curator->generateToken();
+        //     $curator->save();
+        // }
+
+        return $curator;
+    }
+
+    protected function doSendInviteMail($candidate) {
+        $msg = new \Nette\Mail\Message();
+        $msg->setFrom("JustNyt <justnytfi@gmail.com>")
+            ->addTo($candidate->getEmail())
+            ->setSubject("JustNyt tarvitsee kuraattoria")
+            ->setBody(\glue\ui\View::quickRender(
+                "email/curator-invite", array(
+                    "url" => $activationUrl
+                    )
+                )
             );
 
-        if ($this->request->isPost() && intval($this->request->POST->volunteer) == 1) {
-            $msg = new \Nette\Mail\Message();
-            $msg->setFrom("JustNyt <justnytfi@gmail.com>")
-                ->addTo($volunteer->getEmail())
-                ->setSubject("JustNyt tarvitsee kuraattoria")
-                ->setBody(\glue\ui\View::quickRender(
-                    "email/curator-invite", array(
-                        "url" => $activationUrl
+        $candidate->setInvitedOn(time());
+        $candidate->setInvitesSent($candidate->getInvitesSent() + 1);
+        $candidate->save();
+
+        $mailer = new \Nette\Mail\SendmailMailer();
+        $mailer->send($msg);
+    }
+
+    protected function doRedactInvite($candidate) {
+        $msg = new \Nette\Mail\Message();
+        $msg->setFrom("JustNyt <justnytfi@gmail.com>")
+            ->addTo($candidate->getEmail())
+            ->setSubject("JustNyt tarvitsee kuraattoria")
+            ->setBody(\glue\ui\View::quickRender(
+                "email/curator-invite", array(
+                    "url" => $activationUrl
+                    )
+                )
+            );
+
+        $candidate->setInvitedRedactedOn(time());
+        $candidate->save();
+
+        $mailer = new \Nette\Mail\SendmailMailer();
+        $mailer->send($msg);
+    }
+
+    public function invite($token) {
+        $curator = $this->getCurator($token);
+        $next = $this->getInactiveCurator();
+        $invited = $this->getInvitedCandidate();
+        $volunteer = $this->getFreeCandidate();
+
+        if ($this->request->isPost()) {
+            if ($this->request->POST->action == "next-in-queue") {
+                $candidate->setCandidate($volunteer);
+                $this->doSendInviteMail($candidate);
+                $graceUntil = $candidate->getInvitedOn()->add(new \DateInterval("P2D"));
+
+                return $this->response->setContent(
+                    "curator/invite-sent",
+                    array(
+                        "title" => "Kutsu lähetettiin",
+                        "curator" => $curator,
+                        "candidate" => $candidate,
+                        "graceUntil" => $graceUntil
                         )
+                    );
+            } elseif ($this->request->POST->action == "manual-invite") {
+                return $this->response->setContent(
+                    "curator/invite-manual",
+                    array(
+                        "title" => "")
+                    );
+            }
+        }
+
+        if (null != $next && null != $next->getCandidateId()) {
+            return $this->response->setContent(
+                "curator/invite-sent",
+                array(
+                    "title" => "Kutsu lähetettiin",
+                    "curator" => $curator,
+                    "candidate" => $candidate,
+                    "graceUntil" => $graceUntil
                     )
                 );
+        } elseif (null != $next && null == $next->getCandidateId()) {
+            $activationUrl = sprintf(
+                "http://%s/kuraattori/%s/tervetuloa",
+                $_SERVER["HTTP_HOST"],
+                $next->getInviteToken()
+                );
 
-            $mailer = new \Nette\Mail\SendmailMailer();
-            $mailer->send($msg);
-
-            $candidate->setCandidate($volunteer);
-            $candidate->save();
-
-            $mailSent = true;
-            // var_dump($volunteer->getEmail(), $mailer->send($msg));die();
+            return $this->response->setContent(
+                "curator/invite-manual",
+                array(
+                    "title" => "")
+                );
         }
 
         $this->response->setContent(
@@ -153,8 +235,6 @@ class CuratorController extends \glue\Controller
                 array(
                     "title" => "Kutsu seuraava kuraattori",
                     "curator" => $curator,
-                    "mailSent" => $mailSent,
-                    "activationUrl" => $activationUrl,
                     "volunteers" => ! is_null($volunteer)
                     )
                 )

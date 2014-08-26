@@ -1,0 +1,2 @@
+<p>Seuraava kuraattori on nyt kutsuttu palvelukseen. Voit kuitenkin rauhassa jatkaa kuraattorin tehtäviäsi siihen asti, että seuraajasi aktivoi oman tilinsä. Mikäli olet lisännyt profiiliisi sähköpostiosoitteesi, saat ilmoituksen kun oma tilisi sulkeutuu.</p>
+<p>Mikäli tuntuu, että seuraajallasi kestää turhan pitkään aloittaa oma kautensa, voit muistuttaa häntä siitä uudestaan tai perua kutsun kokonaan. Aikaisintaan kuitenkin <?= $graceUntil->format("j.m.Y H:i") ?>.</p>

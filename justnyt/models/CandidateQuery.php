@@ -17,5 +17,19 @@ use justnyt\models\Base\CandidateQuery as BaseCandidateQuery;
  */
 class CandidateQuery extends BaseCandidateQuery
 {
+    public function nextFree() {
+        $modelAlias = $this->getModelAlias();
 
+        return $this->where($modelAlias . ".InvitedOn IS NULL")
+            ->where($modelAlias . ".InviteRedactedOn IS NULL")
+            ->orderByCreatedOn("ASC");
+    }
+
+    public function invitePending() {
+        $modelAlias = $this->getModelAlias();
+
+        return $this->where($modelAlias . ".InvitedOn IS NOT NULL")
+            ->where($modelAlias . ".InviteRedactedOn IS NULL")
+            ->orderByCreatedOn("ASC");
+    }
 } // CandidateQuery

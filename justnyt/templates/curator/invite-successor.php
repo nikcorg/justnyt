@@ -1,17 +1,11 @@
-<p>Lähetä alle oleva linkki seuraajallesi, tai seuravalle jonossa olevalle vapaaehtoiselle.</p>
-<p>Muistathan, että voit jatkaa omaa kauttasi siihen asti, että seuraajasi aloittaa oman kautensa. Täyttämällä profiiliisi sähköpostiosoitteen saat ilmoituksen sähköpostitse kun kautesi päättyy.</p>
-
+<p>Voit halutessasi valita seuraajasi itse, tai voit kutsua seuraavan vapaaehtoisen, mikäli jono ei ole tyhjä.</p>
 <form action="" method="post">
     <div class="form-blocker hidden nomargin"></div>
 
-    <p><label><span>Aktivointiosoite</span>
-        <input type="url" name="url" value="<?= $activationUrl ?>"></label></p>
+    <p><button type="submit" name="action" value="manual-invite">Haluan kutsua seuraajani itse</button></p>
 
-    <?php if ($mailSent): ?>
-        <p>Viesti lähetettiin seuraavalle vapaaehtoiselle.</p>
-    <?php elseif ($volunteers): ?>
-        <button type="submit" name="volunteer" value="0" class="hidden">Lähetän koodin itse</button>
-        <p><button type="submit" name="volunteer" value="1">Lähetä seuraavalle jonottajalle</button></p>
+    <?php if ($volunteers): ?>
+        <p><button type="submit" name="action" value="next-in-queue">Lähetä kutsu seuraavalle jonottajalle</button></p>
     <?php else: ?>
         <p>Valitettavasti ei tällä hetkellä ole yhtään vapaaehtoista jonossa. Ellet keksi ketä kutsuisit, ota yhteyttä ylläpitoon osoitteessa <a href="mailto:justnytfi+apua@gmail.com">justnytfi+apua@gmail.com</a>.</p>
     <?php endif; ?>
