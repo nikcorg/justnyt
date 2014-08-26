@@ -10,7 +10,7 @@ class PagesController extends \glue\Controller
 
     public function index() {
         $recommendation = \justnyt\models\RecommendationQuery::create("r")
-            ->approved()
+            ->latestApproved()
             ->findOne();
 
         $this->respond(
