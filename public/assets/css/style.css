@@ -96,7 +96,8 @@ main, footer, header {
 ul, ol, dl, dd,
 p,
 form,
-main, nav, footer, header {
+main, nav, footer, header,
+div {
     margin-bottom: 1.5rem;
 }
 
@@ -429,4 +430,34 @@ main nav .blurb {
 
 .mugshot > :last-child {
     margin-bottom: 0;
+}
+
+/* Blurb */
+.blurb {
+    padding: 1.5rem;
+    border: 1px solid #000;
+    background-color: #f96;
+    background-color: rgba(255, 125, 0, 0.15);
+    text-align: center;
+    float: right;
+    margin-right: 1.5rem;
+    margin-left: 1.5rem;
+
+    -webkit-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -o-border-radius: 1rem;
+    border-radius: 1rem;
+
+    -webkit-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+    -ms-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+    -o-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+
+    -webkit-transform: rotateZ(4deg);
+    -moz-transform: rotateZ(4deg);
+    -ms-transform: rotateZ(4deg);
+    -o-transform: rotateZ(4deg);
+    transform: rotateZ(4deg);
 }
