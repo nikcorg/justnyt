@@ -87,5 +87,7 @@ EOQUERY;
 
         $this->setToken(array_pop($tokens));
         $this->setInviteToken(array_pop($tokens));
+
+        return true;
     }
 }
