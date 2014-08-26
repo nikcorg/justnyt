@@ -62,6 +62,10 @@ EOQUERY;
         return $this->save();
     }
 
+    public function preInsert(\Propel\Runtime\Connection\ConnectionInterface $con = null) {
+        return $this->generateToken();
+    }
+
     public function generateToken($tokenlen = 5) {
         $candidates = 10;
         $tokens = array();
