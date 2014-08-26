@@ -63,7 +63,9 @@ EOQUERY;
     }
 
     public function preInsert(\Propel\Runtime\Connection\ConnectionInterface $con = null) {
-        return $this->generateToken();
+        $this->setCreatedOn(time());
+        $this->generateToken();
+        return true;
     }
 
     public function generateToken($tokenlen = 5) {
