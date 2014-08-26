@@ -9,11 +9,16 @@ class PagesController extends \glue\Controller
     }
 
     public function index() {
+        $recommendation = \justnyt\models\RecommendationQuery::create("r")
+            ->approved()
+            ->findOne();
+
         $this->respond(
             \justnyt\views\JustNytLayout::quickRender(
                 "pages/index",
                 array(
-                    "title" => "Parhautta &mdash; Just nyt!"
+                    "title" => "Parhautta &mdash; Just nyt!",
+                    "recommendation" => $recommendation
                     )
                 )
         );

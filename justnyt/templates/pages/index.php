@@ -1,5 +1,10 @@
 <p>JustNyt.fi haluaa auttaa sinua löytämään mielenkiintoista luettavaa.</p>
 
+<div class="blurb">
+    <h2>Tsekkaa uusin suositus</h2>
+    <p class="nomargin"><a href="/s/<?= $recommendation->getShortlink() ?>"><?= $recommendation->getTitle() ?></a></p>
+</div>
+
 <h2>Miten se toimii?</h2>
 
 <p>Just Nyt on vain välityspalvelu. Minne, sen päättää kuraattori. Kuraattori on blogien lukija, joka mielenkiintoiseen juttuun törmätessään suosittelee sitä muille Just Nytin avulla.</p>
