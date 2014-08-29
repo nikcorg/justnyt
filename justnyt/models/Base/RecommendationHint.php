@@ -18,29 +18,25 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
-use justnyt\models\Candidate as ChildCandidate;
-use justnyt\models\CandidateQuery as ChildCandidateQuery;
-use justnyt\models\Curator as ChildCurator;
-use justnyt\models\CuratorQuery as ChildCuratorQuery;
-use justnyt\models\Profile as ChildProfile;
-use justnyt\models\ProfileQuery as ChildProfileQuery;
 use justnyt\models\Recommendation as ChildRecommendation;
+use justnyt\models\RecommendationHint as ChildRecommendationHint;
+use justnyt\models\RecommendationHintQuery as ChildRecommendationHintQuery;
 use justnyt\models\RecommendationQuery as ChildRecommendationQuery;
-use justnyt\models\Map\CuratorTableMap;
+use justnyt\models\Map\RecommendationHintTableMap;
 
 /**
- * Base class that represents a row from the 'curator' table.
+ * Base class that represents a row from the 'recommendation_hint' table.
  *
  *
  *
 * @package    propel.generator.justnyt.models.Base
 */
-abstract class Curator implements ActiveRecordInterface
+abstract class RecommendationHint implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\justnyt\\models\\Map\\CuratorTableMap';
+    const TABLE_MAP = '\\justnyt\\models\\Map\\RecommendationHintTableMap';
 
 
     /**
@@ -70,34 +66,10 @@ abstract class Curator implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the curator_id field.
+     * The value for the recommendation_hint_id field.
      * @var        int
      */
-    protected $curator_id;
-
-    /**
-     * The value for the candidate_id field.
-     * @var        int
-     */
-    protected $candidate_id;
-
-    /**
-     * The value for the profile_id field.
-     * @var        int
-     */
-    protected $profile_id;
-
-    /**
-     * The value for the token field.
-     * @var        string
-     */
-    protected $token;
-
-    /**
-     * The value for the invite_token field.
-     * @var        string
-     */
-    protected $invite_token;
+    protected $recommendation_hint_id;
 
     /**
      * The value for the created_on field.
@@ -106,26 +78,16 @@ abstract class Curator implements ActiveRecordInterface
     protected $created_on;
 
     /**
-     * The value for the activated_on field.
-     * @var        \DateTime
+     * The value for the url field.
+     * @var        string
      */
-    protected $activated_on;
+    protected $url;
 
     /**
-     * The value for the deactivated_on field.
-     * @var        \DateTime
+     * The value for the alias field.
+     * @var        string
      */
-    protected $deactivated_on;
-
-    /**
-     * @var        ChildCandidate
-     */
-    protected $aCandidate;
-
-    /**
-     * @var        ChildProfile
-     */
-    protected $aProfile;
+    protected $alias;
 
     /**
      * @var        ObjectCollection|ChildRecommendation[] Collection to store aggregation of ChildRecommendation objects.
@@ -148,7 +110,7 @@ abstract class Curator implements ActiveRecordInterface
     protected $recommendationsScheduledForDeletion = null;
 
     /**
-     * Initializes internal state of justnyt\models\Base\Curator object.
+     * Initializes internal state of justnyt\models\Base\RecommendationHint object.
      */
     public function __construct()
     {
@@ -243,9 +205,9 @@ abstract class Curator implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Curator</code> instance.  If
-     * <code>obj</code> is an instance of <code>Curator</code>, delegates to
-     * <code>equals(Curator)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>RecommendationHint</code> instance.  If
+     * <code>obj</code> is an instance of <code>RecommendationHint</code>, delegates to
+     * <code>equals(RecommendationHint)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -311,7 +273,7 @@ abstract class Curator implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Curator The current object, for fluid interface
+     * @return $this|RecommendationHint The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -365,53 +327,13 @@ abstract class Curator implements ActiveRecordInterface
     }
 
     /**
-     * Get the [curator_id] column value.
+     * Get the [recommendation_hint_id] column value.
      *
      * @return int
      */
-    public function getCuratorId()
+    public function getRecommendationHintId()
     {
-        return $this->curator_id;
-    }
-
-    /**
-     * Get the [candidate_id] column value.
-     *
-     * @return int
-     */
-    public function getCandidateId()
-    {
-        return $this->candidate_id;
-    }
-
-    /**
-     * Get the [profile_id] column value.
-     *
-     * @return int
-     */
-    public function getProfileId()
-    {
-        return $this->profile_id;
-    }
-
-    /**
-     * Get the [token] column value.
-     *
-     * @return string
-     */
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-    /**
-     * Get the [invite_token] column value.
-     *
-     * @return string
-     */
-    public function getInviteToken()
-    {
-        return $this->invite_token;
+        return $this->recommendation_hint_id;
     }
 
     /**
@@ -435,43 +357,23 @@ abstract class Curator implements ActiveRecordInterface
     }
 
     /**
-     * Get the [optionally formatted] temporal [activated_on] column value.
+     * Get the [url] column value.
      *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
+     * @return string
      */
-    public function getActivatedOn($format = NULL)
+    public function getUrl()
     {
-        if ($format === null) {
-            return $this->activated_on;
-        } else {
-            return $this->activated_on instanceof \DateTime ? $this->activated_on->format($format) : null;
-        }
+        return $this->url;
     }
 
     /**
-     * Get the [optionally formatted] temporal [deactivated_on] column value.
+     * Get the [alias] column value.
      *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
+     * @return string
      */
-    public function getDeactivatedOn($format = NULL)
+    public function getAlias()
     {
-        if ($format === null) {
-            return $this->deactivated_on;
-        } else {
-            return $this->deactivated_on instanceof \DateTime ? $this->deactivated_on->format($format) : null;
-        }
+        return $this->alias;
     }
 
     /**
@@ -510,38 +412,20 @@ abstract class Curator implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : CuratorTableMap::translateFieldName('CuratorId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->curator_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RecommendationHintTableMap::translateFieldName('RecommendationHintId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->recommendation_hint_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : CuratorTableMap::translateFieldName('CandidateId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->candidate_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CuratorTableMap::translateFieldName('ProfileId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->profile_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : CuratorTableMap::translateFieldName('Token', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->token = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CuratorTableMap::translateFieldName('InviteToken', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->invite_token = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CuratorTableMap::translateFieldName('CreatedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RecommendationHintTableMap::translateFieldName('CreatedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CuratorTableMap::translateFieldName('ActivatedOn', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->activated_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RecommendationHintTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : CuratorTableMap::translateFieldName('DeactivatedOn', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->deactivated_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RecommendationHintTableMap::translateFieldName('Alias', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->alias = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -550,10 +434,10 @@ abstract class Curator implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = CuratorTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = RecommendationHintTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Curator'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\RecommendationHint'), 0, $e);
         }
     }
 
@@ -572,128 +456,34 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aCandidate !== null && $this->candidate_id !== $this->aCandidate->getCandidateId()) {
-            $this->aCandidate = null;
-        }
-        if ($this->aProfile !== null && $this->profile_id !== $this->aProfile->getProfileId()) {
-            $this->aProfile = null;
-        }
     } // ensureConsistency
 
     /**
-     * Set the value of [curator_id] column.
+     * Set the value of [recommendation_hint_id] column.
      *
      * @param  int $v new value
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
+     * @return $this|\justnyt\models\RecommendationHint The current object (for fluent API support)
      */
-    public function setCuratorId($v)
+    public function setRecommendationHintId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->curator_id !== $v) {
-            $this->curator_id = $v;
-            $this->modifiedColumns[CuratorTableMap::COL_CURATOR_ID] = true;
+        if ($this->recommendation_hint_id !== $v) {
+            $this->recommendation_hint_id = $v;
+            $this->modifiedColumns[RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID] = true;
         }
 
         return $this;
-    } // setCuratorId()
-
-    /**
-     * Set the value of [candidate_id] column.
-     *
-     * @param  int $v new value
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
-     */
-    public function setCandidateId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->candidate_id !== $v) {
-            $this->candidate_id = $v;
-            $this->modifiedColumns[CuratorTableMap::COL_CANDIDATE_ID] = true;
-        }
-
-        if ($this->aCandidate !== null && $this->aCandidate->getCandidateId() !== $v) {
-            $this->aCandidate = null;
-        }
-
-        return $this;
-    } // setCandidateId()
-
-    /**
-     * Set the value of [profile_id] column.
-     *
-     * @param  int $v new value
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
-     */
-    public function setProfileId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->profile_id !== $v) {
-            $this->profile_id = $v;
-            $this->modifiedColumns[CuratorTableMap::COL_PROFILE_ID] = true;
-        }
-
-        if ($this->aProfile !== null && $this->aProfile->getProfileId() !== $v) {
-            $this->aProfile = null;
-        }
-
-        return $this;
-    } // setProfileId()
-
-    /**
-     * Set the value of [token] column.
-     *
-     * @param  string $v new value
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
-     */
-    public function setToken($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->token !== $v) {
-            $this->token = $v;
-            $this->modifiedColumns[CuratorTableMap::COL_TOKEN] = true;
-        }
-
-        return $this;
-    } // setToken()
-
-    /**
-     * Set the value of [invite_token] column.
-     *
-     * @param  string $v new value
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
-     */
-    public function setInviteToken($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->invite_token !== $v) {
-            $this->invite_token = $v;
-            $this->modifiedColumns[CuratorTableMap::COL_INVITE_TOKEN] = true;
-        }
-
-        return $this;
-    } // setInviteToken()
+    } // setRecommendationHintId()
 
     /**
      * Sets the value of [created_on] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
+     * @return $this|\justnyt\models\RecommendationHint The current object (for fluent API support)
      */
     public function setCreatedOn($v)
     {
@@ -701,7 +491,7 @@ abstract class Curator implements ActiveRecordInterface
         if ($this->created_on !== null || $dt !== null) {
             if ($dt !== $this->created_on) {
                 $this->created_on = $dt;
-                $this->modifiedColumns[CuratorTableMap::COL_CREATED_ON] = true;
+                $this->modifiedColumns[RecommendationHintTableMap::COL_CREATED_ON] = true;
             }
         } // if either are not null
 
@@ -709,44 +499,44 @@ abstract class Curator implements ActiveRecordInterface
     } // setCreatedOn()
 
     /**
-     * Sets the value of [activated_on] column to a normalized version of the date/time value specified.
+     * Set the value of [url] column.
      *
-     * @param  mixed $v string, integer (timestamp), or \DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
+     * @param  string $v new value
+     * @return $this|\justnyt\models\RecommendationHint The current object (for fluent API support)
      */
-    public function setActivatedOn($v)
+    public function setUrl($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->activated_on !== null || $dt !== null) {
-            if ($dt !== $this->activated_on) {
-                $this->activated_on = $dt;
-                $this->modifiedColumns[CuratorTableMap::COL_ACTIVATED_ON] = true;
-            }
-        } // if either are not null
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->url !== $v) {
+            $this->url = $v;
+            $this->modifiedColumns[RecommendationHintTableMap::COL_URL] = true;
+        }
 
         return $this;
-    } // setActivatedOn()
+    } // setUrl()
 
     /**
-     * Sets the value of [deactivated_on] column to a normalized version of the date/time value specified.
+     * Set the value of [alias] column.
      *
-     * @param  mixed $v string, integer (timestamp), or \DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
+     * @param  string $v new value
+     * @return $this|\justnyt\models\RecommendationHint The current object (for fluent API support)
      */
-    public function setDeactivatedOn($v)
+    public function setAlias($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->deactivated_on !== null || $dt !== null) {
-            if ($dt !== $this->deactivated_on) {
-                $this->deactivated_on = $dt;
-                $this->modifiedColumns[CuratorTableMap::COL_DEACTIVATED_ON] = true;
-            }
-        } // if either are not null
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->alias !== $v) {
+            $this->alias = $v;
+            $this->modifiedColumns[RecommendationHintTableMap::COL_ALIAS] = true;
+        }
 
         return $this;
-    } // setDeactivatedOn()
+    } // setAlias()
 
     /**
      * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
@@ -769,13 +559,13 @@ abstract class Curator implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(CuratorTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(RecommendationHintTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildCuratorQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildRecommendationHintQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -785,8 +575,6 @@ abstract class Curator implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aCandidate = null;
-            $this->aProfile = null;
             $this->collRecommendations = null;
 
         } // if (deep)
@@ -798,8 +586,8 @@ abstract class Curator implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Curator::setDeleted()
-     * @see Curator::isDeleted()
+     * @see RecommendationHint::setDeleted()
+     * @see RecommendationHint::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -808,11 +596,11 @@ abstract class Curator implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(CuratorTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(RecommendationHintTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildCuratorQuery::create()
+            $deleteQuery = ChildRecommendationHintQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -843,7 +631,7 @@ abstract class Curator implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(CuratorTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(RecommendationHintTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -862,7 +650,7 @@ abstract class Curator implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                CuratorTableMap::addInstanceToPool($this);
+                RecommendationHintTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -887,25 +675,6 @@ abstract class Curator implements ActiveRecordInterface
         $affectedRows = 0; // initialize var to track total num of affected rows
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
-
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aCandidate !== null) {
-                if ($this->aCandidate->isModified() || $this->aCandidate->isNew()) {
-                    $affectedRows += $this->aCandidate->save($con);
-                }
-                $this->setCandidate($this->aCandidate);
-            }
-
-            if ($this->aProfile !== null) {
-                if ($this->aProfile->isModified() || $this->aProfile->isNew()) {
-                    $affectedRows += $this->aProfile->save($con);
-                }
-                $this->setProfile($this->aProfile);
-            }
 
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
@@ -956,39 +725,27 @@ abstract class Curator implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[CuratorTableMap::COL_CURATOR_ID] = true;
-        if (null !== $this->curator_id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CuratorTableMap::COL_CURATOR_ID . ')');
+        $this->modifiedColumns[RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID] = true;
+        if (null !== $this->recommendation_hint_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(CuratorTableMap::COL_CURATOR_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`CURATOR_ID`';
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID)) {
+            $modifiedColumns[':p' . $index++]  = '`RECOMMENDATION_HINT_ID`';
         }
-        if ($this->isColumnModified(CuratorTableMap::COL_CANDIDATE_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`CANDIDATE_ID`';
-        }
-        if ($this->isColumnModified(CuratorTableMap::COL_PROFILE_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`PROFILE_ID`';
-        }
-        if ($this->isColumnModified(CuratorTableMap::COL_TOKEN)) {
-            $modifiedColumns[':p' . $index++]  = '`TOKEN`';
-        }
-        if ($this->isColumnModified(CuratorTableMap::COL_INVITE_TOKEN)) {
-            $modifiedColumns[':p' . $index++]  = '`INVITE_TOKEN`';
-        }
-        if ($this->isColumnModified(CuratorTableMap::COL_CREATED_ON)) {
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_CREATED_ON)) {
             $modifiedColumns[':p' . $index++]  = '`CREATED_ON`';
         }
-        if ($this->isColumnModified(CuratorTableMap::COL_ACTIVATED_ON)) {
-            $modifiedColumns[':p' . $index++]  = '`ACTIVATED_ON`';
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_URL)) {
+            $modifiedColumns[':p' . $index++]  = '`URL`';
         }
-        if ($this->isColumnModified(CuratorTableMap::COL_DEACTIVATED_ON)) {
-            $modifiedColumns[':p' . $index++]  = '`DEACTIVATED_ON`';
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_ALIAS)) {
+            $modifiedColumns[':p' . $index++]  = '`ALIAS`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `curator` (%s) VALUES (%s)',
+            'INSERT INTO `recommendation_hint` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -997,29 +754,17 @@ abstract class Curator implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`CURATOR_ID`':
-                        $stmt->bindValue($identifier, $this->curator_id, PDO::PARAM_INT);
-                        break;
-                    case '`CANDIDATE_ID`':
-                        $stmt->bindValue($identifier, $this->candidate_id, PDO::PARAM_INT);
-                        break;
-                    case '`PROFILE_ID`':
-                        $stmt->bindValue($identifier, $this->profile_id, PDO::PARAM_INT);
-                        break;
-                    case '`TOKEN`':
-                        $stmt->bindValue($identifier, $this->token, PDO::PARAM_STR);
-                        break;
-                    case '`INVITE_TOKEN`':
-                        $stmt->bindValue($identifier, $this->invite_token, PDO::PARAM_STR);
+                    case '`RECOMMENDATION_HINT_ID`':
+                        $stmt->bindValue($identifier, $this->recommendation_hint_id, PDO::PARAM_INT);
                         break;
                     case '`CREATED_ON`':
                         $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
-                    case '`ACTIVATED_ON`':
-                        $stmt->bindValue($identifier, $this->activated_on ? $this->activated_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                    case '`URL`':
+                        $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
                         break;
-                    case '`DEACTIVATED_ON`':
-                        $stmt->bindValue($identifier, $this->deactivated_on ? $this->deactivated_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                    case '`ALIAS`':
+                        $stmt->bindValue($identifier, $this->alias, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1034,7 +779,7 @@ abstract class Curator implements ActiveRecordInterface
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', 0, $e);
         }
-        $this->setCuratorId($pk);
+        $this->setRecommendationHintId($pk);
 
         $this->setNew(false);
     }
@@ -1067,7 +812,7 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = CuratorTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = RecommendationHintTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1084,28 +829,16 @@ abstract class Curator implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getCuratorId();
+                return $this->getRecommendationHintId();
                 break;
             case 1:
-                return $this->getCandidateId();
-                break;
-            case 2:
-                return $this->getProfileId();
-                break;
-            case 3:
-                return $this->getToken();
-                break;
-            case 4:
-                return $this->getInviteToken();
-                break;
-            case 5:
                 return $this->getCreatedOn();
                 break;
-            case 6:
-                return $this->getActivatedOn();
+            case 2:
+                return $this->getUrl();
                 break;
-            case 7:
-                return $this->getDeactivatedOn();
+            case 3:
+                return $this->getAlias();
                 break;
             default:
                 return null;
@@ -1131,20 +864,16 @@ abstract class Curator implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Curator'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['RecommendationHint'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Curator'][$this->hashCode()] = true;
-        $keys = CuratorTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['RecommendationHint'][$this->hashCode()] = true;
+        $keys = RecommendationHintTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getCuratorId(),
-            $keys[1] => $this->getCandidateId(),
-            $keys[2] => $this->getProfileId(),
-            $keys[3] => $this->getToken(),
-            $keys[4] => $this->getInviteToken(),
-            $keys[5] => $this->getCreatedOn(),
-            $keys[6] => $this->getActivatedOn(),
-            $keys[7] => $this->getDeactivatedOn(),
+            $keys[0] => $this->getRecommendationHintId(),
+            $keys[1] => $this->getCreatedOn(),
+            $keys[2] => $this->getUrl(),
+            $keys[3] => $this->getAlias(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1152,36 +881,6 @@ abstract class Curator implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aCandidate) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_STUDLYPHPNAME:
-                        $key = 'candidate';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'candidate';
-                        break;
-                    default:
-                        $key = 'Candidate';
-                }
-
-                $result[$key] = $this->aCandidate->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aProfile) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_STUDLYPHPNAME:
-                        $key = 'profile';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'profile';
-                        break;
-                    default:
-                        $key = 'Profile';
-                }
-
-                $result[$key] = $this->aProfile->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
             if (null !== $this->collRecommendations) {
 
                 switch ($keyType) {
@@ -1211,11 +910,11 @@ abstract class Curator implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\justnyt\models\Curator
+     * @return $this|\justnyt\models\RecommendationHint
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = CuratorTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = RecommendationHintTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1226,34 +925,22 @@ abstract class Curator implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\justnyt\models\Curator
+     * @return $this|\justnyt\models\RecommendationHint
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setCuratorId($value);
+                $this->setRecommendationHintId($value);
                 break;
             case 1:
-                $this->setCandidateId($value);
-                break;
-            case 2:
-                $this->setProfileId($value);
-                break;
-            case 3:
-                $this->setToken($value);
-                break;
-            case 4:
-                $this->setInviteToken($value);
-                break;
-            case 5:
                 $this->setCreatedOn($value);
                 break;
-            case 6:
-                $this->setActivatedOn($value);
+            case 2:
+                $this->setUrl($value);
                 break;
-            case 7:
-                $this->setDeactivatedOn($value);
+            case 3:
+                $this->setAlias($value);
                 break;
         } // switch()
 
@@ -1279,31 +966,19 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = CuratorTableMap::getFieldNames($keyType);
+        $keys = RecommendationHintTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setCuratorId($arr[$keys[0]]);
+            $this->setRecommendationHintId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setCandidateId($arr[$keys[1]]);
+            $this->setCreatedOn($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setProfileId($arr[$keys[2]]);
+            $this->setUrl($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setToken($arr[$keys[3]]);
-        }
-        if (array_key_exists($keys[4], $arr)) {
-            $this->setInviteToken($arr[$keys[4]]);
-        }
-        if (array_key_exists($keys[5], $arr)) {
-            $this->setCreatedOn($arr[$keys[5]]);
-        }
-        if (array_key_exists($keys[6], $arr)) {
-            $this->setActivatedOn($arr[$keys[6]]);
-        }
-        if (array_key_exists($keys[7], $arr)) {
-            $this->setDeactivatedOn($arr[$keys[7]]);
+            $this->setAlias($arr[$keys[3]]);
         }
     }
 
@@ -1318,7 +993,7 @@ abstract class Curator implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return $this|\justnyt\models\Curator The current object, for fluid interface
+     * @return $this|\justnyt\models\RecommendationHint The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -1338,31 +1013,19 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(CuratorTableMap::DATABASE_NAME);
+        $criteria = new Criteria(RecommendationHintTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(CuratorTableMap::COL_CURATOR_ID)) {
-            $criteria->add(CuratorTableMap::COL_CURATOR_ID, $this->curator_id);
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID)) {
+            $criteria->add(RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID, $this->recommendation_hint_id);
         }
-        if ($this->isColumnModified(CuratorTableMap::COL_CANDIDATE_ID)) {
-            $criteria->add(CuratorTableMap::COL_CANDIDATE_ID, $this->candidate_id);
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_CREATED_ON)) {
+            $criteria->add(RecommendationHintTableMap::COL_CREATED_ON, $this->created_on);
         }
-        if ($this->isColumnModified(CuratorTableMap::COL_PROFILE_ID)) {
-            $criteria->add(CuratorTableMap::COL_PROFILE_ID, $this->profile_id);
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_URL)) {
+            $criteria->add(RecommendationHintTableMap::COL_URL, $this->url);
         }
-        if ($this->isColumnModified(CuratorTableMap::COL_TOKEN)) {
-            $criteria->add(CuratorTableMap::COL_TOKEN, $this->token);
-        }
-        if ($this->isColumnModified(CuratorTableMap::COL_INVITE_TOKEN)) {
-            $criteria->add(CuratorTableMap::COL_INVITE_TOKEN, $this->invite_token);
-        }
-        if ($this->isColumnModified(CuratorTableMap::COL_CREATED_ON)) {
-            $criteria->add(CuratorTableMap::COL_CREATED_ON, $this->created_on);
-        }
-        if ($this->isColumnModified(CuratorTableMap::COL_ACTIVATED_ON)) {
-            $criteria->add(CuratorTableMap::COL_ACTIVATED_ON, $this->activated_on);
-        }
-        if ($this->isColumnModified(CuratorTableMap::COL_DEACTIVATED_ON)) {
-            $criteria->add(CuratorTableMap::COL_DEACTIVATED_ON, $this->deactivated_on);
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_ALIAS)) {
+            $criteria->add(RecommendationHintTableMap::COL_ALIAS, $this->alias);
         }
 
         return $criteria;
@@ -1380,8 +1043,8 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(CuratorTableMap::DATABASE_NAME);
-        $criteria->add(CuratorTableMap::COL_CURATOR_ID, $this->curator_id);
+        $criteria = new Criteria(RecommendationHintTableMap::DATABASE_NAME);
+        $criteria->add(RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID, $this->recommendation_hint_id);
 
         return $criteria;
     }
@@ -1394,7 +1057,7 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getCuratorId();
+        $validPk = null !== $this->getRecommendationHintId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1414,18 +1077,18 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function getPrimaryKey()
     {
-        return $this->getCuratorId();
+        return $this->getRecommendationHintId();
     }
 
     /**
-     * Generic method to set the primary key (curator_id column).
+     * Generic method to set the primary key (recommendation_hint_id column).
      *
      * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setCuratorId($key);
+        $this->setRecommendationHintId($key);
     }
 
     /**
@@ -1434,7 +1097,7 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getCuratorId();
+        return null === $this->getRecommendationHintId();
     }
 
     /**
@@ -1443,20 +1106,16 @@ abstract class Curator implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \justnyt\models\Curator (or compatible) type.
+     * @param      object $copyObj An object of \justnyt\models\RecommendationHint (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setCandidateId($this->getCandidateId());
-        $copyObj->setProfileId($this->getProfileId());
-        $copyObj->setToken($this->getToken());
-        $copyObj->setInviteToken($this->getInviteToken());
         $copyObj->setCreatedOn($this->getCreatedOn());
-        $copyObj->setActivatedOn($this->getActivatedOn());
-        $copyObj->setDeactivatedOn($this->getDeactivatedOn());
+        $copyObj->setUrl($this->getUrl());
+        $copyObj->setAlias($this->getAlias());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1473,7 +1132,7 @@ abstract class Curator implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setCuratorId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setRecommendationHintId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1486,7 +1145,7 @@ abstract class Curator implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \justnyt\models\Curator Clone of current object.
+     * @return \justnyt\models\RecommendationHint Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1497,108 +1156,6 @@ abstract class Curator implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
-    }
-
-    /**
-     * Declares an association between this object and a ChildCandidate object.
-     *
-     * @param  ChildCandidate $v
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setCandidate(ChildCandidate $v = null)
-    {
-        if ($v === null) {
-            $this->setCandidateId(NULL);
-        } else {
-            $this->setCandidateId($v->getCandidateId());
-        }
-
-        $this->aCandidate = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildCandidate object, it will not be re-added.
-        if ($v !== null) {
-            $v->addCurator($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildCandidate object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildCandidate The associated ChildCandidate object.
-     * @throws PropelException
-     */
-    public function getCandidate(ConnectionInterface $con = null)
-    {
-        if ($this->aCandidate === null && ($this->candidate_id !== null)) {
-            $this->aCandidate = ChildCandidateQuery::create()->findPk($this->candidate_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aCandidate->addCurators($this);
-             */
-        }
-
-        return $this->aCandidate;
-    }
-
-    /**
-     * Declares an association between this object and a ChildProfile object.
-     *
-     * @param  ChildProfile $v
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setProfile(ChildProfile $v = null)
-    {
-        if ($v === null) {
-            $this->setProfileId(NULL);
-        } else {
-            $this->setProfileId($v->getProfileId());
-        }
-
-        $this->aProfile = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildProfile object, it will not be re-added.
-        if ($v !== null) {
-            $v->addCurator($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildProfile object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildProfile The associated ChildProfile object.
-     * @throws PropelException
-     */
-    public function getProfile(ConnectionInterface $con = null)
-    {
-        if ($this->aProfile === null && ($this->profile_id !== null)) {
-            $this->aProfile = ChildProfileQuery::create()->findPk($this->profile_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aProfile->addCurators($this);
-             */
-        }
-
-        return $this->aProfile;
     }
 
 
@@ -1666,7 +1223,7 @@ abstract class Curator implements ActiveRecordInterface
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildCurator is new, it will return
+     * If this ChildRecommendationHint is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
@@ -1683,7 +1240,7 @@ abstract class Curator implements ActiveRecordInterface
                 $this->initRecommendations();
             } else {
                 $collRecommendations = ChildRecommendationQuery::create(null, $criteria)
-                    ->filterByCurator($this)
+                    ->filterByRecommendationHint($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -1726,7 +1283,7 @@ abstract class Curator implements ActiveRecordInterface
      *
      * @param      Collection $recommendations A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildCurator The current object (for fluent API support)
+     * @return $this|ChildRecommendationHint The current object (for fluent API support)
      */
     public function setRecommendations(Collection $recommendations, ConnectionInterface $con = null)
     {
@@ -1737,7 +1294,7 @@ abstract class Curator implements ActiveRecordInterface
         $this->recommendationsScheduledForDeletion = $recommendationsToDelete;
 
         foreach ($recommendationsToDelete as $recommendationRemoved) {
-            $recommendationRemoved->setCurator(null);
+            $recommendationRemoved->setRecommendationHint(null);
         }
 
         $this->collRecommendations = null;
@@ -1778,7 +1335,7 @@ abstract class Curator implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByCurator($this)
+                ->filterByRecommendationHint($this)
                 ->count($con);
         }
 
@@ -1790,7 +1347,7 @@ abstract class Curator implements ActiveRecordInterface
      * through the ChildRecommendation foreign key attribute.
      *
      * @param  ChildRecommendation $l ChildRecommendation
-     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
+     * @return $this|\justnyt\models\RecommendationHint The current object (for fluent API support)
      */
     public function addRecommendation(ChildRecommendation $l)
     {
@@ -1812,12 +1369,12 @@ abstract class Curator implements ActiveRecordInterface
     protected function doAddRecommendation(ChildRecommendation $recommendation)
     {
         $this->collRecommendations[]= $recommendation;
-        $recommendation->setCurator($this);
+        $recommendation->setRecommendationHint($this);
     }
 
     /**
      * @param  ChildRecommendation $recommendation The ChildRecommendation object to remove.
-     * @return $this|ChildCurator The current object (for fluent API support)
+     * @return $this|ChildRecommendationHint The current object (for fluent API support)
      */
     public function removeRecommendation(ChildRecommendation $recommendation)
     {
@@ -1829,7 +1386,7 @@ abstract class Curator implements ActiveRecordInterface
                 $this->recommendationsScheduledForDeletion->clear();
             }
             $this->recommendationsScheduledForDeletion[]= $recommendation;
-            $recommendation->setCurator(null);
+            $recommendation->setRecommendationHint(null);
         }
 
         return $this;
@@ -1839,23 +1396,23 @@ abstract class Curator implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this Curator is new, it will return
-     * an empty collection; or if this Curator has previously
+     * Otherwise if this RecommendationHint is new, it will return
+     * an empty collection; or if this RecommendationHint has previously
      * been saved, it will retrieve related Recommendations from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in Curator.
+     * actually need in RecommendationHint.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildRecommendation[] List of ChildRecommendation objects
      */
-    public function getRecommendationsJoinRecommendationHint(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getRecommendationsJoinCurator(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildRecommendationQuery::create(null, $criteria);
-        $query->joinWith('RecommendationHint', $joinBehavior);
+        $query->joinWith('Curator', $joinBehavior);
 
         return $this->getRecommendations($query, $con);
     }
@@ -1867,20 +1424,10 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aCandidate) {
-            $this->aCandidate->removeCurator($this);
-        }
-        if (null !== $this->aProfile) {
-            $this->aProfile->removeCurator($this);
-        }
-        $this->curator_id = null;
-        $this->candidate_id = null;
-        $this->profile_id = null;
-        $this->token = null;
-        $this->invite_token = null;
+        $this->recommendation_hint_id = null;
         $this->created_on = null;
-        $this->activated_on = null;
-        $this->deactivated_on = null;
+        $this->url = null;
+        $this->alias = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1907,8 +1454,6 @@ abstract class Curator implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collRecommendations = null;
-        $this->aCandidate = null;
-        $this->aProfile = null;
     }
 
     /**
@@ -1918,7 +1463,7 @@ abstract class Curator implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(CuratorTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(RecommendationHintTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**
