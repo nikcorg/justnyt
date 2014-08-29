@@ -173,7 +173,7 @@ class CuratorController extends \glue\Controller
             ->setSubject("JustNyt tarvitsee kuraattoria")
             ->setBody(
                 \glue\ui\View::quickRender(
-                    "email/curator-invite",
+                    "email/curator-invite-redacted",
                     array(
                         "url" => $activationUrl
                     )
