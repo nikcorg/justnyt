@@ -1,3 +1,7 @@
+<?php if ($wasSaved): ?>
+    <p class="notification success">Vinkkisi on vastaanotettu.</p>
+<?php endif; ?>
+
 <p>Törmäsitkö loistavaan blogikirjoitukseen? Ilmianna se kuraattorille.</p>
 
 <form method="post" action="">
