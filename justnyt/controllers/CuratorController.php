@@ -39,8 +39,8 @@ class CuratorController extends \glue\Controller
                 "curator/volunteer",
                 array(
                     "title" => "Olet jonossa"
-                    )
                 )
+            )
         );
     }
 
@@ -70,9 +70,11 @@ class CuratorController extends \glue\Controller
                     $msg->setFrom("JustNyt <justnytfi@gmail.com>")
                         ->addTo($currentCurator->getProfile()->getEmail())
                         ->setSubject("Kuraattorinkautesi on päättynyt")
-                        ->setBody(\glue\ui\View::quickRender(
-                            "email/account-deactivated", array(
-                                "approved" => $approved
+                        ->setBody(
+                            \glue\ui\View::quickRender(
+                                "email/account-deactivated",
+                                array(
+                                    "approved" => $approved
                                 )
                             )
                         );
@@ -93,8 +95,8 @@ class CuratorController extends \glue\Controller
                 array(
                     "title" => "Aktivoi tilisi",
                     "token" => $token
-                    )
                 )
+            )
         );
     }
 
@@ -263,22 +265,28 @@ class CuratorController extends \glue\Controller
             // TODO: reduce number of queries, even though this is probably a rarely invoked action
             if ($emailIsSet) {
                 /* if email is set, it needs to be checked it matches the alias or no other reserved alias */
-                $bothMatch = $aliasIsSet && count(\justnyt\models\ProfileQuery::create("pr")
-                    ->where("pr.Alias = ?", $alias)
-                    ->where("pr.Email = ?", $email)
-                    ->find()) == 1;
-                $aliasNotReserved = count(\justnyt\models\ProfileQuery::create("pr")
-                    ->where("pr.Alias = ?", $alias)
-                    ->where("pr.Email IS NOT NULL")
-                    ->find()) == 0;
+                $bothMatch = $aliasIsSet && count(
+                    \justnyt\models\ProfileQuery::create("pr")
+                        ->where("pr.Alias = ?", $alias)
+                        ->where("pr.Email = ?", $email)
+                        ->find()
+                ) == 1;
+                $aliasNotReserved = count(
+                    \justnyt\models\ProfileQuery::create("pr")
+                        ->where("pr.Alias = ?", $alias)
+                        ->where("pr.Email IS NOT NULL")
+                        ->find()
+                ) == 0;
 
                 $check = $bothMatch || $aliasNotReserved;
             } else {
                 /* if email is not set, alias needs to be verified it's not reserved */
-                $aliasNotReserved = count(\justnyt\models\ProfileQuery::create("pr")
-                    ->where("pr.Alias = ?", $alias)
-                    ->where("pr.Email IS NOT NULL")
-                    ->find()) == 0;
+                $aliasNotReserved = count(
+                    \justnyt\models\ProfileQuery::create("pr")
+                        ->where("pr.Alias = ?", $alias)
+                        ->where("pr.Email IS NOT NULL")
+                        ->find()
+                ) == 0;
 
                 $check = $aliasNotReserved;
             }
@@ -319,8 +327,8 @@ class CuratorController extends \glue\Controller
                     "description" => $profile->getDescription(),
                     "email" => $profile->getEmail(),
                     "scripts" => array("/assets/js/app.js")
-                    )
                 )
+            )
         );
     }
 
@@ -338,8 +346,8 @@ class CuratorController extends \glue\Controller
                     "curator" => $curator,
                     "currentTime" => new \DateTime(),
                     "upcoming" => $upcoming
-                    )
                 )
+            )
         );
     }
 
@@ -354,8 +362,8 @@ class CuratorController extends \glue\Controller
                     "title" => "Julkaistut suositukset",
                     "curator" => $curator,
                     "approved" => $approved
-                    )
                 )
+            )
         );
     }
 
@@ -373,8 +381,8 @@ class CuratorController extends \glue\Controller
                     "title" => "Tervetuloa kuraattorikaudellesi",
                     "curator" => $curator,
                     "host" => $_SERVER["HTTP_HOST"]
-                    )
                 )
+            )
         );
     }
 }
