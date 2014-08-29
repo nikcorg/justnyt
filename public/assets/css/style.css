@@ -146,6 +146,10 @@ ol.collapsed {
     color: lightcoral;
 }
 
+.w100 {
+    width: 100%;
+}
+
 /* Columns helpers */
 
 footer,
