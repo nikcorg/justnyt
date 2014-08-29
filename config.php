@@ -157,6 +157,12 @@ Router::addRoute(
         RequestMethods::GET | RequestMethods::POST,
         "invite"
         )
+    ->addAction(
+        ":token/vinkatut",
+        array("token" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET,
+        "hints"
+        )
 );
 
 Router::addRoute(
