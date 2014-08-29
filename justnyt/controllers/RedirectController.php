@@ -24,7 +24,7 @@ class RedirectController extends \glue\Controller
     }
 
     protected function stripUtmParams($url) {
-        if (strpos($url, "?") < 0) {
+        if (strpos($url, "?") === false) {
             return $url;
         }
 
