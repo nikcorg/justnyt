@@ -17,5 +17,8 @@ use justnyt\models\Base\RecommendationHint as BaseRecommendationHint;
  */
 class RecommendationHint extends BaseRecommendationHint
 {
-
+    public function preInsert(\Propel\Runtime\Connection\ConnectionInterface $con = null) {
+        $this->setCreatedOn(time());
+        return true;
+    }
 }
