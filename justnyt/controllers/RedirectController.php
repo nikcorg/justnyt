@@ -65,7 +65,9 @@ class RedirectController extends \glue\Controller
 
     public function hashLookup($hash) {
         $recommendation = \justnyt\models\RecommendationQuery::create("r")
-            ->approved()
+            ->_if(null == $this->request->GET->unpubfilter || "off" != $this->request->GET->unpubfilter)
+                ->approved()
+            ->_endif()
             ->filterByShortlink($hash)
             ->findOne();
 
