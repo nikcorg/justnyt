@@ -138,14 +138,22 @@ class CuratorController extends \glue\Controller
         return $curator;
     }
 
-    protected function doSendInviteMail($candidate) {
+    protected function doSendInviteMail($candidate, $next) {
+        $activationUrl = sprintf(
+            "http://%s/kuraattori/%s/tervetuloa",
+            $_SERVER["HTTP_HOST"],
+            $next->getInviteToken()
+        );
+
         $msg = new \Nette\Mail\Message();
         $msg->setFrom("JustNyt <justnytfi@gmail.com>")
             ->addTo($candidate->getEmail())
             ->setSubject("JustNyt tarvitsee kuraattoria")
-            ->setBody(\glue\ui\View::quickRender(
-                "email/curator-invite", array(
-                    "url" => $activationUrl
+            ->setBody(
+                \glue\ui\View::quickRender(
+                    "email/curator-invite",
+                    array(
+                        "url" => $activationUrl
                     )
                 )
             );
@@ -155,7 +163,7 @@ class CuratorController extends \glue\Controller
         $candidate->save();
 
         $mailer = new \Nette\Mail\SendmailMailer();
-        $mailer->send($msg);
+        return $mailer->send($msg);
     }
 
     protected function doRedactInvite($candidate) {
@@ -163,9 +171,11 @@ class CuratorController extends \glue\Controller
         $msg->setFrom("JustNyt <justnytfi@gmail.com>")
             ->addTo($candidate->getEmail())
             ->setSubject("JustNyt tarvitsee kuraattoria")
-            ->setBody(\glue\ui\View::quickRender(
-                "email/curator-invite", array(
-                    "url" => $activationUrl
+            ->setBody(
+                \glue\ui\View::quickRender(
+                    "email/curator-invite",
+                    array(
+                        "url" => $activationUrl
                     )
                 )
             );
@@ -174,61 +184,91 @@ class CuratorController extends \glue\Controller
         $candidate->save();
 
         $mailer = new \Nette\Mail\SendmailMailer();
-        $mailer->send($msg);
+        return $mailer->send($msg);
+    }
+
+    protected function deleteInactiveCurator() {
+        $next = $this->getInactiveCurator();
+
+        if (null != $next) {
+            $next->delete();
+        }
+    }
+
+    protected function doHandleInvite($curator) {
+        $action = $this->request->POST->action;
+        $invited = $this->getInvitedCandidate();
+        $volunteer = $this->getFreeCandidate();
+
+        // var_dump($invited->toJSON()); die();
+
+        if ($action == "next-in-queue") {
+            $this->deleteInactiveCurator();
+
+            $next = new \justnyt\models\Curator();
+            $next->setCandidate($volunteer);
+            $next->save();
+
+            $this->doSendInviteMail($volunteer, $next);
+        } elseif ($action == "manual-invite") {
+            $next = new \justnyt\models\Curator();
+            $next->save();
+        } elseif ($action == "redact-invite") {
+            if (null != $invited) {
+                $invited->setInviteRedactedOn(time());
+                $invited->save();
+            }
+
+            $next = $this->getInactiveCurator();
+            $next->delete();
+        }
+
+        throw new \glue\exceptions\http\E303Exception("/kuraattori/" . $curator->getToken() . "/seuraava");
     }
 
     public function invite($token) {
         $curator = $this->getCurator($token);
+
+        if ($this->request->isPost()) {
+            return $this->doHandleInvite($curator);
+        }
+
         $next = $this->getInactiveCurator();
         $invited = $this->getInvitedCandidate();
         $volunteer = $this->getFreeCandidate();
 
-        if ($this->request->isPost()) {
-            if ($this->request->POST->action == "next-in-queue") {
-                $candidate->setCandidate($volunteer);
-                $this->doSendInviteMail($candidate);
-                $graceUntil = $candidate->getInvitedOn()->add(new \DateInterval("P2D"));
+        if (null != $next && null != $next->getCandidateId()) {
+            $graceUntil = $invited->getInvitedOn()->add(new \DateInterval("PT2H"));
+            $now = \DateTime::createFromFormat("U", $_SERVER["REQUEST_TIME"]);
 
-                return $this->response->setContent(
+            return $this->response->setContent(
+                \justnyt\views\JustNytLayout::quickRender(
                     "curator/invite-sent",
                     array(
                         "title" => "Kutsu lähetettiin",
                         "curator" => $curator,
-                        "candidate" => $candidate,
-                        "graceUntil" => $graceUntil
-                        )
-                    );
-            } elseif ($this->request->POST->action == "manual-invite") {
-                return $this->response->setContent(
-                    "curator/invite-manual",
-                    array(
-                        "title" => "")
-                    );
-            }
-        }
-
-        if (null != $next && null != $next->getCandidateId()) {
-            return $this->response->setContent(
-                "curator/invite-sent",
-                array(
-                    "title" => "Kutsu lähetettiin",
-                    "curator" => $curator,
-                    "candidate" => $candidate,
-                    "graceUntil" => $graceUntil
+                        "graceUntil" => $graceUntil,
+                        "graceElapsed" => $now > $graceUntil
                     )
-                );
+                )
+            );
         } elseif (null != $next && null == $next->getCandidateId()) {
             $activationUrl = sprintf(
                 "http://%s/kuraattori/%s/tervetuloa",
                 $_SERVER["HTTP_HOST"],
                 $next->getInviteToken()
-                );
+            );
 
             return $this->response->setContent(
-                "curator/invite-manual",
-                array(
-                    "title" => "")
-                );
+                \justnyt\views\JustNytLayout::quickRender(
+                    "curator/invite-manual",
+                    array(
+                        "title" => "Kutsu seuraava kuraattori",
+                        "curator" => $curator,
+                        "activationUrl" => $activationUrl,
+                    )
+                )
+            );
         }
 
         $this->response->setContent(
@@ -238,8 +278,8 @@ class CuratorController extends \glue\Controller
                     "title" => "Kutsu seuraava kuraattori",
                     "curator" => $curator,
                     "volunteers" => ! is_null($volunteer)
-                    )
                 )
+            )
         );
     }
 
