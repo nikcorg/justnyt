@@ -19,8 +19,8 @@ class PagesController extends \glue\Controller
                 array(
                     "title" => "Parhautta &mdash; Just nyt!",
                     "recommendation" => $recommendation
-                    )
                 )
+            )
         );
     }
 
@@ -30,8 +30,8 @@ class PagesController extends \glue\Controller
                 "pages/volunteer",
                 array(
                     "title" => "Kuraattoriksi kuraattorin paikalle",
-                    )
                 )
+            )
         );
     }
 
@@ -41,8 +41,8 @@ class PagesController extends \glue\Controller
                 "pages/faq",
                 array(
                     "title" => "Kysymyksiä ja vastauksia"
-                    )
                 )
+            )
         );
     }
 
@@ -66,8 +66,8 @@ class PagesController extends \glue\Controller
                 array(
                     "title" => "Kuraattorit",
                     "curators" => $curators
-                    )
                 )
+            )
         );
     }
 
@@ -82,8 +82,8 @@ class PagesController extends \glue\Controller
                 array(
                     "title" => "Parhauden historiaa",
                     "recommendations" => $recommendations
-                    )
                 )
+            )
         );
     }
 
@@ -93,9 +93,9 @@ class PagesController extends \glue\Controller
                 "pages/email-info",
                 array(
                     "title" => "Mihin sähköpostiosoitettasi tarvitaan"
-                    )
                 )
-            );
+            )
+        );
     }
 
     public function submitUrl() {
@@ -104,8 +104,8 @@ class PagesController extends \glue\Controller
                 "pages/submit-url",
                 array(
                     "title" => "Ilmianna blogikirjoitus"
-                    )
                 )
-            );
+            )
+        );
     }
 }
