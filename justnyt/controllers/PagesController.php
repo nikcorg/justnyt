@@ -99,11 +99,22 @@ class PagesController extends \glue\Controller
     }
 
     public function submitUrl() {
+        $wasSaved = false;
+
+        if ($this->request->isPost()) {
+            $hint = new \justnyt\models\RecommendationHint();
+            $hint->setUrl($this->request->POST->url);
+            $hint->setAlias($this->request->POST->alias);
+            $hint->save();
+            $wasSaved = true;
+        }
+
         $this->respond(
             \justnyt\views\JustNytLayout::quickRender(
                 "pages/submit-url",
                 array(
-                    "title" => "Ilmianna blogikirjoitus"
+                    "title" => "Ilmianna blogikirjoitus",
+                    "wasSaved" => $wasSaved
                 )
             )
         );
