@@ -23,6 +23,21 @@ class RedirectController extends \glue\Controller
         return $visit;
     }
 
+    protected function stripUtmParams($url) {
+        if (strpos($url, "?") < 0) {
+            return $url;
+        }
+
+        list($uri, $query) = explode("?", $url);
+        $rDrop = "/^(utm_source|utm_medium|utm_term|utm_content|utm_campaign)/";
+        $params = array_filter(explode("&", $query), function ($value) use ($rDrop) {
+            return ! preg_match($rDrop, $value);
+        });
+        $query = implode("&", $params);
+
+        return $uri . "?" . $query;
+    }
+
     protected function redirectTo($recommendation) {
         $visitorId = $this->getVisitorId();
 
@@ -31,7 +46,7 @@ class RedirectController extends \glue\Controller
         }
 
         $url = $recommendation->getUrl();
-        $url .= (strpos($url, "?") === false ? "?" : "&") . "utm_source=justnyt.fi";
+        $url .= (strpos($this->stripUtmParams($url), "?") === false ? "?" : "&") . "utm_source=justnyt.fi";
 
         throw new \glue\exceptions\http\E303Exception($url);
     }
