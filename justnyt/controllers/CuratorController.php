@@ -407,6 +407,28 @@ class CuratorController extends \glue\Controller
         );
     }
 
+    public function hints($token) {
+        $curator = $this->getCurator($token);
+        $hints = \justnyt\models\RecommendationHintQuery::create("rh")
+            ->useRecommendationQuery("r")
+                ->endUse()
+            ->groupByRecommendationHintId()
+            ->having("COUNT(r.RecommendationId) = 0")
+            ->orderByCreatedOn("DESC")
+            ->find();
+
+        $this->response->setContent(
+            \justnyt\views\JustNytLayout::quickRender(
+                "curator/hints",
+                array(
+                    "title" => "Selaa vinkkejä",
+                    "curator" => $curator,
+                    "hints" => $hints
+                )
+            )
+        );
+    }
+
     public function home($token) {
         $curator = $this->getCurator($token, false);
 

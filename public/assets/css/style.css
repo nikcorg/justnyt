@@ -150,6 +150,30 @@ ol.collapsed {
     width: 100%;
 }
 
+/* Notifications */
+
+.notification {
+    padding: 1rem;
+    -webkit-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -o-border-radius: 1rem;
+    border-radius: 1rem;
+}
+
+.success {
+    background-color: limegreen;
+}
+
+.info {
+    background-color: darkorange;
+}
+
+.error {
+    background-color: lightcoral;
+}
+
+
 /* Columns helpers */
 
 footer,

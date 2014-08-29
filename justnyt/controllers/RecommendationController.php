@@ -63,9 +63,22 @@ class RecommendationController extends \glue\Controller
     public function prepare($token) {
         $curator = $this->getCurator($token);
         $url = $this->request->GET->url;
+        $hintId = $this->request->GET->fromHint;
+        $hint = null;
 
-        if (empty($url)) {
+        if (empty($url) && empty($hintId)) {
             throw new \glue\exceptions\http\E400Exception("Empty URL");
+        }
+
+        if (! empty($hintId)) {
+            $hint = \justnyt\models\RecommendationHintQuery::create()
+                ->findOneByRecommendationHintId($hintId);
+
+            if (null == $hint) {
+                throw new \glue\exceptions\http\E400Exception("Invalid hintId");
+            }
+
+            $url = $hint->getUrl();
         }
 
         $mostRecent = \justnyt\models\RecommendationQuery::create("r")
@@ -84,7 +97,12 @@ class RecommendationController extends \glue\Controller
             try {
                 $prepare->setCurator($curator);
                 $prepare->setCreatedOn(time());
-                $prepare->setUrl($this->request->GET->url);
+                $prepare->setUrl($url);
+
+                if (null != $hint) {
+                    $prepare->setRecommendationHint($hint);
+                }
+
                 $prepare->save();
             } catch (\Exception $e) {
                 throw new \glue\exceptions\http\E500Exception("Error saving recommendation candidate", 0, $e);

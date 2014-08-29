@@ -41,6 +41,7 @@ Router::addRoute(
     ->addAction("kuraattorit", null, RequestMethods::GET | RequestMethods::HEAD, "curators")
     ->addAction("historiaa", null, RequestMethods::GET | RequestMethods::HEAD, "history")
     ->addAction("email-info", null, RequestMethods::GET, "emailInfo")
+    ->addAction("ilmianna-blogikirjoitus", null, RequestMethods::GET | RequestMethods::POST, "submitUrl")
 );
 
 Router::addRoute(
@@ -155,6 +156,12 @@ Router::addRoute(
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET | RequestMethods::POST,
         "invite"
+        )
+    ->addAction(
+        ":token/vinkatut",
+        array("token" => RouteVariableTypes::ALNUM),
+        RequestMethods::GET,
+        "hints"
         )
 );
 

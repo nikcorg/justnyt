@@ -21,6 +21,8 @@ use Propel\Runtime\Util\PropelDateTime;
 use justnyt\models\Curator as ChildCurator;
 use justnyt\models\CuratorQuery as ChildCuratorQuery;
 use justnyt\models\Recommendation as ChildRecommendation;
+use justnyt\models\RecommendationHint as ChildRecommendationHint;
+use justnyt\models\RecommendationHintQuery as ChildRecommendationHintQuery;
 use justnyt\models\RecommendationQuery as ChildRecommendationQuery;
 use justnyt\models\Visit as ChildVisit;
 use justnyt\models\VisitQuery as ChildVisitQuery;
@@ -80,6 +82,12 @@ abstract class Recommendation implements ActiveRecordInterface
     protected $curator_id;
 
     /**
+     * The value for the recommendation_hint_id field.
+     * @var        int
+     */
+    protected $recommendation_hint_id;
+
+    /**
      * The value for the created_on field.
      * @var        \DateTime
      */
@@ -121,6 +129,11 @@ abstract class Recommendation implements ActiveRecordInterface
      * @var        string
      */
     protected $title;
+
+    /**
+     * @var        ChildRecommendationHint
+     */
+    protected $aRecommendationHint;
 
     /**
      * @var        ChildCurator
@@ -398,6 +411,16 @@ abstract class Recommendation implements ActiveRecordInterface
     }
 
     /**
+     * Get the [recommendation_hint_id] column value.
+     *
+     * @return int
+     */
+    public function getRecommendationHintId()
+    {
+        return $this->recommendation_hint_id;
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created_on] column value.
      *
      *
@@ -553,34 +576,37 @@ abstract class Recommendation implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RecommendationTableMap::translateFieldName('CuratorId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->curator_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RecommendationTableMap::translateFieldName('CreatedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RecommendationTableMap::translateFieldName('RecommendationHintId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->recommendation_hint_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RecommendationTableMap::translateFieldName('CreatedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RecommendationTableMap::translateFieldName('ScrapedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : RecommendationTableMap::translateFieldName('ScrapedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->scraped_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : RecommendationTableMap::translateFieldName('ApprovedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : RecommendationTableMap::translateFieldName('ApprovedOn', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->approved_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : RecommendationTableMap::translateFieldName('GraphicContent', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : RecommendationTableMap::translateFieldName('GraphicContent', TableMap::TYPE_PHPNAME, $indexType)];
             $this->graphic_content = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : RecommendationTableMap::translateFieldName('Shortlink', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : RecommendationTableMap::translateFieldName('Shortlink', TableMap::TYPE_PHPNAME, $indexType)];
             $this->shortlink = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : RecommendationTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : RecommendationTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
             $this->url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : RecommendationTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : RecommendationTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
             $this->title = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -590,7 +616,7 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 9; // 9 = RecommendationTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = RecommendationTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Recommendation'), 0, $e);
@@ -614,6 +640,9 @@ abstract class Recommendation implements ActiveRecordInterface
     {
         if ($this->aCurator !== null && $this->curator_id !== $this->aCurator->getCuratorId()) {
             $this->aCurator = null;
+        }
+        if ($this->aRecommendationHint !== null && $this->recommendation_hint_id !== $this->aRecommendationHint->getRecommendationHintId()) {
+            $this->aRecommendationHint = null;
         }
     } // ensureConsistency
 
@@ -660,6 +689,30 @@ abstract class Recommendation implements ActiveRecordInterface
 
         return $this;
     } // setCuratorId()
+
+    /**
+     * Set the value of [recommendation_hint_id] column.
+     *
+     * @param  int $v new value
+     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
+     */
+    public function setRecommendationHintId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->recommendation_hint_id !== $v) {
+            $this->recommendation_hint_id = $v;
+            $this->modifiedColumns[RecommendationTableMap::COL_RECOMMENDATION_HINT_ID] = true;
+        }
+
+        if ($this->aRecommendationHint !== null && $this->aRecommendationHint->getRecommendationHintId() !== $v) {
+            $this->aRecommendationHint = null;
+        }
+
+        return $this;
+    } // setRecommendationHintId()
 
     /**
      * Sets the value of [created_on] column to a normalized version of the date/time value specified.
@@ -846,6 +899,7 @@ abstract class Recommendation implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aRecommendationHint = null;
             $this->aCurator = null;
             $this->collVisits = null;
 
@@ -953,6 +1007,13 @@ abstract class Recommendation implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
+            if ($this->aRecommendationHint !== null) {
+                if ($this->aRecommendationHint->isModified() || $this->aRecommendationHint->isNew()) {
+                    $affectedRows += $this->aRecommendationHint->save($con);
+                }
+                $this->setRecommendationHint($this->aRecommendationHint);
+            }
+
             if ($this->aCurator !== null) {
                 if ($this->aCurator->isModified() || $this->aCurator->isNew()) {
                     $affectedRows += $this->aCurator->save($con);
@@ -1020,6 +1081,9 @@ abstract class Recommendation implements ActiveRecordInterface
         if ($this->isColumnModified(RecommendationTableMap::COL_CURATOR_ID)) {
             $modifiedColumns[':p' . $index++]  = '`CURATOR_ID`';
         }
+        if ($this->isColumnModified(RecommendationTableMap::COL_RECOMMENDATION_HINT_ID)) {
+            $modifiedColumns[':p' . $index++]  = '`RECOMMENDATION_HINT_ID`';
+        }
         if ($this->isColumnModified(RecommendationTableMap::COL_CREATED_ON)) {
             $modifiedColumns[':p' . $index++]  = '`CREATED_ON`';
         }
@@ -1057,6 +1121,9 @@ abstract class Recommendation implements ActiveRecordInterface
                         break;
                     case '`CURATOR_ID`':
                         $stmt->bindValue($identifier, $this->curator_id, PDO::PARAM_INT);
+                        break;
+                    case '`RECOMMENDATION_HINT_ID`':
+                        $stmt->bindValue($identifier, $this->recommendation_hint_id, PDO::PARAM_INT);
                         break;
                     case '`CREATED_ON`':
                         $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
@@ -1148,24 +1215,27 @@ abstract class Recommendation implements ActiveRecordInterface
                 return $this->getCuratorId();
                 break;
             case 2:
-                return $this->getCreatedOn();
+                return $this->getRecommendationHintId();
                 break;
             case 3:
-                return $this->getScrapedOn();
+                return $this->getCreatedOn();
                 break;
             case 4:
-                return $this->getApprovedOn();
+                return $this->getScrapedOn();
                 break;
             case 5:
-                return $this->getGraphicContent();
+                return $this->getApprovedOn();
                 break;
             case 6:
-                return $this->getShortlink();
+                return $this->getGraphicContent();
                 break;
             case 7:
-                return $this->getUrl();
+                return $this->getShortlink();
                 break;
             case 8:
+                return $this->getUrl();
+                break;
+            case 9:
                 return $this->getTitle();
                 break;
             default:
@@ -1200,13 +1270,14 @@ abstract class Recommendation implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getRecommendationId(),
             $keys[1] => $this->getCuratorId(),
-            $keys[2] => $this->getCreatedOn(),
-            $keys[3] => $this->getScrapedOn(),
-            $keys[4] => $this->getApprovedOn(),
-            $keys[5] => $this->getGraphicContent(),
-            $keys[6] => $this->getShortlink(),
-            $keys[7] => $this->getUrl(),
-            $keys[8] => $this->getTitle(),
+            $keys[2] => $this->getRecommendationHintId(),
+            $keys[3] => $this->getCreatedOn(),
+            $keys[4] => $this->getScrapedOn(),
+            $keys[5] => $this->getApprovedOn(),
+            $keys[6] => $this->getGraphicContent(),
+            $keys[7] => $this->getShortlink(),
+            $keys[8] => $this->getUrl(),
+            $keys[9] => $this->getTitle(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1214,6 +1285,21 @@ abstract class Recommendation implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->aRecommendationHint) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'recommendationHint';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'recommendation_hint';
+                        break;
+                    default:
+                        $key = 'RecommendationHint';
+                }
+
+                $result[$key] = $this->aRecommendationHint->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->aCurator) {
 
                 switch ($keyType) {
@@ -1285,24 +1371,27 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->setCuratorId($value);
                 break;
             case 2:
-                $this->setCreatedOn($value);
+                $this->setRecommendationHintId($value);
                 break;
             case 3:
-                $this->setScrapedOn($value);
+                $this->setCreatedOn($value);
                 break;
             case 4:
-                $this->setApprovedOn($value);
+                $this->setScrapedOn($value);
                 break;
             case 5:
-                $this->setGraphicContent($value);
+                $this->setApprovedOn($value);
                 break;
             case 6:
-                $this->setShortlink($value);
+                $this->setGraphicContent($value);
                 break;
             case 7:
-                $this->setUrl($value);
+                $this->setShortlink($value);
                 break;
             case 8:
+                $this->setUrl($value);
+                break;
+            case 9:
                 $this->setTitle($value);
                 break;
         } // switch()
@@ -1338,25 +1427,28 @@ abstract class Recommendation implements ActiveRecordInterface
             $this->setCuratorId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setCreatedOn($arr[$keys[2]]);
+            $this->setRecommendationHintId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setScrapedOn($arr[$keys[3]]);
+            $this->setCreatedOn($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setApprovedOn($arr[$keys[4]]);
+            $this->setScrapedOn($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setGraphicContent($arr[$keys[5]]);
+            $this->setApprovedOn($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setShortlink($arr[$keys[6]]);
+            $this->setGraphicContent($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setUrl($arr[$keys[7]]);
+            $this->setShortlink($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setTitle($arr[$keys[8]]);
+            $this->setUrl($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setTitle($arr[$keys[9]]);
         }
     }
 
@@ -1398,6 +1490,9 @@ abstract class Recommendation implements ActiveRecordInterface
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_CURATOR_ID)) {
             $criteria->add(RecommendationTableMap::COL_CURATOR_ID, $this->curator_id);
+        }
+        if ($this->isColumnModified(RecommendationTableMap::COL_RECOMMENDATION_HINT_ID)) {
+            $criteria->add(RecommendationTableMap::COL_RECOMMENDATION_HINT_ID, $this->recommendation_hint_id);
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_CREATED_ON)) {
             $criteria->add(RecommendationTableMap::COL_CREATED_ON, $this->created_on);
@@ -1507,6 +1602,7 @@ abstract class Recommendation implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setCuratorId($this->getCuratorId());
+        $copyObj->setRecommendationHintId($this->getRecommendationHintId());
         $copyObj->setCreatedOn($this->getCreatedOn());
         $copyObj->setScrapedOn($this->getScrapedOn());
         $copyObj->setApprovedOn($this->getApprovedOn());
@@ -1554,6 +1650,57 @@ abstract class Recommendation implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+    /**
+     * Declares an association between this object and a ChildRecommendationHint object.
+     *
+     * @param  ChildRecommendationHint $v
+     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setRecommendationHint(ChildRecommendationHint $v = null)
+    {
+        if ($v === null) {
+            $this->setRecommendationHintId(NULL);
+        } else {
+            $this->setRecommendationHintId($v->getRecommendationHintId());
+        }
+
+        $this->aRecommendationHint = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildRecommendationHint object, it will not be re-added.
+        if ($v !== null) {
+            $v->addRecommendation($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildRecommendationHint object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildRecommendationHint The associated ChildRecommendationHint object.
+     * @throws PropelException
+     */
+    public function getRecommendationHint(ConnectionInterface $con = null)
+    {
+        if ($this->aRecommendationHint === null && ($this->recommendation_hint_id !== null)) {
+            $this->aRecommendationHint = ChildRecommendationHintQuery::create()->findPk($this->recommendation_hint_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aRecommendationHint->addRecommendations($this);
+             */
+        }
+
+        return $this->aRecommendationHint;
     }
 
     /**
@@ -1848,11 +1995,15 @@ abstract class Recommendation implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aRecommendationHint) {
+            $this->aRecommendationHint->removeRecommendation($this);
+        }
         if (null !== $this->aCurator) {
             $this->aCurator->removeRecommendation($this);
         }
         $this->recommendation_id = null;
         $this->curator_id = null;
+        $this->recommendation_hint_id = null;
         $this->created_on = null;
         $this->scraped_on = null;
         $this->approved_on = null;
@@ -1887,6 +2038,7 @@ abstract class Recommendation implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collVisits = null;
+        $this->aRecommendationHint = null;
         $this->aCurator = null;
     }
 

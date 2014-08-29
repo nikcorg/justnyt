@@ -65,6 +65,7 @@ CREATE TABLE `curator` (
 CREATE TABLE `recommendation` (
     `recommendation_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `curator_id` INT UNSIGNED,
+    `recommendation_hint_id` INT UNSIGNED,
     `created_on` DATETIME,
     `scraped_on` DATETIME,
     `approved_on` DATETIME,
@@ -80,6 +81,11 @@ CREATE TABLE `recommendation` (
         ON UPDATE CASCADE
         ON DELETE SET NULL,
 
+    CONSTRAINT `recommendation_recommendation_hint_id`
+        FOREIGN KEY (`recommendation_hint_id`) REFERENCES `recommendation_hint` (`recommendation_hint_id`)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+
     CONSTRAINT `recommendation_shortlink`
         UNIQUE INDEX (`shortlink`),
 
@@ -87,6 +93,16 @@ CREATE TABLE `recommendation` (
 
 ) ENGINE=INNODB DEFAULT CHARACTER SET=utf8;
 
+
+
+CREATE TABLE `recommendation_hint` (
+    `recommendation_hint_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `created_on` DATETIME,
+    `url` VARCHAR (1024) NOT NULL,
+    `alias` VARCHAR (50),
+
+    PRIMARY KEY (`recommendation_hint_id`)
+) ENGINE=INNODB DEFAULT CHARACTER SET=utf8;
 
 
 
