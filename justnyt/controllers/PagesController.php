@@ -97,4 +97,15 @@ class PagesController extends \glue\Controller
                 )
             );
     }
+
+    public function submitUrl() {
+        $this->respond(
+            \justnyt\views\JustNytLayout::quickRender(
+                "pages/submit-url",
+                array(
+                    "title" => "Ilmianna blogikirjoitus"
+                    )
+                )
+            );
+    }
 }
