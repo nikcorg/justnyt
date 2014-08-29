@@ -29,6 +29,8 @@ class RecommendationQuery extends BaseRecommendationQuery
         $modelAlias = $this->getModelAlias();
 
         return $this->where($modelAlias . ".ApprovedOn IS NOT NULL")
+            ->joinRecommendationHint(null, \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+            ->with("RecommendationHint")
             ->where($modelAlias . ".ApprovedOn <= ?", new \DateTime());
     }
 
