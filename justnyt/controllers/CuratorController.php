@@ -39,15 +39,15 @@ class CuratorController extends \glue\Controller
                 "curator/volunteer",
                 array(
                     "title" => "Olet jonossa"
-                    )
                 )
+            )
         );
     }
 
     public function activate($token) {
         $curator = \justnyt\models\CuratorQuery::create("cr")
             ->where("cr.ActivatedOn IS NULL")
-            ->findOneByToken($token);
+            ->findOneByInviteToken($token);
 
         if (is_null($curator)) {
             throw new \glue\exceptions\http\E404Exception("Token not found");
@@ -61,7 +61,6 @@ class CuratorController extends \glue\Controller
 
             try {
                 $curator->activate();
-
                 $currentCurator->deactivate();
 
                 if (null != $currentCurator->getProfile()->getEmail()) {
@@ -71,9 +70,11 @@ class CuratorController extends \glue\Controller
                     $msg->setFrom("JustNyt <justnytfi@gmail.com>")
                         ->addTo($currentCurator->getProfile()->getEmail())
                         ->setSubject("Kuraattorinkautesi on päättynyt")
-                        ->setBody(\glue\ui\View::quickRender(
-                            "email/account-deactivated", array(
-                                "approved" => $approved
+                        ->setBody(
+                            \glue\ui\View::quickRender(
+                                "email/account-deactivated",
+                                array(
+                                    "approved" => $approved
                                 )
                             )
                         );
@@ -94,67 +95,191 @@ class CuratorController extends \glue\Controller
                 array(
                     "title" => "Aktivoi tilisi",
                     "token" => $token
-                    )
                 )
+            )
         );
     }
 
-    public function createToken($token) {
-        $curator = $this->getCurator($token);
-        $candidate = \justnyt\models\CuratorQuery::create("cr")
-            ->where("cr.ActivatedOn IS NULL")
-            ->findOne();
-
-        $volunteer = $check = \justnyt\models\CandidateQuery::create("cd")
+    protected function getFreeCandidate() {
+        $volunteer = \justnyt\models\CandidateQuery::create("cd")
+            ->nextFree()
             ->joinCurator("cr")
             ->useCuratorQuery("cr")
                 ->where("cr.ActivatedOn IS NULL")
                 ->endUse()
-            ->orderByCreatedOn("ASC")
             ->findOne();
 
-        if (is_null($candidate)) {
-            $candidate = new \justnyt\models\Curator();
-            $candidate->generateToken();
-            $candidate->save();
+        return $volunteer;
+    }
+
+    protected function getInvitedCandidate() {
+        $volunteer = \justnyt\models\CandidateQuery::create("cd")
+            ->invitePending()
+            ->joinCurator("cr")
+            ->useCuratorQuery("cr")
+                ->where("cr.ActivatedOn IS NULL")
+                ->endUse()
+            ->findOne();
+
+        return $volunteer;
+    }
+
+    protected function getInactiveCurator() {
+        $curator = \justnyt\models\CuratorQuery::create("cr")
+            ->where("cr.ActivatedOn IS NULL")
+            ->findOne();
+
+        // if (is_null($curator)) {
+        //     $curator = new \justnyt\models\Curator();
+        //     $curator->generateToken();
+        //     $curator->save();
+        // }
+
+        return $curator;
+    }
+
+    protected function doSendInviteMail($candidate, $next) {
+        $activationUrl = sprintf(
+            "http://%s/kuraattori/%s/tervetuloa",
+            $_SERVER["HTTP_HOST"],
+            $next->getInviteToken()
+        );
+
+        $msg = new \Nette\Mail\Message();
+        $msg->setFrom("JustNyt <justnytfi@gmail.com>")
+            ->addTo($candidate->getEmail())
+            ->setSubject("JustNyt tarvitsee kuraattoria")
+            ->setBody(
+                \glue\ui\View::quickRender(
+                    "email/curator-invite",
+                    array(
+                        "url" => $activationUrl
+                    )
+                )
+            );
+
+        $candidate->setInvitedOn(time());
+        $candidate->setInvitesSent($candidate->getInvitesSent() + 1);
+        $candidate->save();
+
+        $mailer = new \Nette\Mail\SendmailMailer();
+        return $mailer->send($msg);
+    }
+
+    protected function doRedactInvite($candidate) {
+        $msg = new \Nette\Mail\Message();
+        $msg->setFrom("JustNyt <justnytfi@gmail.com>")
+            ->addTo($candidate->getEmail())
+            ->setSubject("JustNyt tarvitsee kuraattoria")
+            ->setBody(
+                \glue\ui\View::quickRender(
+                    "email/curator-invite",
+                    array(
+                        "url" => $activationUrl
+                    )
+                )
+            );
+
+        $candidate->setInvitedRedactedOn(time());
+        $candidate->save();
+
+        $mailer = new \Nette\Mail\SendmailMailer();
+        return $mailer->send($msg);
+    }
+
+    protected function deleteInactiveCurator() {
+        $next = $this->getInactiveCurator();
+
+        if (null != $next) {
+            $next->delete();
+        }
+    }
+
+    protected function doHandleInvite($curator) {
+        $action = $this->request->POST->action;
+        $invited = $this->getInvitedCandidate();
+        $volunteer = $this->getFreeCandidate();
+
+        // var_dump($invited->toJSON()); die();
+
+        if ($action == "next-in-queue") {
+            $this->deleteInactiveCurator();
+
+            $next = new \justnyt\models\Curator();
+            $next->setCandidate($volunteer);
+            $next->save();
+
+            $this->doSendInviteMail($volunteer, $next);
+        } elseif ($action == "manual-invite") {
+            $next = new \justnyt\models\Curator();
+            $next->save();
+        } elseif ($action == "redact-invite") {
+            if (null != $invited) {
+                $invited->setInviteRedactedOn(time());
+                $invited->save();
+            }
+
+            $next = $this->getInactiveCurator();
+            $next->delete();
         }
 
-        $activationUrl = sprintf("http://%s/kuraattori/%s/tervetuloa", $_SERVER["HTTP_HOST"], $candidate->getToken());
-        $mailSent = false;
+        throw new \glue\exceptions\http\E303Exception("/kuraattori/" . $curator->getToken() . "/seuraava");
+    }
 
-        if ($this->request->isPost() && intval($this->request->POST->volunteer) == 1) {
-            $msg = new \Nette\Mail\Message();
-            $msg->setFrom("JustNyt <justnytfi@gmail.com>")
-                ->addTo($volunteer->getEmail())
-                ->setSubject("JustNyt tarvitsee kuraattoria")
-                ->setBody(\glue\ui\View::quickRender(
-                    "email/curator-invite", array(
-                        "url" => $activationUrl
-                        )
+    public function invite($token) {
+        $curator = $this->getCurator($token);
+
+        if ($this->request->isPost()) {
+            return $this->doHandleInvite($curator);
+        }
+
+        $next = $this->getInactiveCurator();
+        $invited = $this->getInvitedCandidate();
+        $volunteer = $this->getFreeCandidate();
+
+        if (null != $next && null != $next->getCandidateId()) {
+            $graceUntil = $invited->getInvitedOn()->add(new \DateInterval("PT2H"));
+            $now = \DateTime::createFromFormat("U", $_SERVER["REQUEST_TIME"]);
+
+            return $this->response->setContent(
+                \justnyt\views\JustNytLayout::quickRender(
+                    "curator/invite-sent",
+                    array(
+                        "title" => "Kutsu lähetettiin",
+                        "curator" => $curator,
+                        "graceUntil" => $graceUntil,
+                        "graceElapsed" => $now > $graceUntil
                     )
-                );
+                )
+            );
+        } elseif (null != $next && null == $next->getCandidateId()) {
+            $activationUrl = sprintf(
+                "http://%s/kuraattori/%s/tervetuloa",
+                $_SERVER["HTTP_HOST"],
+                $next->getInviteToken()
+            );
 
-            $mailer = new \Nette\Mail\SendmailMailer();
-            $mailer->send($msg);
-
-            $candidate->setCandidate($volunteer);
-            $candidate->save();
-
-            $mailSent = true;
-            // var_dump($volunteer->getEmail(), $mailer->send($msg));die();
+            return $this->response->setContent(
+                \justnyt\views\JustNytLayout::quickRender(
+                    "curator/invite-manual",
+                    array(
+                        "title" => "Kutsu seuraava kuraattori",
+                        "curator" => $curator,
+                        "activationUrl" => $activationUrl,
+                    )
+                )
+            );
         }
 
         $this->response->setContent(
             \justnyt\views\JustNytLayout::quickRender(
-                "curator/create-token",
+                "curator/invite-successor",
                 array(
                     "title" => "Kutsu seuraava kuraattori",
                     "curator" => $curator,
-                    "mailSent" => $mailSent,
-                    "activationUrl" => $activationUrl,
                     "volunteers" => ! is_null($volunteer)
-                    )
                 )
+            )
         );
     }
 
@@ -180,22 +305,28 @@ class CuratorController extends \glue\Controller
             // TODO: reduce number of queries, even though this is probably a rarely invoked action
             if ($emailIsSet) {
                 /* if email is set, it needs to be checked it matches the alias or no other reserved alias */
-                $bothMatch = $aliasIsSet && count(\justnyt\models\ProfileQuery::create("pr")
-                    ->where("pr.Alias = ?", $alias)
-                    ->where("pr.Email = ?", $email)
-                    ->find()) == 1;
-                $aliasNotReserved = count(\justnyt\models\ProfileQuery::create("pr")
-                    ->where("pr.Alias = ?", $alias)
-                    ->where("pr.Email IS NOT NULL")
-                    ->find()) == 0;
+                $bothMatch = $aliasIsSet && count(
+                    \justnyt\models\ProfileQuery::create("pr")
+                        ->where("pr.Alias = ?", $alias)
+                        ->where("pr.Email = ?", $email)
+                        ->find()
+                ) == 1;
+                $aliasNotReserved = count(
+                    \justnyt\models\ProfileQuery::create("pr")
+                        ->where("pr.Alias = ?", $alias)
+                        ->where("pr.Email IS NOT NULL")
+                        ->find()
+                ) == 0;
 
                 $check = $bothMatch || $aliasNotReserved;
             } else {
                 /* if email is not set, alias needs to be verified it's not reserved */
-                $aliasNotReserved = count(\justnyt\models\ProfileQuery::create("pr")
-                    ->where("pr.Alias = ?", $alias)
-                    ->where("pr.Email IS NOT NULL")
-                    ->find()) == 0;
+                $aliasNotReserved = count(
+                    \justnyt\models\ProfileQuery::create("pr")
+                        ->where("pr.Alias = ?", $alias)
+                        ->where("pr.Email IS NOT NULL")
+                        ->find()
+                ) == 0;
 
                 $check = $aliasNotReserved;
             }
@@ -236,8 +367,8 @@ class CuratorController extends \glue\Controller
                     "description" => $profile->getDescription(),
                     "email" => $profile->getEmail(),
                     "scripts" => array("/assets/js/app.js")
-                    )
                 )
+            )
         );
     }
 
@@ -255,8 +386,8 @@ class CuratorController extends \glue\Controller
                     "curator" => $curator,
                     "currentTime" => new \DateTime(),
                     "upcoming" => $upcoming
-                    )
                 )
+            )
         );
     }
 
@@ -271,8 +402,8 @@ class CuratorController extends \glue\Controller
                     "title" => "Julkaistut suositukset",
                     "curator" => $curator,
                     "approved" => $approved
-                    )
                 )
+            )
         );
     }
 
@@ -290,8 +421,8 @@ class CuratorController extends \glue\Controller
                     "title" => "Tervetuloa kuraattorikaudellesi",
                     "curator" => $curator,
                     "host" => $_SERVER["HTTP_HOST"]
-                    )
                 )
+            )
         );
     }
 }

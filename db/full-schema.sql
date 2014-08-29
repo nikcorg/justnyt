@@ -22,6 +22,9 @@ CREATE TABLE `profile` (
 CREATE TABLE `candidate` (
     `candidate_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `created_on` DATETIME NOT NULL,
+    `invited_on` DATETIME,
+    `invite_redacted_on` DATETIME,
+    `invites_sent` INT UNSIGNED DEFAULT 0,
     `email` VARCHAR (255) NOT NULL,
 
     PRIMARY KEY (`candidate_id`)
@@ -34,6 +37,7 @@ CREATE TABLE `curator` (
     `candidate_id` INT UNSIGNED,
     `profile_id` INT UNSIGNED,
     `token` VARCHAR (32) NOT NULL,
+    `invite_token` VARCHAR (32) NOT NULL,
     `created_on` DATETIME,
     `activated_on` DATETIME,
     `deactivated_on` DATETIME,

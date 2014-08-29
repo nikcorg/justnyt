@@ -78,6 +78,25 @@ abstract class Candidate implements ActiveRecordInterface
     protected $created_on;
 
     /**
+     * The value for the invited_on field.
+     * @var        \DateTime
+     */
+    protected $invited_on;
+
+    /**
+     * The value for the invite_redacted_on field.
+     * @var        \DateTime
+     */
+    protected $invite_redacted_on;
+
+    /**
+     * The value for the invites_sent field.
+     * Note: this column has a database default value of: 0
+     * @var        int
+     */
+    protected $invites_sent;
+
+    /**
      * The value for the email field.
      * @var        string
      */
@@ -104,10 +123,23 @@ abstract class Candidate implements ActiveRecordInterface
     protected $curatorsScheduledForDeletion = null;
 
     /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->invites_sent = 0;
+    }
+
+    /**
      * Initializes internal state of justnyt\models\Base\Candidate object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -351,6 +383,56 @@ abstract class Candidate implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [invited_on] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getInvitedOn($format = NULL)
+    {
+        if ($format === null) {
+            return $this->invited_on;
+        } else {
+            return $this->invited_on instanceof \DateTime ? $this->invited_on->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [invite_redacted_on] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getInviteRedactedOn($format = NULL)
+    {
+        if ($format === null) {
+            return $this->invite_redacted_on;
+        } else {
+            return $this->invite_redacted_on instanceof \DateTime ? $this->invite_redacted_on->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [invites_sent] column value.
+     *
+     * @return int
+     */
+    public function getInvitesSent()
+    {
+        return $this->invites_sent;
+    }
+
+    /**
      * Get the [email] column value.
      *
      * @return string
@@ -370,6 +452,10 @@ abstract class Candidate implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->invites_sent !== 0) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -405,7 +491,22 @@ abstract class Candidate implements ActiveRecordInterface
             }
             $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CandidateTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CandidateTableMap::translateFieldName('InvitedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->invited_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : CandidateTableMap::translateFieldName('InviteRedactedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->invite_redacted_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CandidateTableMap::translateFieldName('InvitesSent', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->invites_sent = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CandidateTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
             $this->email = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -415,7 +516,7 @@ abstract class Candidate implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = CandidateTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = CandidateTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Candidate'), 0, $e);
@@ -478,6 +579,66 @@ abstract class Candidate implements ActiveRecordInterface
 
         return $this;
     } // setCreatedOn()
+
+    /**
+     * Sets the value of [invited_on] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\justnyt\models\Candidate The current object (for fluent API support)
+     */
+    public function setInvitedOn($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->invited_on !== null || $dt !== null) {
+            if ($dt !== $this->invited_on) {
+                $this->invited_on = $dt;
+                $this->modifiedColumns[CandidateTableMap::COL_INVITED_ON] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setInvitedOn()
+
+    /**
+     * Sets the value of [invite_redacted_on] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\justnyt\models\Candidate The current object (for fluent API support)
+     */
+    public function setInviteRedactedOn($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->invite_redacted_on !== null || $dt !== null) {
+            if ($dt !== $this->invite_redacted_on) {
+                $this->invite_redacted_on = $dt;
+                $this->modifiedColumns[CandidateTableMap::COL_INVITE_REDACTED_ON] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setInviteRedactedOn()
+
+    /**
+     * Set the value of [invites_sent] column.
+     *
+     * @param  int $v new value
+     * @return $this|\justnyt\models\Candidate The current object (for fluent API support)
+     */
+    public function setInvitesSent($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->invites_sent !== $v) {
+            $this->invites_sent = $v;
+            $this->modifiedColumns[CandidateTableMap::COL_INVITES_SENT] = true;
+        }
+
+        return $this;
+    } // setInvitesSent()
 
     /**
      * Set the value of [email] column.
@@ -698,6 +859,15 @@ abstract class Candidate implements ActiveRecordInterface
         if ($this->isColumnModified(CandidateTableMap::COL_CREATED_ON)) {
             $modifiedColumns[':p' . $index++]  = '`CREATED_ON`';
         }
+        if ($this->isColumnModified(CandidateTableMap::COL_INVITED_ON)) {
+            $modifiedColumns[':p' . $index++]  = '`INVITED_ON`';
+        }
+        if ($this->isColumnModified(CandidateTableMap::COL_INVITE_REDACTED_ON)) {
+            $modifiedColumns[':p' . $index++]  = '`INVITE_REDACTED_ON`';
+        }
+        if ($this->isColumnModified(CandidateTableMap::COL_INVITES_SENT)) {
+            $modifiedColumns[':p' . $index++]  = '`INVITES_SENT`';
+        }
         if ($this->isColumnModified(CandidateTableMap::COL_EMAIL)) {
             $modifiedColumns[':p' . $index++]  = '`EMAIL`';
         }
@@ -717,6 +887,15 @@ abstract class Candidate implements ActiveRecordInterface
                         break;
                     case '`CREATED_ON`':
                         $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case '`INVITED_ON`':
+                        $stmt->bindValue($identifier, $this->invited_on ? $this->invited_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case '`INVITE_REDACTED_ON`':
+                        $stmt->bindValue($identifier, $this->invite_redacted_on ? $this->invite_redacted_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case '`INVITES_SENT`':
+                        $stmt->bindValue($identifier, $this->invites_sent, PDO::PARAM_INT);
                         break;
                     case '`EMAIL`':
                         $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
@@ -790,6 +969,15 @@ abstract class Candidate implements ActiveRecordInterface
                 return $this->getCreatedOn();
                 break;
             case 2:
+                return $this->getInvitedOn();
+                break;
+            case 3:
+                return $this->getInviteRedactedOn();
+                break;
+            case 4:
+                return $this->getInvitesSent();
+                break;
+            case 5:
                 return $this->getEmail();
                 break;
             default:
@@ -824,7 +1012,10 @@ abstract class Candidate implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getCandidateId(),
             $keys[1] => $this->getCreatedOn(),
-            $keys[2] => $this->getEmail(),
+            $keys[2] => $this->getInvitedOn(),
+            $keys[3] => $this->getInviteRedactedOn(),
+            $keys[4] => $this->getInvitesSent(),
+            $keys[5] => $this->getEmail(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -888,6 +1079,15 @@ abstract class Candidate implements ActiveRecordInterface
                 $this->setCreatedOn($value);
                 break;
             case 2:
+                $this->setInvitedOn($value);
+                break;
+            case 3:
+                $this->setInviteRedactedOn($value);
+                break;
+            case 4:
+                $this->setInvitesSent($value);
+                break;
+            case 5:
                 $this->setEmail($value);
                 break;
         } // switch()
@@ -923,7 +1123,16 @@ abstract class Candidate implements ActiveRecordInterface
             $this->setCreatedOn($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setEmail($arr[$keys[2]]);
+            $this->setInvitedOn($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setInviteRedactedOn($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setInvitesSent($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setEmail($arr[$keys[5]]);
         }
     }
 
@@ -965,6 +1174,15 @@ abstract class Candidate implements ActiveRecordInterface
         }
         if ($this->isColumnModified(CandidateTableMap::COL_CREATED_ON)) {
             $criteria->add(CandidateTableMap::COL_CREATED_ON, $this->created_on);
+        }
+        if ($this->isColumnModified(CandidateTableMap::COL_INVITED_ON)) {
+            $criteria->add(CandidateTableMap::COL_INVITED_ON, $this->invited_on);
+        }
+        if ($this->isColumnModified(CandidateTableMap::COL_INVITE_REDACTED_ON)) {
+            $criteria->add(CandidateTableMap::COL_INVITE_REDACTED_ON, $this->invite_redacted_on);
+        }
+        if ($this->isColumnModified(CandidateTableMap::COL_INVITES_SENT)) {
+            $criteria->add(CandidateTableMap::COL_INVITES_SENT, $this->invites_sent);
         }
         if ($this->isColumnModified(CandidateTableMap::COL_EMAIL)) {
             $criteria->add(CandidateTableMap::COL_EMAIL, $this->email);
@@ -1056,6 +1274,9 @@ abstract class Candidate implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setCreatedOn($this->getCreatedOn());
+        $copyObj->setInvitedOn($this->getInvitedOn());
+        $copyObj->setInviteRedactedOn($this->getInviteRedactedOn());
+        $copyObj->setInvitesSent($this->getInvitesSent());
         $copyObj->setEmail($this->getEmail());
 
         if ($deepCopy) {
@@ -1367,9 +1588,13 @@ abstract class Candidate implements ActiveRecordInterface
     {
         $this->candidate_id = null;
         $this->created_on = null;
+        $this->invited_on = null;
+        $this->invite_redacted_on = null;
+        $this->invites_sent = null;
         $this->email = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
