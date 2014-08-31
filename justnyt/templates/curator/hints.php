@@ -9,7 +9,7 @@
     <ul>
     <?php foreach ($hints as $hint): ?>
         <li>
-            <a href="<?= $hint->getUrl() ?>"><?= $hint->getUrl() ?></a> (<?= $hint->getCreatedOn()->format("j.m.Y") ?>)
+            <a href="/referral-cloak?to=<?= urlencode($hint->getUrl()) ?>"><?= $hint->getUrl() ?></a> (<?= $hint->getCreatedOn()->format("j.m.Y") ?>)
             <a href="/kuraattori/<?= $curator->getToken() ?>/esikatsele?fromHint=<?= $hint->getRecommendationHintId() ?>">Poimi</a>
         </li>
     <?php endforeach; ?>

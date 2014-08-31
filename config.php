@@ -97,6 +97,15 @@ Router::addRoute(
 
 Router::addRoute(
     Route::factory(
+        "/referral-cloak",
+        "\\justnyt\\controllers\\RedirectController",
+        RequestMethods::GET,
+        "cloak"
+    )
+);
+
+Router::addRoute(
+    Route::factory(
         "/s",
         "\\justnyt\\controllers\\RedirectController",
         RequestMethods::NONE

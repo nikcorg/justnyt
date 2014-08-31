@@ -77,4 +77,25 @@ class RedirectController extends \glue\Controller
 
         $this->redirectTo($recommendation);
     }
+
+    public function cloak() {
+        $url = urldecode($this->request->GET->to);
+
+        if (null == $url || "" == $url) {
+            throw new \glue\exceptions\http\E400Exception("Param 'to' cannot be empty");
+        }
+
+        $this->response->setContent(
+            \justnyt\views\JustNytLayout::quickRender(
+                "redirect/cloak",
+                array(
+                    "title" => "Siirry vinkattuun sisältöön",
+                    "url" => $url,
+                    "head" => array(
+                        "<meta http-equiv=\"refresh\" content=\"0; $url\">"
+                    )
+                )
+            )
+        );
+    }
 }
