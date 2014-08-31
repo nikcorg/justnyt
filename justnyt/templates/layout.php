@@ -11,6 +11,10 @@
     <meta property="og:title"
         content="<?= isset($title) ? preg_replace("/\s+?(-|&mdash;) Just Nyt!$/i", "", $title) . " - " : "" ?>Just Nyt!">
 
+    <?php if (isset($head)): ?>
+        <?= implode("\n", $head) ?>
+    <?php endif; ?>
+
     <?php if (isset($description)): ?>
         <meta property="og:description"
             content="<?= $description ?>">
