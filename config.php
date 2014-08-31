@@ -24,8 +24,8 @@ if (file_exists(GLUE_APPHOME . DIRECTORY_SEPARATOR . "config.local.php")) {
             "+6h" => new \DateInterval("PT6H"),
             "+9h" => new \DateInterval("PT9H"),
             "+12h" => new \DateInterval("PT12H")
-            )
-        ),
+        )
+    ),
     "recommendations"
 );
 
@@ -35,7 +35,7 @@ Router::addRoute(
         "\\justnyt\\controllers\\PagesController",
         RequestMethods::GET | RequestMethods::HEAD,
         "index"
-        )
+    )
     ->addAction("faq", null, RequestMethods::GET | RequestMethods::HEAD, "faq")
     ->addAction("kuraattoriksi", null, RequestMethods::GET | RequestMethods::HEAD, "volunteer")
     ->addAction("kuraattorit", null, RequestMethods::GET | RequestMethods::HEAD, "curators")
@@ -50,7 +50,7 @@ Router::addRoute(
         "\\justnyt\\controllers\\ProfileController",
         RequestMethods::GET,
         "lookup"
-        )
+    )
 );
 Router::addRoute(
     Route::factory(
@@ -58,17 +58,17 @@ Router::addRoute(
         "\\justnyt\\controllers\\ProfileController",
         RequestMethods::NONE,
         null
-        )
+    )
     ->addAction(
         ":cid-:pid/:alias",
         array(
             "cid" => RouteVariableTypes::NUMBER,
             "pid" => RouteVariableTypes::NUMBER,
             "alias" => RouteVariableTypes::SLUG
-            ),
+        ),
         RequestMethods::GET | RequestMethods::HEAD,
         "profile"
-        )
+    )
 );
 
 Router::addRoute(
@@ -77,13 +77,13 @@ Router::addRoute(
         "\\justnyt\\controllers\\FeedController",
         RequestMethods::GET | RequestMethods::HEAD,
         "index"
-        )
+    )
     ->addAction(
         "rss",
         null,
         RequestMethods::GET | RequestMethods::HEAD,
         "rss"
-        )
+    )
 );
 
 Router::addRoute(
@@ -92,7 +92,7 @@ Router::addRoute(
         "\\justnyt\\controllers\\RedirectController",
         RequestMethods::GET,
         "redirect"
-        )
+    )
 );
 
 Router::addRoute(
@@ -100,13 +100,13 @@ Router::addRoute(
         "/s",
         "\\justnyt\\controllers\\RedirectController",
         RequestMethods::NONE
-        )
+    )
     ->addAction(
         ":hash",
         array("hash" => RouteVariableTypes::ALNUM),
         RequestMethods::GET | RequestMethods::HEAD,
         "hashlookup"
-        )
+    )
 );
 
 Router::addRoute(
@@ -114,55 +114,55 @@ Router::addRoute(
         "/kuraattori",
         "\\justnyt\\controllers\\CuratorController",
         RequestMethods::NONE
-        )
+    )
     ->addAction(
         "vapaaehtoiseksi",
         null,
         RequestMethods::POST,
         "volunteer"
-        )
+    )
     ->addAction(
         ":token/aktivoi",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET | RequestMethods::POST,
         "activate"
-        )
+    )
     ->addAction(
         ":token/tervetuloa",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET,
         "home"
-        )
+    )
     ->addAction(
         ":token/profiili",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET | RequestMethods::POST,
         "profile"
-        )
+    )
     ->addAction(
         ":token/jonossa",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET,
         "pending"
-        )
+    )
     ->addAction(
         ":token/julkaistut",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET,
         "approved"
-        )
+    )
     ->addAction(
         ":token/seuraava",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET | RequestMethods::POST,
         "invite"
-        )
+    )
     ->addAction(
         ":token/vinkatut",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET,
         "hints"
-        )
+    )
 );
 
 Router::addRoute(
@@ -170,29 +170,29 @@ Router::addRoute(
         "/kuraattori",
         "\\justnyt\\controllers\\RecommendationController",
         RequestMethods::NONE
-        )
+    )
     ->addAction(
         ":token/uusi-suositus",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET,
         "create"
-        )
+    )
     ->addAction(
         ":token/esikatsele",
         array("token" => RouteVariableTypes::ALNUM),
         RequestMethods::GET,
         "prepare"
-        )
+    )
     ->addAction(
         ":token/suosittelut/:id",
         array("token" => RouteVariableTypes::ALNUM, "id" => RouteVariableTypes::NUMBER),
         RequestMethods::POST | RequestMethods::PUT,
         "approve"
-        )
+    )
     ->addAction(
         ":token/scrape/:id",
         array("token" => RouteVariableTypes::ALNUM, "id" => RouteVariableTypes::NUMBER),
         RequestMethods::GET,
         "scrape"
-        )
+    )
 );
