@@ -86,7 +86,7 @@ class CuratorController extends \glue\Controller
                 throw new \glue\exceptions\http\E500Exception("Error activating curator", 0, $e);
             }
 
-            throw new \glue\exceptions\http\E303Exception("/kuraattori/$token/tervetuloa");
+            throw new \glue\exceptions\http\E303Exception("/kuraattori/".$curator->getToken()."/tervetuloa");
         }
 
         $this->response->setContent(
