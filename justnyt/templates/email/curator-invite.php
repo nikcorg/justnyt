@@ -6,9 +6,6 @@ Sinulle on heitetty kuraattorinhattu. Ota se vastaan osoitteessa <?= $url ?>
 Terveisin
 
 JustNyt
-
-
-PS. Säilytä tämä sähköposti koko kuraattorikauden ajan, niin tunnuksesi ei mene vahingossa hukkaan.
 --
 http://justnyt.fi
 
