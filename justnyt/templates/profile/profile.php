@@ -47,7 +47,7 @@ $first = true;
         <ol reversed>
     <?php endif; ?>
 
-    <li><a href="/s/<?= $profile->SHORTLINK ?>" rel="nofollow"><?= $profile->TITLE ?>
+    <li><a href="/s/<?= $profile->SHORTLINK ?>" rel="nofollow"><?= $profile->TITLE ?></a></li>
     <?php $first = false; ?>
 <?php endwhile; ?>
 </ol>
