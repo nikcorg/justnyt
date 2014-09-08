@@ -54,6 +54,7 @@ class PagesController extends \glue\Controller
                 ->endUse()
             ->joinProfile("pr")
             ->joinRecommendation("re")
+            ->groupBy("cr.CuratorId")
             ->groupBy("pr.ProfileId")
             ->having("COUNT(re.RecommendationId) > 0")
             ->where("cr.ActivatedOn IS NOT NULL")
