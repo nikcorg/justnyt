@@ -28,19 +28,28 @@
 
 <?php else: ?>
 
-<?php foreach ($profiles as $profile): ?>
-    <?php foreach ($profile->getCurators() as $curator): ?>
+<?php
+$last_activated_on = null;
+$first = true;
+?>
+
+<?php while ($profile = $profiles->fetch(\PDO::FETCH_OBJ)): ?>
+    <?php if ($profile->ACTIVATED_ON != $last_activated_on): ?>
         <?php
-        $begin = $curator->getActivatedOn();
-        $end = $curator->getDeactivatedOn();
+        $last_activated_on = $profile->ACTIVATED_ON;
+        $begin = \DateTime::createFromFormat("Y-m-d H:i:s", $profile->ACTIVATED_ON);
+        $end = is_null($profile->DEACTIVATED_ON) ? \DateTime::createFromFormat("Y-m-d H:i:s", $profile->DEACTIVATED_ON) : null;
         ?>
+        <?php if (! $first): ?>
+        </ol>
+        <?php endif; ?>
         <p><?= $begin->format("j.n.Y H:i") ?>&ndash;<?= is_null($end) ? "" : $end->format("j.n.Y H:i") ?></p>
         <ol reversed>
-        <?php foreach ($curator->getRecommendations() as $recommendation): ?>
-            <li><a href="/s/<?= $recommendation->getShortlink() ?>" rel="nofollow"><?= $recommendation->getTitle() ?></a></li>
-        <?php endforeach; ?>
-        </ol>
-    <?php endforeach; ?>
-<?php endforeach; ?>
+    <?php endif; ?>
+
+    <li><a href="/s/<?= $profile->SHORTLINK ?>" rel="nofollow"><?= $profile->TITLE ?>
+    <?php $first = false; ?>
+<?php endwhile; ?>
+</ol>
 
 <?php endif; ?>
