@@ -37,8 +37,8 @@ $first = true;
     <?php if ($profile->ACTIVATED_ON != $last_activated_on): ?>
         <?php
         $last_activated_on = $profile->ACTIVATED_ON;
-        $begin = \DateTime::createFromFormat("Y-m-d H:i:s", $profile->ACTIVATED_ON);
-        $end = is_null($profile->DEACTIVATED_ON) ? \DateTime::createFromFormat("Y-m-d H:i:s", $profile->DEACTIVATED_ON) : null;
+        $begin = \DateTime::createFromFormat("U", strtotime($profile->ACTIVATED_ON));
+        $end = ! is_null($profile->DEACTIVATED_ON) ? \DateTime::createFromFormat("U", strtotime($profile->DEACTIVATED_ON)) : null;
         ?>
         <?php if (! $first): ?>
         </ol>
