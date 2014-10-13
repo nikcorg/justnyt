@@ -59,7 +59,7 @@ class RecommendationHintTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class RecommendationHintTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the RECOMMENDATION_HINT_ID field
@@ -80,6 +80,16 @@ class RecommendationHintTableMap extends TableMap
      * the column name for the CREATED_ON field
      */
     const COL_CREATED_ON = 'recommendation_hint.CREATED_ON';
+
+    /**
+     * the column name for the DROPPED_ON field
+     */
+    const COL_DROPPED_ON = 'recommendation_hint.DROPPED_ON';
+
+    /**
+     * the column name for the DROPPED_BY field
+     */
+    const COL_DROPPED_BY = 'recommendation_hint.DROPPED_BY';
 
     /**
      * the column name for the URL field
@@ -103,12 +113,12 @@ class RecommendationHintTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('RecommendationHintId', 'CreatedOn', 'Url', 'Alias', ),
-        self::TYPE_STUDLYPHPNAME => array('recommendationHintId', 'createdOn', 'url', 'alias', ),
-        self::TYPE_COLNAME       => array(RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID, RecommendationHintTableMap::COL_CREATED_ON, RecommendationHintTableMap::COL_URL, RecommendationHintTableMap::COL_ALIAS, ),
-        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_HINT_ID', 'COL_CREATED_ON', 'COL_URL', 'COL_ALIAS', ),
-        self::TYPE_FIELDNAME     => array('recommendation_hint_id', 'created_on', 'url', 'alias', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('RecommendationHintId', 'CreatedOn', 'DroppedOn', 'DroppedBy', 'Url', 'Alias', ),
+        self::TYPE_STUDLYPHPNAME => array('recommendationHintId', 'createdOn', 'droppedOn', 'droppedBy', 'url', 'alias', ),
+        self::TYPE_COLNAME       => array(RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID, RecommendationHintTableMap::COL_CREATED_ON, RecommendationHintTableMap::COL_DROPPED_ON, RecommendationHintTableMap::COL_DROPPED_BY, RecommendationHintTableMap::COL_URL, RecommendationHintTableMap::COL_ALIAS, ),
+        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_HINT_ID', 'COL_CREATED_ON', 'COL_DROPPED_ON', 'COL_DROPPED_BY', 'COL_URL', 'COL_ALIAS', ),
+        self::TYPE_FIELDNAME     => array('recommendation_hint_id', 'created_on', 'dropped_on', 'dropped_by', 'url', 'alias', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -118,12 +128,12 @@ class RecommendationHintTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('RecommendationHintId' => 0, 'CreatedOn' => 1, 'Url' => 2, 'Alias' => 3, ),
-        self::TYPE_STUDLYPHPNAME => array('recommendationHintId' => 0, 'createdOn' => 1, 'url' => 2, 'alias' => 3, ),
-        self::TYPE_COLNAME       => array(RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID => 0, RecommendationHintTableMap::COL_CREATED_ON => 1, RecommendationHintTableMap::COL_URL => 2, RecommendationHintTableMap::COL_ALIAS => 3, ),
-        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_HINT_ID' => 0, 'COL_CREATED_ON' => 1, 'COL_URL' => 2, 'COL_ALIAS' => 3, ),
-        self::TYPE_FIELDNAME     => array('recommendation_hint_id' => 0, 'created_on' => 1, 'url' => 2, 'alias' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('RecommendationHintId' => 0, 'CreatedOn' => 1, 'DroppedOn' => 2, 'DroppedBy' => 3, 'Url' => 4, 'Alias' => 5, ),
+        self::TYPE_STUDLYPHPNAME => array('recommendationHintId' => 0, 'createdOn' => 1, 'droppedOn' => 2, 'droppedBy' => 3, 'url' => 4, 'alias' => 5, ),
+        self::TYPE_COLNAME       => array(RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID => 0, RecommendationHintTableMap::COL_CREATED_ON => 1, RecommendationHintTableMap::COL_DROPPED_ON => 2, RecommendationHintTableMap::COL_DROPPED_BY => 3, RecommendationHintTableMap::COL_URL => 4, RecommendationHintTableMap::COL_ALIAS => 5, ),
+        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_HINT_ID' => 0, 'COL_CREATED_ON' => 1, 'COL_DROPPED_ON' => 2, 'COL_DROPPED_BY' => 3, 'COL_URL' => 4, 'COL_ALIAS' => 5, ),
+        self::TYPE_FIELDNAME     => array('recommendation_hint_id' => 0, 'created_on' => 1, 'dropped_on' => 2, 'dropped_by' => 3, 'url' => 4, 'alias' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -144,6 +154,8 @@ class RecommendationHintTableMap extends TableMap
         // columns
         $this->addPrimaryKey('RECOMMENDATION_HINT_ID', 'RecommendationHintId', 'INTEGER', true, 10, null);
         $this->addColumn('CREATED_ON', 'CreatedOn', 'TIMESTAMP', false, null, null);
+        $this->addColumn('DROPPED_ON', 'DroppedOn', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('DROPPED_BY', 'DroppedBy', 'INTEGER', 'curator', 'CURATOR_ID', false, 10, null);
         $this->addColumn('URL', 'Url', 'VARCHAR', true, 1024, null);
         $this->addColumn('ALIAS', 'Alias', 'VARCHAR', false, 50, null);
     } // initialize()
@@ -153,6 +165,7 @@ class RecommendationHintTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Curator', '\\justnyt\\models\\Curator', RelationMap::MANY_TO_ONE, array('dropped_by' => 'curator_id', ), 'SET NULL', 'CASCADE');
         $this->addRelation('Recommendation', '\\justnyt\\models\\Recommendation', RelationMap::ONE_TO_MANY, array('recommendation_hint_id' => 'recommendation_hint_id', ), 'SET NULL', 'CASCADE', 'Recommendations');
     } // buildRelations()
     /**
@@ -308,11 +321,15 @@ class RecommendationHintTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(RecommendationHintTableMap::COL_RECOMMENDATION_HINT_ID);
             $criteria->addSelectColumn(RecommendationHintTableMap::COL_CREATED_ON);
+            $criteria->addSelectColumn(RecommendationHintTableMap::COL_DROPPED_ON);
+            $criteria->addSelectColumn(RecommendationHintTableMap::COL_DROPPED_BY);
             $criteria->addSelectColumn(RecommendationHintTableMap::COL_URL);
             $criteria->addSelectColumn(RecommendationHintTableMap::COL_ALIAS);
         } else {
             $criteria->addSelectColumn($alias . '.RECOMMENDATION_HINT_ID');
             $criteria->addSelectColumn($alias . '.CREATED_ON');
+            $criteria->addSelectColumn($alias . '.DROPPED_ON');
+            $criteria->addSelectColumn($alias . '.DROPPED_BY');
             $criteria->addSelectColumn($alias . '.URL');
             $criteria->addSelectColumn($alias . '.ALIAS');
         }

@@ -22,11 +22,15 @@ use justnyt\models\Map\RecommendationHintTableMap;
  *
  * @method     ChildRecommendationHintQuery orderByRecommendationHintId($order = Criteria::ASC) Order by the recommendation_hint_id column
  * @method     ChildRecommendationHintQuery orderByCreatedOn($order = Criteria::ASC) Order by the created_on column
+ * @method     ChildRecommendationHintQuery orderByDroppedOn($order = Criteria::ASC) Order by the dropped_on column
+ * @method     ChildRecommendationHintQuery orderByDroppedBy($order = Criteria::ASC) Order by the dropped_by column
  * @method     ChildRecommendationHintQuery orderByUrl($order = Criteria::ASC) Order by the url column
  * @method     ChildRecommendationHintQuery orderByAlias($order = Criteria::ASC) Order by the alias column
  *
  * @method     ChildRecommendationHintQuery groupByRecommendationHintId() Group by the recommendation_hint_id column
  * @method     ChildRecommendationHintQuery groupByCreatedOn() Group by the created_on column
+ * @method     ChildRecommendationHintQuery groupByDroppedOn() Group by the dropped_on column
+ * @method     ChildRecommendationHintQuery groupByDroppedBy() Group by the dropped_by column
  * @method     ChildRecommendationHintQuery groupByUrl() Group by the url column
  * @method     ChildRecommendationHintQuery groupByAlias() Group by the alias column
  *
@@ -34,23 +38,31 @@ use justnyt\models\Map\RecommendationHintTableMap;
  * @method     ChildRecommendationHintQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRecommendationHintQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildRecommendationHintQuery leftJoinCurator($relationAlias = null) Adds a LEFT JOIN clause to the query using the Curator relation
+ * @method     ChildRecommendationHintQuery rightJoinCurator($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Curator relation
+ * @method     ChildRecommendationHintQuery innerJoinCurator($relationAlias = null) Adds a INNER JOIN clause to the query using the Curator relation
+ *
  * @method     ChildRecommendationHintQuery leftJoinRecommendation($relationAlias = null) Adds a LEFT JOIN clause to the query using the Recommendation relation
  * @method     ChildRecommendationHintQuery rightJoinRecommendation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Recommendation relation
  * @method     ChildRecommendationHintQuery innerJoinRecommendation($relationAlias = null) Adds a INNER JOIN clause to the query using the Recommendation relation
  *
- * @method     \justnyt\models\RecommendationQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \justnyt\models\CuratorQuery|\justnyt\models\RecommendationQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildRecommendationHint findOne(ConnectionInterface $con = null) Return the first ChildRecommendationHint matching the query
  * @method     ChildRecommendationHint findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRecommendationHint matching the query, or a new ChildRecommendationHint object populated from the query conditions when no match is found
  *
  * @method     ChildRecommendationHint findOneByRecommendationHintId(int $recommendation_hint_id) Return the first ChildRecommendationHint filtered by the recommendation_hint_id column
  * @method     ChildRecommendationHint findOneByCreatedOn(string $created_on) Return the first ChildRecommendationHint filtered by the created_on column
+ * @method     ChildRecommendationHint findOneByDroppedOn(string $dropped_on) Return the first ChildRecommendationHint filtered by the dropped_on column
+ * @method     ChildRecommendationHint findOneByDroppedBy(int $dropped_by) Return the first ChildRecommendationHint filtered by the dropped_by column
  * @method     ChildRecommendationHint findOneByUrl(string $url) Return the first ChildRecommendationHint filtered by the url column
  * @method     ChildRecommendationHint findOneByAlias(string $alias) Return the first ChildRecommendationHint filtered by the alias column
  *
  * @method     ChildRecommendationHint[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildRecommendationHint objects based on current ModelCriteria
  * @method     ChildRecommendationHint[]|ObjectCollection findByRecommendationHintId(int $recommendation_hint_id) Return ChildRecommendationHint objects filtered by the recommendation_hint_id column
  * @method     ChildRecommendationHint[]|ObjectCollection findByCreatedOn(string $created_on) Return ChildRecommendationHint objects filtered by the created_on column
+ * @method     ChildRecommendationHint[]|ObjectCollection findByDroppedOn(string $dropped_on) Return ChildRecommendationHint objects filtered by the dropped_on column
+ * @method     ChildRecommendationHint[]|ObjectCollection findByDroppedBy(int $dropped_by) Return ChildRecommendationHint objects filtered by the dropped_by column
  * @method     ChildRecommendationHint[]|ObjectCollection findByUrl(string $url) Return ChildRecommendationHint objects filtered by the url column
  * @method     ChildRecommendationHint[]|ObjectCollection findByAlias(string $alias) Return ChildRecommendationHint objects filtered by the alias column
  * @method     ChildRecommendationHint[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -142,7 +154,7 @@ abstract class RecommendationHintQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT `RECOMMENDATION_HINT_ID`, `CREATED_ON`, `URL`, `ALIAS` FROM `recommendation_hint` WHERE `RECOMMENDATION_HINT_ID` = :p0';
+        $sql = 'SELECT `RECOMMENDATION_HINT_ID`, `CREATED_ON`, `DROPPED_ON`, `DROPPED_BY`, `URL`, `ALIAS` FROM `recommendation_hint` WHERE `RECOMMENDATION_HINT_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -317,6 +329,92 @@ abstract class RecommendationHintQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the dropped_on column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDroppedOn('2011-03-14'); // WHERE dropped_on = '2011-03-14'
+     * $query->filterByDroppedOn('now'); // WHERE dropped_on = '2011-03-14'
+     * $query->filterByDroppedOn(array('max' => 'yesterday')); // WHERE dropped_on > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $droppedOn The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildRecommendationHintQuery The current query, for fluid interface
+     */
+    public function filterByDroppedOn($droppedOn = null, $comparison = null)
+    {
+        if (is_array($droppedOn)) {
+            $useMinMax = false;
+            if (isset($droppedOn['min'])) {
+                $this->addUsingAlias(RecommendationHintTableMap::COL_DROPPED_ON, $droppedOn['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($droppedOn['max'])) {
+                $this->addUsingAlias(RecommendationHintTableMap::COL_DROPPED_ON, $droppedOn['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecommendationHintTableMap::COL_DROPPED_ON, $droppedOn, $comparison);
+    }
+
+    /**
+     * Filter the query on the dropped_by column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDroppedBy(1234); // WHERE dropped_by = 1234
+     * $query->filterByDroppedBy(array(12, 34)); // WHERE dropped_by IN (12, 34)
+     * $query->filterByDroppedBy(array('min' => 12)); // WHERE dropped_by > 12
+     * </code>
+     *
+     * @see       filterByCurator()
+     *
+     * @param     mixed $droppedBy The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildRecommendationHintQuery The current query, for fluid interface
+     */
+    public function filterByDroppedBy($droppedBy = null, $comparison = null)
+    {
+        if (is_array($droppedBy)) {
+            $useMinMax = false;
+            if (isset($droppedBy['min'])) {
+                $this->addUsingAlias(RecommendationHintTableMap::COL_DROPPED_BY, $droppedBy['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($droppedBy['max'])) {
+                $this->addUsingAlias(RecommendationHintTableMap::COL_DROPPED_BY, $droppedBy['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecommendationHintTableMap::COL_DROPPED_BY, $droppedBy, $comparison);
+    }
+
+    /**
      * Filter the query on the url column
      *
      * Example usage:
@@ -372,6 +470,81 @@ abstract class RecommendationHintQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(RecommendationHintTableMap::COL_ALIAS, $alias, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \justnyt\models\Curator object
+     *
+     * @param \justnyt\models\Curator|ObjectCollection $curator The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildRecommendationHintQuery The current query, for fluid interface
+     */
+    public function filterByCurator($curator, $comparison = null)
+    {
+        if ($curator instanceof \justnyt\models\Curator) {
+            return $this
+                ->addUsingAlias(RecommendationHintTableMap::COL_DROPPED_BY, $curator->getCuratorId(), $comparison);
+        } elseif ($curator instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(RecommendationHintTableMap::COL_DROPPED_BY, $curator->toKeyValue('PrimaryKey', 'CuratorId'), $comparison);
+        } else {
+            throw new PropelException('filterByCurator() only accepts arguments of type \justnyt\models\Curator or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Curator relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildRecommendationHintQuery The current query, for fluid interface
+     */
+    public function joinCurator($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Curator');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Curator');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Curator relation Curator object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \justnyt\models\CuratorQuery A secondary query class using the current class as primary query
+     */
+    public function useCuratorQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinCurator($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Curator', '\justnyt\models\CuratorQuery');
     }
 
     /**
