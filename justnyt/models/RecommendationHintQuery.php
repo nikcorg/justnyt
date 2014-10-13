@@ -17,5 +17,13 @@ use justnyt\models\Base\RecommendationHintQuery as BaseRecommendationHintQuery;
  */
 class RecommendationHintQuery extends BaseRecommendationHintQuery
 {
+    public function unreviewed() {
+        $modelAlias = $this->getModelAlias();
 
+        return $this->where($modelAlias . ".DroppedOn IS NULL")
+            ->useRecommendationQuery("r")
+                ->endUse()
+            ->groupByRecommendationHintId()
+            ->having("COUNT(r.RecommendationId) = 0");
+    }
 } // RecommendationHintQuery
