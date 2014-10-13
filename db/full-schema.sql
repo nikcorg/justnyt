@@ -73,6 +73,7 @@ CREATE TABLE `recommendation` (
     `shortlink` VARCHAR (32),
     `url` VARCHAR (1024),
     `title` VARCHAR (512),
+    `quote` VARCHAR (512),
 
     PRIMARY KEY (`recommendation_id`),
 
