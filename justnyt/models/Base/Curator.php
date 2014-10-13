@@ -25,6 +25,8 @@ use justnyt\models\CuratorQuery as ChildCuratorQuery;
 use justnyt\models\Profile as ChildProfile;
 use justnyt\models\ProfileQuery as ChildProfileQuery;
 use justnyt\models\Recommendation as ChildRecommendation;
+use justnyt\models\RecommendationHint as ChildRecommendationHint;
+use justnyt\models\RecommendationHintQuery as ChildRecommendationHintQuery;
 use justnyt\models\RecommendationQuery as ChildRecommendationQuery;
 use justnyt\models\Map\CuratorTableMap;
 
@@ -134,6 +136,12 @@ abstract class Curator implements ActiveRecordInterface
     protected $collRecommendationsPartial;
 
     /**
+     * @var        ObjectCollection|ChildRecommendationHint[] Collection to store aggregation of ChildRecommendationHint objects.
+     */
+    protected $collRecommendationHints;
+    protected $collRecommendationHintsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -146,6 +154,12 @@ abstract class Curator implements ActiveRecordInterface
      * @var ObjectCollection|ChildRecommendation[]
      */
     protected $recommendationsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRecommendationHint[]
+     */
+    protected $recommendationHintsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of justnyt\models\Base\Curator object.
@@ -789,6 +803,8 @@ abstract class Curator implements ActiveRecordInterface
             $this->aProfile = null;
             $this->collRecommendations = null;
 
+            $this->collRecommendationHints = null;
+
         } // if (deep)
     }
 
@@ -930,6 +946,24 @@ abstract class Curator implements ActiveRecordInterface
 
             if ($this->collRecommendations !== null) {
                 foreach ($this->collRecommendations as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->recommendationHintsScheduledForDeletion !== null) {
+                if (!$this->recommendationHintsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->recommendationHintsScheduledForDeletion as $recommendationHint) {
+                        // need to save related object because we set the relation to null
+                        $recommendationHint->save($con);
+                    }
+                    $this->recommendationHintsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRecommendationHints !== null) {
+                foreach ($this->collRecommendationHints as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1196,6 +1230,21 @@ abstract class Curator implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collRecommendations->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRecommendationHints) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'recommendationHints';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'recommendation_hints';
+                        break;
+                    default:
+                        $key = 'RecommendationHints';
+                }
+
+                $result[$key] = $this->collRecommendationHints->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1469,6 +1518,12 @@ abstract class Curator implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getRecommendationHints() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRecommendationHint($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1614,6 +1669,9 @@ abstract class Curator implements ActiveRecordInterface
     {
         if ('Recommendation' == $relationName) {
             return $this->initRecommendations();
+        }
+        if ('RecommendationHint' == $relationName) {
+            return $this->initRecommendationHints();
         }
     }
 
@@ -1861,6 +1919,224 @@ abstract class Curator implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRecommendationHints collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRecommendationHints()
+     */
+    public function clearRecommendationHints()
+    {
+        $this->collRecommendationHints = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRecommendationHints collection loaded partially.
+     */
+    public function resetPartialRecommendationHints($v = true)
+    {
+        $this->collRecommendationHintsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRecommendationHints collection.
+     *
+     * By default this just sets the collRecommendationHints collection to an empty array (like clearcollRecommendationHints());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRecommendationHints($overrideExisting = true)
+    {
+        if (null !== $this->collRecommendationHints && !$overrideExisting) {
+            return;
+        }
+        $this->collRecommendationHints = new ObjectCollection();
+        $this->collRecommendationHints->setModel('\justnyt\models\RecommendationHint');
+    }
+
+    /**
+     * Gets an array of ChildRecommendationHint objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildCurator is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRecommendationHint[] List of ChildRecommendationHint objects
+     * @throws PropelException
+     */
+    public function getRecommendationHints(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRecommendationHintsPartial && !$this->isNew();
+        if (null === $this->collRecommendationHints || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRecommendationHints) {
+                // return empty collection
+                $this->initRecommendationHints();
+            } else {
+                $collRecommendationHints = ChildRecommendationHintQuery::create(null, $criteria)
+                    ->filterByCurator($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRecommendationHintsPartial && count($collRecommendationHints)) {
+                        $this->initRecommendationHints(false);
+
+                        foreach ($collRecommendationHints as $obj) {
+                            if (false == $this->collRecommendationHints->contains($obj)) {
+                                $this->collRecommendationHints->append($obj);
+                            }
+                        }
+
+                        $this->collRecommendationHintsPartial = true;
+                    }
+
+                    return $collRecommendationHints;
+                }
+
+                if ($partial && $this->collRecommendationHints) {
+                    foreach ($this->collRecommendationHints as $obj) {
+                        if ($obj->isNew()) {
+                            $collRecommendationHints[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRecommendationHints = $collRecommendationHints;
+                $this->collRecommendationHintsPartial = false;
+            }
+        }
+
+        return $this->collRecommendationHints;
+    }
+
+    /**
+     * Sets a collection of ChildRecommendationHint objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $recommendationHints A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildCurator The current object (for fluent API support)
+     */
+    public function setRecommendationHints(Collection $recommendationHints, ConnectionInterface $con = null)
+    {
+        /** @var ChildRecommendationHint[] $recommendationHintsToDelete */
+        $recommendationHintsToDelete = $this->getRecommendationHints(new Criteria(), $con)->diff($recommendationHints);
+
+
+        $this->recommendationHintsScheduledForDeletion = $recommendationHintsToDelete;
+
+        foreach ($recommendationHintsToDelete as $recommendationHintRemoved) {
+            $recommendationHintRemoved->setCurator(null);
+        }
+
+        $this->collRecommendationHints = null;
+        foreach ($recommendationHints as $recommendationHint) {
+            $this->addRecommendationHint($recommendationHint);
+        }
+
+        $this->collRecommendationHints = $recommendationHints;
+        $this->collRecommendationHintsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RecommendationHint objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RecommendationHint objects.
+     * @throws PropelException
+     */
+    public function countRecommendationHints(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRecommendationHintsPartial && !$this->isNew();
+        if (null === $this->collRecommendationHints || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRecommendationHints) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRecommendationHints());
+            }
+
+            $query = ChildRecommendationHintQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCurator($this)
+                ->count($con);
+        }
+
+        return count($this->collRecommendationHints);
+    }
+
+    /**
+     * Method called to associate a ChildRecommendationHint object to this object
+     * through the ChildRecommendationHint foreign key attribute.
+     *
+     * @param  ChildRecommendationHint $l ChildRecommendationHint
+     * @return $this|\justnyt\models\Curator The current object (for fluent API support)
+     */
+    public function addRecommendationHint(ChildRecommendationHint $l)
+    {
+        if ($this->collRecommendationHints === null) {
+            $this->initRecommendationHints();
+            $this->collRecommendationHintsPartial = true;
+        }
+
+        if (!$this->collRecommendationHints->contains($l)) {
+            $this->doAddRecommendationHint($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRecommendationHint $recommendationHint The ChildRecommendationHint object to add.
+     */
+    protected function doAddRecommendationHint(ChildRecommendationHint $recommendationHint)
+    {
+        $this->collRecommendationHints[]= $recommendationHint;
+        $recommendationHint->setCurator($this);
+    }
+
+    /**
+     * @param  ChildRecommendationHint $recommendationHint The ChildRecommendationHint object to remove.
+     * @return $this|ChildCurator The current object (for fluent API support)
+     */
+    public function removeRecommendationHint(ChildRecommendationHint $recommendationHint)
+    {
+        if ($this->getRecommendationHints()->contains($recommendationHint)) {
+            $pos = $this->collRecommendationHints->search($recommendationHint);
+            $this->collRecommendationHints->remove($pos);
+            if (null === $this->recommendationHintsScheduledForDeletion) {
+                $this->recommendationHintsScheduledForDeletion = clone $this->collRecommendationHints;
+                $this->recommendationHintsScheduledForDeletion->clear();
+            }
+            $this->recommendationHintsScheduledForDeletion[]= $recommendationHint;
+            $recommendationHint->setCurator(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -1904,9 +2180,15 @@ abstract class Curator implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRecommendationHints) {
+                foreach ($this->collRecommendationHints as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collRecommendations = null;
+        $this->collRecommendationHints = null;
         $this->aCandidate = null;
         $this->aProfile = null;
     }

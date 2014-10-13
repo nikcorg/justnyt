@@ -18,6 +18,8 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
+use justnyt\models\Curator as ChildCurator;
+use justnyt\models\CuratorQuery as ChildCuratorQuery;
 use justnyt\models\Recommendation as ChildRecommendation;
 use justnyt\models\RecommendationHint as ChildRecommendationHint;
 use justnyt\models\RecommendationHintQuery as ChildRecommendationHintQuery;
@@ -78,6 +80,18 @@ abstract class RecommendationHint implements ActiveRecordInterface
     protected $created_on;
 
     /**
+     * The value for the dropped_on field.
+     * @var        \DateTime
+     */
+    protected $dropped_on;
+
+    /**
+     * The value for the dropped_by field.
+     * @var        int
+     */
+    protected $dropped_by;
+
+    /**
      * The value for the url field.
      * @var        string
      */
@@ -88,6 +102,11 @@ abstract class RecommendationHint implements ActiveRecordInterface
      * @var        string
      */
     protected $alias;
+
+    /**
+     * @var        ChildCurator
+     */
+    protected $aCurator;
 
     /**
      * @var        ObjectCollection|ChildRecommendation[] Collection to store aggregation of ChildRecommendation objects.
@@ -357,6 +376,36 @@ abstract class RecommendationHint implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [dropped_on] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getDroppedOn($format = NULL)
+    {
+        if ($format === null) {
+            return $this->dropped_on;
+        } else {
+            return $this->dropped_on instanceof \DateTime ? $this->dropped_on->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [dropped_by] column value.
+     *
+     * @return int
+     */
+    public function getDroppedBy()
+    {
+        return $this->dropped_by;
+    }
+
+    /**
      * Get the [url] column value.
      *
      * @return string
@@ -421,10 +470,19 @@ abstract class RecommendationHint implements ActiveRecordInterface
             }
             $this->created_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RecommendationHintTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RecommendationHintTableMap::translateFieldName('DroppedOn', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->dropped_on = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RecommendationHintTableMap::translateFieldName('DroppedBy', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->dropped_by = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : RecommendationHintTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
             $this->url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RecommendationHintTableMap::translateFieldName('Alias', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : RecommendationHintTableMap::translateFieldName('Alias', TableMap::TYPE_PHPNAME, $indexType)];
             $this->alias = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -434,7 +492,7 @@ abstract class RecommendationHint implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = RecommendationHintTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = RecommendationHintTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\RecommendationHint'), 0, $e);
@@ -456,6 +514,9 @@ abstract class RecommendationHint implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aCurator !== null && $this->dropped_by !== $this->aCurator->getCuratorId()) {
+            $this->aCurator = null;
+        }
     } // ensureConsistency
 
     /**
@@ -497,6 +558,50 @@ abstract class RecommendationHint implements ActiveRecordInterface
 
         return $this;
     } // setCreatedOn()
+
+    /**
+     * Sets the value of [dropped_on] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\justnyt\models\RecommendationHint The current object (for fluent API support)
+     */
+    public function setDroppedOn($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->dropped_on !== null || $dt !== null) {
+            if ($dt !== $this->dropped_on) {
+                $this->dropped_on = $dt;
+                $this->modifiedColumns[RecommendationHintTableMap::COL_DROPPED_ON] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setDroppedOn()
+
+    /**
+     * Set the value of [dropped_by] column.
+     *
+     * @param  int $v new value
+     * @return $this|\justnyt\models\RecommendationHint The current object (for fluent API support)
+     */
+    public function setDroppedBy($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->dropped_by !== $v) {
+            $this->dropped_by = $v;
+            $this->modifiedColumns[RecommendationHintTableMap::COL_DROPPED_BY] = true;
+        }
+
+        if ($this->aCurator !== null && $this->aCurator->getCuratorId() !== $v) {
+            $this->aCurator = null;
+        }
+
+        return $this;
+    } // setDroppedBy()
 
     /**
      * Set the value of [url] column.
@@ -575,6 +680,7 @@ abstract class RecommendationHint implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aCurator = null;
             $this->collRecommendations = null;
 
         } // if (deep)
@@ -676,6 +782,18 @@ abstract class RecommendationHint implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aCurator !== null) {
+                if ($this->aCurator->isModified() || $this->aCurator->isNew()) {
+                    $affectedRows += $this->aCurator->save($con);
+                }
+                $this->setCurator($this->aCurator);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -737,6 +855,12 @@ abstract class RecommendationHint implements ActiveRecordInterface
         if ($this->isColumnModified(RecommendationHintTableMap::COL_CREATED_ON)) {
             $modifiedColumns[':p' . $index++]  = '`CREATED_ON`';
         }
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_DROPPED_ON)) {
+            $modifiedColumns[':p' . $index++]  = '`DROPPED_ON`';
+        }
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_DROPPED_BY)) {
+            $modifiedColumns[':p' . $index++]  = '`DROPPED_BY`';
+        }
         if ($this->isColumnModified(RecommendationHintTableMap::COL_URL)) {
             $modifiedColumns[':p' . $index++]  = '`URL`';
         }
@@ -759,6 +883,12 @@ abstract class RecommendationHint implements ActiveRecordInterface
                         break;
                     case '`CREATED_ON`':
                         $stmt->bindValue($identifier, $this->created_on ? $this->created_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case '`DROPPED_ON`':
+                        $stmt->bindValue($identifier, $this->dropped_on ? $this->dropped_on->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case '`DROPPED_BY`':
+                        $stmt->bindValue($identifier, $this->dropped_by, PDO::PARAM_INT);
                         break;
                     case '`URL`':
                         $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
@@ -835,9 +965,15 @@ abstract class RecommendationHint implements ActiveRecordInterface
                 return $this->getCreatedOn();
                 break;
             case 2:
-                return $this->getUrl();
+                return $this->getDroppedOn();
                 break;
             case 3:
+                return $this->getDroppedBy();
+                break;
+            case 4:
+                return $this->getUrl();
+                break;
+            case 5:
                 return $this->getAlias();
                 break;
             default:
@@ -872,8 +1008,10 @@ abstract class RecommendationHint implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getRecommendationHintId(),
             $keys[1] => $this->getCreatedOn(),
-            $keys[2] => $this->getUrl(),
-            $keys[3] => $this->getAlias(),
+            $keys[2] => $this->getDroppedOn(),
+            $keys[3] => $this->getDroppedBy(),
+            $keys[4] => $this->getUrl(),
+            $keys[5] => $this->getAlias(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -881,6 +1019,21 @@ abstract class RecommendationHint implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->aCurator) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'curator';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'curator';
+                        break;
+                    default:
+                        $key = 'Curator';
+                }
+
+                $result[$key] = $this->aCurator->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->collRecommendations) {
 
                 switch ($keyType) {
@@ -937,9 +1090,15 @@ abstract class RecommendationHint implements ActiveRecordInterface
                 $this->setCreatedOn($value);
                 break;
             case 2:
-                $this->setUrl($value);
+                $this->setDroppedOn($value);
                 break;
             case 3:
+                $this->setDroppedBy($value);
+                break;
+            case 4:
+                $this->setUrl($value);
+                break;
+            case 5:
                 $this->setAlias($value);
                 break;
         } // switch()
@@ -975,10 +1134,16 @@ abstract class RecommendationHint implements ActiveRecordInterface
             $this->setCreatedOn($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setUrl($arr[$keys[2]]);
+            $this->setDroppedOn($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setAlias($arr[$keys[3]]);
+            $this->setDroppedBy($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setUrl($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setAlias($arr[$keys[5]]);
         }
     }
 
@@ -1020,6 +1185,12 @@ abstract class RecommendationHint implements ActiveRecordInterface
         }
         if ($this->isColumnModified(RecommendationHintTableMap::COL_CREATED_ON)) {
             $criteria->add(RecommendationHintTableMap::COL_CREATED_ON, $this->created_on);
+        }
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_DROPPED_ON)) {
+            $criteria->add(RecommendationHintTableMap::COL_DROPPED_ON, $this->dropped_on);
+        }
+        if ($this->isColumnModified(RecommendationHintTableMap::COL_DROPPED_BY)) {
+            $criteria->add(RecommendationHintTableMap::COL_DROPPED_BY, $this->dropped_by);
         }
         if ($this->isColumnModified(RecommendationHintTableMap::COL_URL)) {
             $criteria->add(RecommendationHintTableMap::COL_URL, $this->url);
@@ -1114,6 +1285,8 @@ abstract class RecommendationHint implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setCreatedOn($this->getCreatedOn());
+        $copyObj->setDroppedOn($this->getDroppedOn());
+        $copyObj->setDroppedBy($this->getDroppedBy());
         $copyObj->setUrl($this->getUrl());
         $copyObj->setAlias($this->getAlias());
 
@@ -1156,6 +1329,57 @@ abstract class RecommendationHint implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+    /**
+     * Declares an association between this object and a ChildCurator object.
+     *
+     * @param  ChildCurator $v
+     * @return $this|\justnyt\models\RecommendationHint The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setCurator(ChildCurator $v = null)
+    {
+        if ($v === null) {
+            $this->setDroppedBy(NULL);
+        } else {
+            $this->setDroppedBy($v->getCuratorId());
+        }
+
+        $this->aCurator = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildCurator object, it will not be re-added.
+        if ($v !== null) {
+            $v->addRecommendationHint($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildCurator object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildCurator The associated ChildCurator object.
+     * @throws PropelException
+     */
+    public function getCurator(ConnectionInterface $con = null)
+    {
+        if ($this->aCurator === null && ($this->dropped_by !== null)) {
+            $this->aCurator = ChildCuratorQuery::create()->findPk($this->dropped_by, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aCurator->addRecommendationHints($this);
+             */
+        }
+
+        return $this->aCurator;
     }
 
 
@@ -1424,8 +1648,13 @@ abstract class RecommendationHint implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aCurator) {
+            $this->aCurator->removeRecommendationHint($this);
+        }
         $this->recommendation_hint_id = null;
         $this->created_on = null;
+        $this->dropped_on = null;
+        $this->dropped_by = null;
         $this->url = null;
         $this->alias = null;
         $this->alreadyInSave = false;
@@ -1454,6 +1683,7 @@ abstract class RecommendationHint implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collRecommendations = null;
+        $this->aCurator = null;
     }
 
     /**

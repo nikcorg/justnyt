@@ -180,6 +180,7 @@ class CuratorTableMap extends TableMap
         $this->addRelation('Candidate', '\\justnyt\\models\\Candidate', RelationMap::MANY_TO_ONE, array('candidate_id' => 'candidate_id', ), 'SET NULL', 'CASCADE');
         $this->addRelation('Profile', '\\justnyt\\models\\Profile', RelationMap::MANY_TO_ONE, array('profile_id' => 'profile_id', ), 'SET NULL', 'CASCADE');
         $this->addRelation('Recommendation', '\\justnyt\\models\\Recommendation', RelationMap::ONE_TO_MANY, array('curator_id' => 'curator_id', ), 'SET NULL', 'CASCADE', 'Recommendations');
+        $this->addRelation('RecommendationHint', '\\justnyt\\models\\RecommendationHint', RelationMap::ONE_TO_MANY, array('curator_id' => 'dropped_by', ), 'SET NULL', 'CASCADE', 'RecommendationHints');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to curator     * by a foreign key with ON DELETE CASCADE
@@ -189,6 +190,7 @@ class CuratorTableMap extends TableMap
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         RecommendationTableMap::clearInstancePool();
+        RecommendationHintTableMap::clearInstancePool();
     }
 
     /**

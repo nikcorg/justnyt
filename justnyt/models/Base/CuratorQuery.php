@@ -54,7 +54,11 @@ use justnyt\models\Map\CuratorTableMap;
  * @method     ChildCuratorQuery rightJoinRecommendation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Recommendation relation
  * @method     ChildCuratorQuery innerJoinRecommendation($relationAlias = null) Adds a INNER JOIN clause to the query using the Recommendation relation
  *
- * @method     \justnyt\models\CandidateQuery|\justnyt\models\ProfileQuery|\justnyt\models\RecommendationQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildCuratorQuery leftJoinRecommendationHint($relationAlias = null) Adds a LEFT JOIN clause to the query using the RecommendationHint relation
+ * @method     ChildCuratorQuery rightJoinRecommendationHint($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RecommendationHint relation
+ * @method     ChildCuratorQuery innerJoinRecommendationHint($relationAlias = null) Adds a INNER JOIN clause to the query using the RecommendationHint relation
+ *
+ * @method     \justnyt\models\CandidateQuery|\justnyt\models\ProfileQuery|\justnyt\models\RecommendationQuery|\justnyt\models\RecommendationHintQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildCurator findOne(ConnectionInterface $con = null) Return the first ChildCurator matching the query
  * @method     ChildCurator findOneOrCreate(ConnectionInterface $con = null) Return the first ChildCurator matching the query, or a new ChildCurator object populated from the query conditions when no match is found
@@ -791,6 +795,79 @@ abstract class CuratorQuery extends ModelCriteria
         return $this
             ->joinRecommendation($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Recommendation', '\justnyt\models\RecommendationQuery');
+    }
+
+    /**
+     * Filter the query by a related \justnyt\models\RecommendationHint object
+     *
+     * @param \justnyt\models\RecommendationHint|ObjectCollection $recommendationHint  the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildCuratorQuery The current query, for fluid interface
+     */
+    public function filterByRecommendationHint($recommendationHint, $comparison = null)
+    {
+        if ($recommendationHint instanceof \justnyt\models\RecommendationHint) {
+            return $this
+                ->addUsingAlias(CuratorTableMap::COL_CURATOR_ID, $recommendationHint->getDroppedBy(), $comparison);
+        } elseif ($recommendationHint instanceof ObjectCollection) {
+            return $this
+                ->useRecommendationHintQuery()
+                ->filterByPrimaryKeys($recommendationHint->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRecommendationHint() only accepts arguments of type \justnyt\models\RecommendationHint or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RecommendationHint relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildCuratorQuery The current query, for fluid interface
+     */
+    public function joinRecommendationHint($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RecommendationHint');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RecommendationHint');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RecommendationHint relation RecommendationHint object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \justnyt\models\RecommendationHintQuery A secondary query class using the current class as primary query
+     */
+    public function useRecommendationHintQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinRecommendationHint($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RecommendationHint', '\justnyt\models\RecommendationHintQuery');
     }
 
     /**

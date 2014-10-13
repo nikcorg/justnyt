@@ -99,10 +99,17 @@ CREATE TABLE `recommendation` (
 CREATE TABLE `recommendation_hint` (
     `recommendation_hint_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `created_on` DATETIME,
+    `dropped_on` DATETIME,
+    `dropped_by` INT UNSIGNED,
     `url` VARCHAR (1024) NOT NULL,
     `alias` VARCHAR (50),
 
-    PRIMARY KEY (`recommendation_hint_id`)
+    PRIMARY KEY (`recommendation_hint_id`),
+
+    CONSTRAINT `recommendation_hint_dropped_by`
+        FOREIGN KEY (`dropped_by`) REFERENCES `curator` (`curator_id`)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 ) ENGINE=INNODB DEFAULT CHARACTER SET=utf8;
 
 

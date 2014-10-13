@@ -410,6 +410,7 @@ class CuratorController extends \glue\Controller
     public function hints($token) {
         $curator = $this->getCurator($token);
         $hints = \justnyt\models\RecommendationHintQuery::create("rh")
+            ->where("rh.DroppedOn IS NULL")
             ->useRecommendationQuery("r")
                 ->endUse()
             ->groupByRecommendationHintId()
@@ -423,7 +424,8 @@ class CuratorController extends \glue\Controller
                 array(
                     "title" => "Selaa vinkkejä",
                     "curator" => $curator,
-                    "hints" => $hints
+                    "hints" => $hints,
+                    "scripts" => array("/assets/js/app.js")
                 )
             )
         );
