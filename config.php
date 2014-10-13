@@ -205,3 +205,17 @@ Router::addRoute(
         "scrape"
     )
 );
+
+Router::addRoute(
+    Route::factory(
+        "/kuraattori",
+        "\\justnyt\\controllers\\RecommendationHintController",
+        RequestMethods::NONE
+    )
+    ->addAction(
+        ":token/hints/:hint_id",
+        array("token" => RouteVariableTypes::ALNUM, "hint_id" => RouteVariableTypes::NUMBER),
+        RequestMethods::DELETE,
+        "drop"
+    )
+);
