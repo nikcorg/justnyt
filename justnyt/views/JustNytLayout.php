@@ -20,11 +20,18 @@ class JustNytLayout
 
         $data["content"] = $view->render();
 
-        if (isset($data["curator"])) {
+        if (isset($data["curator"]) && is_a($data["curator"], "\\justnyt\\models\\Curator")) {
             $pending = \justnyt\models\RecommendationQuery::create("rc")
                 ->upcomingApproved()
                 ->find();
-            $data["pending"] = count($pending);
+
+            $data["pending"] = $pending->count();
+
+            $hints = \justnyt\models\RecommendationHintQuery::create("rh")
+                ->unreviewed()
+                ->find();
+
+            $data["hints"] = $hints->count();
         }
 
         return \glue\ui\View::quickRender(
