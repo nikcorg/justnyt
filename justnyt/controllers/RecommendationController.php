@@ -63,11 +63,18 @@ class RecommendationController extends \glue\Controller
     public function prepare($token) {
         $curator = $this->getCurator($token);
         $url = $this->request->GET->url;
+        $quote = $this->request->GET->quote;
         $hintId = $this->request->GET->fromHint;
         $hint = null;
 
         if (empty($url) && empty($hintId)) {
             throw new \glue\exceptions\http\E400Exception("Empty URL");
+        }
+
+        if ($quote == "null") {
+            $quote = "";
+        } else {
+            $quote = strip_tags(trim($quote));
         }
 
         if (! empty($hintId)) {
@@ -136,6 +143,7 @@ class RecommendationController extends \glue\Controller
                     "dupCheck" => $dupCheck,
                     "candidateId" => $prepare->getRecommendationId(),
                     "url" => $url,
+                    "quote" => $quote,
                     "upcoming" => $upcoming,
                     "currentTime" => new \DateTime(),
                     "scripts" => array("/assets/js/app.js")
@@ -175,8 +183,9 @@ class RecommendationController extends \glue\Controller
         }
 
         try {
-            $pending->setTitle($this->request->POST->title);
-            $pending->setUrl($this->request->POST->url);
+            $pending->setTitle(strip_tags(trim($this->request->POST->title)));
+            $pending->setUrl(strip_tags(trim($this->request->POST->url)));
+            $pending->setQuote(strip_tags(trim($this->request->POST->quote)));
             // TODO: check that this is indeed within configured boundaries
             $pending->setApprovedOn(time() + max(0, min(intval($this->request->POST->delay), 43200)));
             $pending->save();

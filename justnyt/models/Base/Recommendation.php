@@ -131,14 +131,20 @@ abstract class Recommendation implements ActiveRecordInterface
     protected $title;
 
     /**
-     * @var        ChildRecommendationHint
+     * The value for the quote field.
+     * @var        string
      */
-    protected $aRecommendationHint;
+    protected $quote;
 
     /**
      * @var        ChildCurator
      */
     protected $aCurator;
+
+    /**
+     * @var        ChildRecommendationHint
+     */
+    protected $aRecommendationHint;
 
     /**
      * @var        ObjectCollection|ChildVisit[] Collection to store aggregation of ChildVisit objects.
@@ -531,6 +537,16 @@ abstract class Recommendation implements ActiveRecordInterface
     }
 
     /**
+     * Get the [quote] column value.
+     *
+     * @return string
+     */
+    public function getQuote()
+    {
+        return $this->quote;
+    }
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -608,6 +624,9 @@ abstract class Recommendation implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : RecommendationTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
             $this->title = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : RecommendationTableMap::translateFieldName('Quote', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->quote = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -616,7 +635,7 @@ abstract class Recommendation implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 10; // 10 = RecommendationTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 11; // 11 = RecommendationTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Recommendation'), 0, $e);
@@ -863,6 +882,26 @@ abstract class Recommendation implements ActiveRecordInterface
     } // setTitle()
 
     /**
+     * Set the value of [quote] column.
+     *
+     * @param  string $v new value
+     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
+     */
+    public function setQuote($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->quote !== $v) {
+            $this->quote = $v;
+            $this->modifiedColumns[RecommendationTableMap::COL_QUOTE] = true;
+        }
+
+        return $this;
+    } // setQuote()
+
+    /**
      * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
      *
      * This will only work if the object has been saved and has a valid primary key set.
@@ -899,8 +938,8 @@ abstract class Recommendation implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aRecommendationHint = null;
             $this->aCurator = null;
+            $this->aRecommendationHint = null;
             $this->collVisits = null;
 
         } // if (deep)
@@ -1007,18 +1046,18 @@ abstract class Recommendation implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aRecommendationHint !== null) {
-                if ($this->aRecommendationHint->isModified() || $this->aRecommendationHint->isNew()) {
-                    $affectedRows += $this->aRecommendationHint->save($con);
-                }
-                $this->setRecommendationHint($this->aRecommendationHint);
-            }
-
             if ($this->aCurator !== null) {
                 if ($this->aCurator->isModified() || $this->aCurator->isNew()) {
                     $affectedRows += $this->aCurator->save($con);
                 }
                 $this->setCurator($this->aCurator);
+            }
+
+            if ($this->aRecommendationHint !== null) {
+                if ($this->aRecommendationHint->isModified() || $this->aRecommendationHint->isNew()) {
+                    $affectedRows += $this->aRecommendationHint->save($con);
+                }
+                $this->setRecommendationHint($this->aRecommendationHint);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -1105,6 +1144,9 @@ abstract class Recommendation implements ActiveRecordInterface
         if ($this->isColumnModified(RecommendationTableMap::COL_TITLE)) {
             $modifiedColumns[':p' . $index++]  = '`TITLE`';
         }
+        if ($this->isColumnModified(RecommendationTableMap::COL_QUOTE)) {
+            $modifiedColumns[':p' . $index++]  = '`QUOTE`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `recommendation` (%s) VALUES (%s)',
@@ -1145,6 +1187,9 @@ abstract class Recommendation implements ActiveRecordInterface
                         break;
                     case '`TITLE`':
                         $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
+                        break;
+                    case '`QUOTE`':
+                        $stmt->bindValue($identifier, $this->quote, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1238,6 +1283,9 @@ abstract class Recommendation implements ActiveRecordInterface
             case 9:
                 return $this->getTitle();
                 break;
+            case 10:
+                return $this->getQuote();
+                break;
             default:
                 return null;
                 break;
@@ -1278,6 +1326,7 @@ abstract class Recommendation implements ActiveRecordInterface
             $keys[7] => $this->getShortlink(),
             $keys[8] => $this->getUrl(),
             $keys[9] => $this->getTitle(),
+            $keys[10] => $this->getQuote(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1285,21 +1334,6 @@ abstract class Recommendation implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aRecommendationHint) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_STUDLYPHPNAME:
-                        $key = 'recommendationHint';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'recommendation_hint';
-                        break;
-                    default:
-                        $key = 'RecommendationHint';
-                }
-
-                $result[$key] = $this->aRecommendationHint->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
             if (null !== $this->aCurator) {
 
                 switch ($keyType) {
@@ -1314,6 +1348,21 @@ abstract class Recommendation implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aCurator->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aRecommendationHint) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_STUDLYPHPNAME:
+                        $key = 'recommendationHint';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'recommendation_hint';
+                        break;
+                    default:
+                        $key = 'RecommendationHint';
+                }
+
+                $result[$key] = $this->aRecommendationHint->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->collVisits) {
 
@@ -1394,6 +1443,9 @@ abstract class Recommendation implements ActiveRecordInterface
             case 9:
                 $this->setTitle($value);
                 break;
+            case 10:
+                $this->setQuote($value);
+                break;
         } // switch()
 
         return $this;
@@ -1449,6 +1501,9 @@ abstract class Recommendation implements ActiveRecordInterface
         }
         if (array_key_exists($keys[9], $arr)) {
             $this->setTitle($arr[$keys[9]]);
+        }
+        if (array_key_exists($keys[10], $arr)) {
+            $this->setQuote($arr[$keys[10]]);
         }
     }
 
@@ -1514,6 +1569,9 @@ abstract class Recommendation implements ActiveRecordInterface
         }
         if ($this->isColumnModified(RecommendationTableMap::COL_TITLE)) {
             $criteria->add(RecommendationTableMap::COL_TITLE, $this->title);
+        }
+        if ($this->isColumnModified(RecommendationTableMap::COL_QUOTE)) {
+            $criteria->add(RecommendationTableMap::COL_QUOTE, $this->quote);
         }
 
         return $criteria;
@@ -1610,6 +1668,7 @@ abstract class Recommendation implements ActiveRecordInterface
         $copyObj->setShortlink($this->getShortlink());
         $copyObj->setUrl($this->getUrl());
         $copyObj->setTitle($this->getTitle());
+        $copyObj->setQuote($this->getQuote());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1650,57 +1709,6 @@ abstract class Recommendation implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
-    }
-
-    /**
-     * Declares an association between this object and a ChildRecommendationHint object.
-     *
-     * @param  ChildRecommendationHint $v
-     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setRecommendationHint(ChildRecommendationHint $v = null)
-    {
-        if ($v === null) {
-            $this->setRecommendationHintId(NULL);
-        } else {
-            $this->setRecommendationHintId($v->getRecommendationHintId());
-        }
-
-        $this->aRecommendationHint = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildRecommendationHint object, it will not be re-added.
-        if ($v !== null) {
-            $v->addRecommendation($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildRecommendationHint object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildRecommendationHint The associated ChildRecommendationHint object.
-     * @throws PropelException
-     */
-    public function getRecommendationHint(ConnectionInterface $con = null)
-    {
-        if ($this->aRecommendationHint === null && ($this->recommendation_hint_id !== null)) {
-            $this->aRecommendationHint = ChildRecommendationHintQuery::create()->findPk($this->recommendation_hint_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aRecommendationHint->addRecommendations($this);
-             */
-        }
-
-        return $this->aRecommendationHint;
     }
 
     /**
@@ -1752,6 +1760,57 @@ abstract class Recommendation implements ActiveRecordInterface
         }
 
         return $this->aCurator;
+    }
+
+    /**
+     * Declares an association between this object and a ChildRecommendationHint object.
+     *
+     * @param  ChildRecommendationHint $v
+     * @return $this|\justnyt\models\Recommendation The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setRecommendationHint(ChildRecommendationHint $v = null)
+    {
+        if ($v === null) {
+            $this->setRecommendationHintId(NULL);
+        } else {
+            $this->setRecommendationHintId($v->getRecommendationHintId());
+        }
+
+        $this->aRecommendationHint = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildRecommendationHint object, it will not be re-added.
+        if ($v !== null) {
+            $v->addRecommendation($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildRecommendationHint object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildRecommendationHint The associated ChildRecommendationHint object.
+     * @throws PropelException
+     */
+    public function getRecommendationHint(ConnectionInterface $con = null)
+    {
+        if ($this->aRecommendationHint === null && ($this->recommendation_hint_id !== null)) {
+            $this->aRecommendationHint = ChildRecommendationHintQuery::create()->findPk($this->recommendation_hint_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aRecommendationHint->addRecommendations($this);
+             */
+        }
+
+        return $this->aRecommendationHint;
     }
 
 
@@ -1995,11 +2054,11 @@ abstract class Recommendation implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aRecommendationHint) {
-            $this->aRecommendationHint->removeRecommendation($this);
-        }
         if (null !== $this->aCurator) {
             $this->aCurator->removeRecommendation($this);
+        }
+        if (null !== $this->aRecommendationHint) {
+            $this->aRecommendationHint->removeRecommendation($this);
         }
         $this->recommendation_id = null;
         $this->curator_id = null;
@@ -2011,6 +2070,7 @@ abstract class Recommendation implements ActiveRecordInterface
         $this->shortlink = null;
         $this->url = null;
         $this->title = null;
+        $this->quote = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -2038,8 +2098,8 @@ abstract class Recommendation implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collVisits = null;
-        $this->aRecommendationHint = null;
         $this->aCurator = null;
+        $this->aRecommendationHint = null;
     }
 
     /**
