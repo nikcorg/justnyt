@@ -15,6 +15,6 @@
 
 <p>Mikäli mielesi tekee kuraattorinhattua, ilmoittaudu <a href="/kuraattoriksi">vapaaehtoiseksi</a>. Voit myös <a href="/ilmianna-blogikirjoitus">ilmiantaa hyvän blogikirjoituksen</a>, kun sellaiseen törmäät.</p>
 
-<p>Voit myös seurata suosituksia <a href="http://twitter.com/justnytfi">Twitterissä</a>, <a href="https://www.facebook.com/justnytfi">Facebookissa</a> ja <a href="https://plus.google.com/103263858445378300353/posts">Google Plussassa</a>.</p>
+<p>Voit myös seurata suosituksia <a href="http://twitter.com/justnytfi">Twitterissä</a>, <a href="https://www.facebook.com/justnytfi">Facebookissa</a> ja <a href="https://google.com/+JustnytFi">Google Plussassa</a>.</p>
 
 <p>Palautetta ja kehitysehdotuksia otetaan mieluusti vastaan kaikissa kanavissa.</p>
