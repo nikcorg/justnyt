@@ -4,6 +4,7 @@
 
 <h2>Miten suosittelet</h2>
 <p>Kaikki mitä tarvitset on yllä oleva kirjanmerkki. Kun luet jotain mitä haluat suositella, paina kirjanmerkkiä. Älä huoli, sinulta varmistetaan tietojen oikeellisuus.</p>
+<p>Mikäli haluat napata sivulta mukaan lyhyen lainauksen (suositeltavaa, muttei pakollista), maalaa haluamasi lainaus ennen kirjanmerkin klikkaamista.</p>
 <p>Valitettavasti mobiilisuosittelu on vielä työn alla. Voit tietysti käyttää samaa mekanismia myös mobiilissa kuin pöytäkoneellasi, mutta se on ärsyttävän työlästä. Toimiva, helppo ratkaisu on etsinnässä.</p>
 
 <h2>Mitä suosittelisit</h2>
