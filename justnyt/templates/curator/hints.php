@@ -11,6 +11,7 @@
         <li>
             <a href="/referral-cloak?to=<?= urlencode($hint->getUrl()) ?>"><?= $hint->getUrl() ?></a> (<?= $hint->getCreatedOn()->format("j.m.Y") ?>)
             <a href="/kuraattori/<?= $curator->getToken() ?>/esikatsele?fromHint=<?= $hint->getRecommendationHintId() ?>">Poimi</a>
+            <a href="/kuraattori/<?= $curator->getToken() ?>/hints/<?= $hint->getRecommendationHintId() ?>" data-action="delete">Hylkää</a>
         </li>
     <?php endforeach; ?>
     </ul>
