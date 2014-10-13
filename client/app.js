@@ -3,6 +3,14 @@ var debug = require("debug")("app.js");
 var candidatePreview = /kuraattori\/[a-z0-9]+\/esikatsele/i;
 var profileEdit = /kuraattori\/[a-z0-9]+\/profiili/i;
 
+function domready(callback) {
+    if (/interactive|complete/.test(document.readyState)) {
+        callback();
+    } else {
+        document.addEventListener("DOMContentLoaded", callback);
+    }
+}
+
 function start() {
     debug("start");
 
@@ -20,8 +28,4 @@ if (process.env.NODE_ENV !== "production") {
     require("debug").enable("*");
 }
 
-if (/interactive|complete/.test(document.readyState)) {
-    start();
-} else {
-    document.addEventListener("DOMContentLoaded", start);
-}
+domready(start);
