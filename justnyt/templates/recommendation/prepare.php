@@ -24,6 +24,9 @@
     <p><label><span>Otsikko</span>
         <input type="text" name="title" value="<?= $title ?>" required></label></p>
 
+    <p><label><span>Lainaus</span>
+        <textarea name="quote" rows="5"><?= $quote ?></textarea></label></p>
+
     <p><label><span>Julkaisuun</span>
         <select name="delay">
             <?php foreach ($delays as $label => $delay): ?>
