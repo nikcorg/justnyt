@@ -14,8 +14,8 @@
             <pubDate><?= $item->getApprovedOn()->setTimezone(new DateTimeZone("UTC"))->format("D, d M Y H:i:s O") ?></pubDate>
             <title><?= $item->getTitle() ?></title>
             <link>http://<?= $host ?>/s/<?= $item->getShortLink() ?></link>
-            <description><![CDATA[<?= $item->getTitle() ?> http://<?= $host ?>/s/<?= $item->getShortLink() ?>]]></description>
-            <content:encoded><![CDATA[<?= $item->getTitle() ?> http://<?= $host ?>/s/<?= $item->getShortLink() ?>]]></content:encoded>
+            <description><![CDATA[<?php if (null != $item->getQuote() && "" != $item->getQuote()): ?><blockquote><?= $item->getQuote() ?></blockquote><?php endif; ?>]]></description>
+            <content:encoded><![CDATA[<?php if (null != $item->getQuote() && "" != $item->getQuote()): ?><blockquote><?= $item->getQuote() ?></blockquote><?php endif; ?>]]></content:encoded>
         </item>
     <?php endforeach; ?>
 </channel>
