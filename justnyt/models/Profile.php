@@ -12,7 +12,7 @@ class Profile extends BaseProfile
 SELECT profile.PROFILE_ID, profile.ALIAS, profile.HOMEPAGE, profile.EMAIL, profile.IMAGE, profile.DESCRIPTION,
 
 curator.CURATOR_ID, curator.CANDIDATE_ID, curator.PROFILE_ID, curator.TOKEN, curator.INVITE_TOKEN, curator.CREATED_ON, curator.ACTIVATED_ON, curator.DEACTIVATED_ON,
-recommendation.RECOMMENDATION_ID, recommendation.CURATOR_ID, recommendation.RECOMMENDATION_HINT_ID, recommendation.CREATED_ON, recommendation.SCRAPED_ON, recommendation.APPROVED_ON, recommendation.GRAPHIC_CONTENT, recommendation.SHORTLINK, recommendation.URL, recommendation.TITLE
+recommendation.RECOMMENDATION_ID, recommendation.CURATOR_ID, recommendation.RECOMMENDATION_HINT_ID, recommendation.CREATED_ON, recommendation.SCRAPED_ON, recommendation.APPROVED_ON, recommendation.GRAPHIC_CONTENT, recommendation.SHORTLINK, recommendation.URL, recommendation.TITLE, recommendation.QUOTE
 FROM `profile`
 INNER JOIN `curator` ON (profile.PROFILE_ID=curator.PROFILE_ID)
 INNER JOIN `recommendation` ON (curator.CURATOR_ID=recommendation.CURATOR_ID)
