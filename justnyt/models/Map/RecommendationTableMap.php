@@ -59,7 +59,7 @@ class RecommendationTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 10;
+    const NUM_COLUMNS = 11;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class RecommendationTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 10;
+    const NUM_HYDRATE_COLUMNS = 11;
 
     /**
      * the column name for the RECOMMENDATION_ID field
@@ -122,6 +122,11 @@ class RecommendationTableMap extends TableMap
     const COL_TITLE = 'recommendation.TITLE';
 
     /**
+     * the column name for the QUOTE field
+     */
+    const COL_QUOTE = 'recommendation.QUOTE';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -133,12 +138,12 @@ class RecommendationTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('RecommendationId', 'CuratorId', 'RecommendationHintId', 'CreatedOn', 'ScrapedOn', 'ApprovedOn', 'GraphicContent', 'Shortlink', 'Url', 'Title', ),
-        self::TYPE_STUDLYPHPNAME => array('recommendationId', 'curatorId', 'recommendationHintId', 'createdOn', 'scrapedOn', 'approvedOn', 'graphicContent', 'shortlink', 'url', 'title', ),
-        self::TYPE_COLNAME       => array(RecommendationTableMap::COL_RECOMMENDATION_ID, RecommendationTableMap::COL_CURATOR_ID, RecommendationTableMap::COL_RECOMMENDATION_HINT_ID, RecommendationTableMap::COL_CREATED_ON, RecommendationTableMap::COL_SCRAPED_ON, RecommendationTableMap::COL_APPROVED_ON, RecommendationTableMap::COL_GRAPHIC_CONTENT, RecommendationTableMap::COL_SHORTLINK, RecommendationTableMap::COL_URL, RecommendationTableMap::COL_TITLE, ),
-        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_ID', 'COL_CURATOR_ID', 'COL_RECOMMENDATION_HINT_ID', 'COL_CREATED_ON', 'COL_SCRAPED_ON', 'COL_APPROVED_ON', 'COL_GRAPHIC_CONTENT', 'COL_SHORTLINK', 'COL_URL', 'COL_TITLE', ),
-        self::TYPE_FIELDNAME     => array('recommendation_id', 'curator_id', 'recommendation_hint_id', 'created_on', 'scraped_on', 'approved_on', 'graphic_content', 'shortlink', 'url', 'title', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('RecommendationId', 'CuratorId', 'RecommendationHintId', 'CreatedOn', 'ScrapedOn', 'ApprovedOn', 'GraphicContent', 'Shortlink', 'Url', 'Title', 'Quote', ),
+        self::TYPE_STUDLYPHPNAME => array('recommendationId', 'curatorId', 'recommendationHintId', 'createdOn', 'scrapedOn', 'approvedOn', 'graphicContent', 'shortlink', 'url', 'title', 'quote', ),
+        self::TYPE_COLNAME       => array(RecommendationTableMap::COL_RECOMMENDATION_ID, RecommendationTableMap::COL_CURATOR_ID, RecommendationTableMap::COL_RECOMMENDATION_HINT_ID, RecommendationTableMap::COL_CREATED_ON, RecommendationTableMap::COL_SCRAPED_ON, RecommendationTableMap::COL_APPROVED_ON, RecommendationTableMap::COL_GRAPHIC_CONTENT, RecommendationTableMap::COL_SHORTLINK, RecommendationTableMap::COL_URL, RecommendationTableMap::COL_TITLE, RecommendationTableMap::COL_QUOTE, ),
+        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_ID', 'COL_CURATOR_ID', 'COL_RECOMMENDATION_HINT_ID', 'COL_CREATED_ON', 'COL_SCRAPED_ON', 'COL_APPROVED_ON', 'COL_GRAPHIC_CONTENT', 'COL_SHORTLINK', 'COL_URL', 'COL_TITLE', 'COL_QUOTE', ),
+        self::TYPE_FIELDNAME     => array('recommendation_id', 'curator_id', 'recommendation_hint_id', 'created_on', 'scraped_on', 'approved_on', 'graphic_content', 'shortlink', 'url', 'title', 'quote', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -148,12 +153,12 @@ class RecommendationTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('RecommendationId' => 0, 'CuratorId' => 1, 'RecommendationHintId' => 2, 'CreatedOn' => 3, 'ScrapedOn' => 4, 'ApprovedOn' => 5, 'GraphicContent' => 6, 'Shortlink' => 7, 'Url' => 8, 'Title' => 9, ),
-        self::TYPE_STUDLYPHPNAME => array('recommendationId' => 0, 'curatorId' => 1, 'recommendationHintId' => 2, 'createdOn' => 3, 'scrapedOn' => 4, 'approvedOn' => 5, 'graphicContent' => 6, 'shortlink' => 7, 'url' => 8, 'title' => 9, ),
-        self::TYPE_COLNAME       => array(RecommendationTableMap::COL_RECOMMENDATION_ID => 0, RecommendationTableMap::COL_CURATOR_ID => 1, RecommendationTableMap::COL_RECOMMENDATION_HINT_ID => 2, RecommendationTableMap::COL_CREATED_ON => 3, RecommendationTableMap::COL_SCRAPED_ON => 4, RecommendationTableMap::COL_APPROVED_ON => 5, RecommendationTableMap::COL_GRAPHIC_CONTENT => 6, RecommendationTableMap::COL_SHORTLINK => 7, RecommendationTableMap::COL_URL => 8, RecommendationTableMap::COL_TITLE => 9, ),
-        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_ID' => 0, 'COL_CURATOR_ID' => 1, 'COL_RECOMMENDATION_HINT_ID' => 2, 'COL_CREATED_ON' => 3, 'COL_SCRAPED_ON' => 4, 'COL_APPROVED_ON' => 5, 'COL_GRAPHIC_CONTENT' => 6, 'COL_SHORTLINK' => 7, 'COL_URL' => 8, 'COL_TITLE' => 9, ),
-        self::TYPE_FIELDNAME     => array('recommendation_id' => 0, 'curator_id' => 1, 'recommendation_hint_id' => 2, 'created_on' => 3, 'scraped_on' => 4, 'approved_on' => 5, 'graphic_content' => 6, 'shortlink' => 7, 'url' => 8, 'title' => 9, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('RecommendationId' => 0, 'CuratorId' => 1, 'RecommendationHintId' => 2, 'CreatedOn' => 3, 'ScrapedOn' => 4, 'ApprovedOn' => 5, 'GraphicContent' => 6, 'Shortlink' => 7, 'Url' => 8, 'Title' => 9, 'Quote' => 10, ),
+        self::TYPE_STUDLYPHPNAME => array('recommendationId' => 0, 'curatorId' => 1, 'recommendationHintId' => 2, 'createdOn' => 3, 'scrapedOn' => 4, 'approvedOn' => 5, 'graphicContent' => 6, 'shortlink' => 7, 'url' => 8, 'title' => 9, 'quote' => 10, ),
+        self::TYPE_COLNAME       => array(RecommendationTableMap::COL_RECOMMENDATION_ID => 0, RecommendationTableMap::COL_CURATOR_ID => 1, RecommendationTableMap::COL_RECOMMENDATION_HINT_ID => 2, RecommendationTableMap::COL_CREATED_ON => 3, RecommendationTableMap::COL_SCRAPED_ON => 4, RecommendationTableMap::COL_APPROVED_ON => 5, RecommendationTableMap::COL_GRAPHIC_CONTENT => 6, RecommendationTableMap::COL_SHORTLINK => 7, RecommendationTableMap::COL_URL => 8, RecommendationTableMap::COL_TITLE => 9, RecommendationTableMap::COL_QUOTE => 10, ),
+        self::TYPE_RAW_COLNAME   => array('COL_RECOMMENDATION_ID' => 0, 'COL_CURATOR_ID' => 1, 'COL_RECOMMENDATION_HINT_ID' => 2, 'COL_CREATED_ON' => 3, 'COL_SCRAPED_ON' => 4, 'COL_APPROVED_ON' => 5, 'COL_GRAPHIC_CONTENT' => 6, 'COL_SHORTLINK' => 7, 'COL_URL' => 8, 'COL_TITLE' => 9, 'COL_QUOTE' => 10, ),
+        self::TYPE_FIELDNAME     => array('recommendation_id' => 0, 'curator_id' => 1, 'recommendation_hint_id' => 2, 'created_on' => 3, 'scraped_on' => 4, 'approved_on' => 5, 'graphic_content' => 6, 'shortlink' => 7, 'url' => 8, 'title' => 9, 'quote' => 10, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -182,6 +187,7 @@ class RecommendationTableMap extends TableMap
         $this->addColumn('SHORTLINK', 'Shortlink', 'VARCHAR', false, 32, null);
         $this->addColumn('URL', 'Url', 'VARCHAR', false, 1024, null);
         $this->addColumn('TITLE', 'Title', 'VARCHAR', false, 512, null);
+        $this->addColumn('QUOTE', 'Quote', 'VARCHAR', false, 512, null);
     } // initialize()
 
     /**
@@ -189,8 +195,8 @@ class RecommendationTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('RecommendationHint', '\\justnyt\\models\\RecommendationHint', RelationMap::MANY_TO_ONE, array('recommendation_hint_id' => 'recommendation_hint_id', ), 'SET NULL', 'CASCADE');
         $this->addRelation('Curator', '\\justnyt\\models\\Curator', RelationMap::MANY_TO_ONE, array('curator_id' => 'curator_id', ), 'SET NULL', 'CASCADE');
+        $this->addRelation('RecommendationHint', '\\justnyt\\models\\RecommendationHint', RelationMap::MANY_TO_ONE, array('recommendation_hint_id' => 'recommendation_hint_id', ), 'SET NULL', 'CASCADE');
         $this->addRelation('Visit', '\\justnyt\\models\\Visit', RelationMap::ONE_TO_MANY, array('recommendation_id' => 'recommendation_id', ), 'CASCADE', 'CASCADE', 'Visits');
     } // buildRelations()
     /**
@@ -354,6 +360,7 @@ class RecommendationTableMap extends TableMap
             $criteria->addSelectColumn(RecommendationTableMap::COL_SHORTLINK);
             $criteria->addSelectColumn(RecommendationTableMap::COL_URL);
             $criteria->addSelectColumn(RecommendationTableMap::COL_TITLE);
+            $criteria->addSelectColumn(RecommendationTableMap::COL_QUOTE);
         } else {
             $criteria->addSelectColumn($alias . '.RECOMMENDATION_ID');
             $criteria->addSelectColumn($alias . '.CURATOR_ID');
@@ -365,6 +372,7 @@ class RecommendationTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.SHORTLINK');
             $criteria->addSelectColumn($alias . '.URL');
             $criteria->addSelectColumn($alias . '.TITLE');
+            $criteria->addSelectColumn($alias . '.QUOTE');
         }
     }
 
