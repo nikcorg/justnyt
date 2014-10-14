@@ -119,6 +119,7 @@ CREATE TABLE `visit`(
     `recorded_on` DATETIME NOT NULL,
     `visitor_id` VARCHAR (32) NOT NULL,
     `recommendation_id` INT UNSIGNED,
+    `referrer` VARCHAR (512),
 
     PRIMARY KEY (`visit_id`),
 
