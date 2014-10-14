@@ -18,7 +18,9 @@ class RedirectController extends \glue\Controller
 
     protected function createVisit($visitorId) {
         $visit = new \justnyt\models\Visit();
-        $visit->setVisitorId($visitorId)->setRecordedOn($_SERVER["REQUEST_TIME"]);
+        $visit->setVisitorId($visitorId)
+            ->setRecordedOn($_SERVER["REQUEST_TIME"])
+            ->setReferrer($this->request->getReferrer());
 
         return $visit;
     }

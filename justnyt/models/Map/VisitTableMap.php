@@ -59,7 +59,7 @@ class VisitTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class VisitTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the VISIT_ID field
@@ -92,6 +92,11 @@ class VisitTableMap extends TableMap
     const COL_RECOMMENDATION_ID = 'visit.RECOMMENDATION_ID';
 
     /**
+     * the column name for the REFERRER field
+     */
+    const COL_REFERRER = 'visit.REFERRER';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -103,12 +108,12 @@ class VisitTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('VisitId', 'RecordedOn', 'VisitorId', 'RecommendationId', ),
-        self::TYPE_STUDLYPHPNAME => array('visitId', 'recordedOn', 'visitorId', 'recommendationId', ),
-        self::TYPE_COLNAME       => array(VisitTableMap::COL_VISIT_ID, VisitTableMap::COL_RECORDED_ON, VisitTableMap::COL_VISITOR_ID, VisitTableMap::COL_RECOMMENDATION_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_VISIT_ID', 'COL_RECORDED_ON', 'COL_VISITOR_ID', 'COL_RECOMMENDATION_ID', ),
-        self::TYPE_FIELDNAME     => array('visit_id', 'recorded_on', 'visitor_id', 'recommendation_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('VisitId', 'RecordedOn', 'VisitorId', 'RecommendationId', 'Referrer', ),
+        self::TYPE_STUDLYPHPNAME => array('visitId', 'recordedOn', 'visitorId', 'recommendationId', 'referrer', ),
+        self::TYPE_COLNAME       => array(VisitTableMap::COL_VISIT_ID, VisitTableMap::COL_RECORDED_ON, VisitTableMap::COL_VISITOR_ID, VisitTableMap::COL_RECOMMENDATION_ID, VisitTableMap::COL_REFERRER, ),
+        self::TYPE_RAW_COLNAME   => array('COL_VISIT_ID', 'COL_RECORDED_ON', 'COL_VISITOR_ID', 'COL_RECOMMENDATION_ID', 'COL_REFERRER', ),
+        self::TYPE_FIELDNAME     => array('visit_id', 'recorded_on', 'visitor_id', 'recommendation_id', 'referrer', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -118,12 +123,12 @@ class VisitTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('VisitId' => 0, 'RecordedOn' => 1, 'VisitorId' => 2, 'RecommendationId' => 3, ),
-        self::TYPE_STUDLYPHPNAME => array('visitId' => 0, 'recordedOn' => 1, 'visitorId' => 2, 'recommendationId' => 3, ),
-        self::TYPE_COLNAME       => array(VisitTableMap::COL_VISIT_ID => 0, VisitTableMap::COL_RECORDED_ON => 1, VisitTableMap::COL_VISITOR_ID => 2, VisitTableMap::COL_RECOMMENDATION_ID => 3, ),
-        self::TYPE_RAW_COLNAME   => array('COL_VISIT_ID' => 0, 'COL_RECORDED_ON' => 1, 'COL_VISITOR_ID' => 2, 'COL_RECOMMENDATION_ID' => 3, ),
-        self::TYPE_FIELDNAME     => array('visit_id' => 0, 'recorded_on' => 1, 'visitor_id' => 2, 'recommendation_id' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('VisitId' => 0, 'RecordedOn' => 1, 'VisitorId' => 2, 'RecommendationId' => 3, 'Referrer' => 4, ),
+        self::TYPE_STUDLYPHPNAME => array('visitId' => 0, 'recordedOn' => 1, 'visitorId' => 2, 'recommendationId' => 3, 'referrer' => 4, ),
+        self::TYPE_COLNAME       => array(VisitTableMap::COL_VISIT_ID => 0, VisitTableMap::COL_RECORDED_ON => 1, VisitTableMap::COL_VISITOR_ID => 2, VisitTableMap::COL_RECOMMENDATION_ID => 3, VisitTableMap::COL_REFERRER => 4, ),
+        self::TYPE_RAW_COLNAME   => array('COL_VISIT_ID' => 0, 'COL_RECORDED_ON' => 1, 'COL_VISITOR_ID' => 2, 'COL_RECOMMENDATION_ID' => 3, 'COL_REFERRER' => 4, ),
+        self::TYPE_FIELDNAME     => array('visit_id' => 0, 'recorded_on' => 1, 'visitor_id' => 2, 'recommendation_id' => 3, 'referrer' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -146,6 +151,7 @@ class VisitTableMap extends TableMap
         $this->addColumn('RECORDED_ON', 'RecordedOn', 'TIMESTAMP', true, null, null);
         $this->addColumn('VISITOR_ID', 'VisitorId', 'VARCHAR', true, 32, null);
         $this->addForeignKey('RECOMMENDATION_ID', 'RecommendationId', 'INTEGER', 'recommendation', 'RECOMMENDATION_ID', false, 10, null);
+        $this->addColumn('REFERRER', 'Referrer', 'VARCHAR', false, 512, null);
     } // initialize()
 
     /**
@@ -301,11 +307,13 @@ class VisitTableMap extends TableMap
             $criteria->addSelectColumn(VisitTableMap::COL_RECORDED_ON);
             $criteria->addSelectColumn(VisitTableMap::COL_VISITOR_ID);
             $criteria->addSelectColumn(VisitTableMap::COL_RECOMMENDATION_ID);
+            $criteria->addSelectColumn(VisitTableMap::COL_REFERRER);
         } else {
             $criteria->addSelectColumn($alias . '.VISIT_ID');
             $criteria->addSelectColumn($alias . '.RECORDED_ON');
             $criteria->addSelectColumn($alias . '.VISITOR_ID');
             $criteria->addSelectColumn($alias . '.RECOMMENDATION_ID');
+            $criteria->addSelectColumn($alias . '.REFERRER');
         }
     }
 
