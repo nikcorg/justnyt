@@ -88,6 +88,12 @@ abstract class Visit implements ActiveRecordInterface
     protected $recommendation_id;
 
     /**
+     * The value for the referrer field.
+     * @var        string
+     */
+    protected $referrer;
+
+    /**
      * @var        ChildRecommendation
      */
     protected $aRecommendation;
@@ -368,6 +374,16 @@ abstract class Visit implements ActiveRecordInterface
     }
 
     /**
+     * Get the [referrer] column value.
+     *
+     * @return string
+     */
+    public function getReferrer()
+    {
+        return $this->referrer;
+    }
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -417,6 +433,9 @@ abstract class Visit implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : VisitTableMap::translateFieldName('RecommendationId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->recommendation_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : VisitTableMap::translateFieldName('Referrer', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->referrer = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -425,7 +444,7 @@ abstract class Visit implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = VisitTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = VisitTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\justnyt\\models\\Visit'), 0, $e);
@@ -535,6 +554,26 @@ abstract class Visit implements ActiveRecordInterface
 
         return $this;
     } // setRecommendationId()
+
+    /**
+     * Set the value of [referrer] column.
+     *
+     * @param  string $v new value
+     * @return $this|\justnyt\models\Visit The current object (for fluent API support)
+     */
+    public function setReferrer($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->referrer !== $v) {
+            $this->referrer = $v;
+            $this->modifiedColumns[VisitTableMap::COL_REFERRER] = true;
+        }
+
+        return $this;
+    } // setReferrer()
 
     /**
      * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
@@ -734,6 +773,9 @@ abstract class Visit implements ActiveRecordInterface
         if ($this->isColumnModified(VisitTableMap::COL_RECOMMENDATION_ID)) {
             $modifiedColumns[':p' . $index++]  = '`RECOMMENDATION_ID`';
         }
+        if ($this->isColumnModified(VisitTableMap::COL_REFERRER)) {
+            $modifiedColumns[':p' . $index++]  = '`REFERRER`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `visit` (%s) VALUES (%s)',
@@ -756,6 +798,9 @@ abstract class Visit implements ActiveRecordInterface
                         break;
                     case '`RECOMMENDATION_ID`':
                         $stmt->bindValue($identifier, $this->recommendation_id, PDO::PARAM_INT);
+                        break;
+                    case '`REFERRER`':
+                        $stmt->bindValue($identifier, $this->referrer, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -831,6 +876,9 @@ abstract class Visit implements ActiveRecordInterface
             case 3:
                 return $this->getRecommendationId();
                 break;
+            case 4:
+                return $this->getReferrer();
+                break;
             default:
                 return null;
                 break;
@@ -865,6 +913,7 @@ abstract class Visit implements ActiveRecordInterface
             $keys[1] => $this->getRecordedOn(),
             $keys[2] => $this->getVisitorId(),
             $keys[3] => $this->getRecommendationId(),
+            $keys[4] => $this->getReferrer(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -933,6 +982,9 @@ abstract class Visit implements ActiveRecordInterface
             case 3:
                 $this->setRecommendationId($value);
                 break;
+            case 4:
+                $this->setReferrer($value);
+                break;
         } // switch()
 
         return $this;
@@ -970,6 +1022,9 @@ abstract class Visit implements ActiveRecordInterface
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setRecommendationId($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setReferrer($arr[$keys[4]]);
         }
     }
 
@@ -1017,6 +1072,9 @@ abstract class Visit implements ActiveRecordInterface
         }
         if ($this->isColumnModified(VisitTableMap::COL_RECOMMENDATION_ID)) {
             $criteria->add(VisitTableMap::COL_RECOMMENDATION_ID, $this->recommendation_id);
+        }
+        if ($this->isColumnModified(VisitTableMap::COL_REFERRER)) {
+            $criteria->add(VisitTableMap::COL_REFERRER, $this->referrer);
         }
 
         return $criteria;
@@ -1107,6 +1165,7 @@ abstract class Visit implements ActiveRecordInterface
         $copyObj->setRecordedOn($this->getRecordedOn());
         $copyObj->setVisitorId($this->getVisitorId());
         $copyObj->setRecommendationId($this->getRecommendationId());
+        $copyObj->setReferrer($this->getReferrer());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setVisitId(NULL); // this is a auto-increment column, so set to default value
@@ -1200,6 +1259,7 @@ abstract class Visit implements ActiveRecordInterface
         $this->recorded_on = null;
         $this->visitor_id = null;
         $this->recommendation_id = null;
+        $this->referrer = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();

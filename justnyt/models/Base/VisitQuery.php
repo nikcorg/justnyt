@@ -24,11 +24,13 @@ use justnyt\models\Map\VisitTableMap;
  * @method     ChildVisitQuery orderByRecordedOn($order = Criteria::ASC) Order by the recorded_on column
  * @method     ChildVisitQuery orderByVisitorId($order = Criteria::ASC) Order by the visitor_id column
  * @method     ChildVisitQuery orderByRecommendationId($order = Criteria::ASC) Order by the recommendation_id column
+ * @method     ChildVisitQuery orderByReferrer($order = Criteria::ASC) Order by the referrer column
  *
  * @method     ChildVisitQuery groupByVisitId() Group by the visit_id column
  * @method     ChildVisitQuery groupByRecordedOn() Group by the recorded_on column
  * @method     ChildVisitQuery groupByVisitorId() Group by the visitor_id column
  * @method     ChildVisitQuery groupByRecommendationId() Group by the recommendation_id column
+ * @method     ChildVisitQuery groupByReferrer() Group by the referrer column
  *
  * @method     ChildVisitQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildVisitQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -47,12 +49,14 @@ use justnyt\models\Map\VisitTableMap;
  * @method     ChildVisit findOneByRecordedOn(string $recorded_on) Return the first ChildVisit filtered by the recorded_on column
  * @method     ChildVisit findOneByVisitorId(string $visitor_id) Return the first ChildVisit filtered by the visitor_id column
  * @method     ChildVisit findOneByRecommendationId(int $recommendation_id) Return the first ChildVisit filtered by the recommendation_id column
+ * @method     ChildVisit findOneByReferrer(string $referrer) Return the first ChildVisit filtered by the referrer column
  *
  * @method     ChildVisit[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildVisit objects based on current ModelCriteria
  * @method     ChildVisit[]|ObjectCollection findByVisitId(int $visit_id) Return ChildVisit objects filtered by the visit_id column
  * @method     ChildVisit[]|ObjectCollection findByRecordedOn(string $recorded_on) Return ChildVisit objects filtered by the recorded_on column
  * @method     ChildVisit[]|ObjectCollection findByVisitorId(string $visitor_id) Return ChildVisit objects filtered by the visitor_id column
  * @method     ChildVisit[]|ObjectCollection findByRecommendationId(int $recommendation_id) Return ChildVisit objects filtered by the recommendation_id column
+ * @method     ChildVisit[]|ObjectCollection findByReferrer(string $referrer) Return ChildVisit objects filtered by the referrer column
  * @method     ChildVisit[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -142,7 +146,7 @@ abstract class VisitQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT `VISIT_ID`, `RECORDED_ON`, `VISITOR_ID`, `RECOMMENDATION_ID` FROM `visit` WHERE `VISIT_ID` = :p0';
+        $sql = 'SELECT `VISIT_ID`, `RECORDED_ON`, `VISITOR_ID`, `RECOMMENDATION_ID`, `REFERRER` FROM `visit` WHERE `VISIT_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -386,6 +390,35 @@ abstract class VisitQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(VisitTableMap::COL_RECOMMENDATION_ID, $recommendationId, $comparison);
+    }
+
+    /**
+     * Filter the query on the referrer column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByReferrer('fooValue');   // WHERE referrer = 'fooValue'
+     * $query->filterByReferrer('%fooValue%'); // WHERE referrer LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $referrer The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildVisitQuery The current query, for fluid interface
+     */
+    public function filterByReferrer($referrer = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($referrer)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $referrer)) {
+                $referrer = str_replace('*', '%', $referrer);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(VisitTableMap::COL_REFERRER, $referrer, $comparison);
     }
 
     /**
