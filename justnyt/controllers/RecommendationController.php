@@ -37,6 +37,7 @@ class RecommendationController extends \glue\Controller
         }
 
         $curl = \glue\utils\Curl::factory($pending->getUrl());
+        $curl->setHeader("User-Agent", "JustNyt/0.1; for more info see http://justnyt.fi");
 
         if (! $curl->get() || $curl->getResponseCode() !== 200) {
             throw new \glue\exceptions\http\E500Exception("Error scraping " . $pending->getUrl());
