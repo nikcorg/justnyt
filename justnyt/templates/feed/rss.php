@@ -13,6 +13,7 @@
             <guid isPermaLink="true">http://<?= $host ?>/s/<?= $item->getShortLink() ?></guid>
             <pubDate><?= $item->getApprovedOn()->setTimezone(new DateTimeZone("UTC"))->format("D, d M Y H:i:s O") ?></pubDate>
             <title><?= $item->getTitle() ?></title>
+            <atom:author><?php if (null == $item->getRecommendationHint()): ?>Kuraattori<?php else: ?><?= $item->getRecommendationHint()->getAlias() ?: "Anonyymi" ?><?php endif; ?></atom:author>
             <link>http://<?= $host ?>/s/<?= $item->getShortLink() ?></link>
             <description><![CDATA[<?php if (null != $item->getQuote() && "" != $item->getQuote()): ?><blockquote><?= $item->getQuote() ?></blockquote><?php endif; ?>]]></description>
             <content:encoded><![CDATA[<?php if (null != $item->getQuote() && "" != $item->getQuote()): ?><blockquote><?= $item->getQuote() ?></blockquote><?php endif; ?>]]></content:encoded>
