@@ -1,7 +1,7 @@
 <?php if (null != $profile->getEmail() || null != $profile->getHomepage()): ?>
 <div class="right centered mugshot">
     <?php if (null != $profile->getEmail()): ?>
-        <p><img class="gravatar" src="http://www.gravatar.com/avatar/<?= md5($profile->getEmail()) ?>?s=150"></p>
+        <p><img class="gravatar" src="https://www.gravatar.com/avatar/<?= md5($profile->getEmail()) ?>?s=150"></p>
     <?php endif; ?>
 
     <?php if (null != $profile->getHomepage()): ?>

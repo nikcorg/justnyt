@@ -140,7 +140,7 @@ class CuratorController extends \glue\Controller
 
     protected function doSendInviteMail($candidate, $next) {
         $activationUrl = sprintf(
-            "http://%s/kuraattori/%s/tervetuloa",
+            "https://%s/kuraattori/%s/tervetuloa",
             $_SERVER["HTTP_HOST"],
             $next->getInviteToken()
         );
@@ -254,7 +254,7 @@ class CuratorController extends \glue\Controller
             );
         } elseif (null != $next && null == $next->getCandidateId()) {
             $activationUrl = sprintf(
-                "http://%s/kuraattori/%s/tervetuloa",
+                "https://%s/kuraattori/%s/tervetuloa",
                 $_SERVER["HTTP_HOST"],
                 $next->getInviteToken()
             );

@@ -20,4 +20,4 @@ Terveisin
 
 JustNyt
 --
-http://justnyt.fi
+https://justnyt.fi
