@@ -165,6 +165,7 @@ class RecommendationController extends \glue\Controller
                 "recommendation/remove",
                 array(
                     "title" => "Suositus poistettiin",
+                    "curator" => $curator,
                     "token" => $curator->getToken()
                     )
                 )
