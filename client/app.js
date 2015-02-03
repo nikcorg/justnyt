@@ -1,8 +1,5 @@
 var debug = require("debug")("app.js");
-
-var candidatePreview = /kuraattori\/[a-z0-9]+\/esikatsele/i;
-var profileEdit = /kuraattori\/[a-z0-9]+\/profiili/i;
-var hintsView = /kuraattori\/[a-z0-9]+\/vinkatut/i;
+var page = require("page");
 
 function domready(callback) {
     if (/interactive|complete/.test(document.readyState)) {
@@ -15,15 +12,17 @@ function domready(callback) {
 function start() {
     debug("start");
 
-    // TODO: add router triggers here
+    // Define routes
+    page("/kuraattori/:token/esikatsele", require("./preview").run);
+    page("/kuraattori/:token/profiili", require("./profile").run);
+    page("/kuraattori/:token/vinkatut", require("./hints").run);
 
-    if (candidatePreview.test(window.location)) {
-        require("./preview");
-    } else if (profileEdit.test(window.location)) {
-        require("./profile");
-    } else if (hintsView.test(window.location)) {
-        require("./hints");
-    }
+    // Start router for dispatch
+    page.start({
+        click: false,
+        popstate: false,
+        hashbang: false
+    });
 }
 
 if (process.env.NODE_ENV !== "production") {
