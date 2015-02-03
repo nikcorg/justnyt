@@ -33,11 +33,12 @@
     "event-stream": "~3.1.7"
   },
   "dependencies": {
+    "baconjs": "~0.7.21",
     "bluebird": "~2.2.2",
     "debug": "~1.0.4",
+    "funcalicious": "^0.3.0",
+    "page": "^1.6.0",
     "superagent": "~0.18.2",
-    "underscore": "~1.6.0",
-    "funz": "~0.1.4",
-    "baconjs": "~0.7.21"
+    "underscore": "~1.6.0"
   }
 }
