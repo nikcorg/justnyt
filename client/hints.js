@@ -39,6 +39,8 @@ function init(nodes) {
     });
 }
 
-init([].slice.call(document.querySelectorAll("a[data-action=delete]"), 0));
+function run () {
+    init([].slice.call(document.querySelectorAll("a[data-action=delete]"), 0));
+}
 
-module.exports = {};
+module.exports = run.run = run;

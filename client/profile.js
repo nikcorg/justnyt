@@ -1,9 +1,9 @@
 var debug = require("debug")("preview");
 var Bacon = require("baconjs");
-var funz = require("funz");
+var compose = require("funcalicious/compose");
 var request = require("superagent");
 var Promise = require("bluebird");
-var form = require("./form-tools")(document.querySelector("#profile-form"));
+var form;
 
 var ERR_ALIAS_RESERVED = 1;
 var ERR_ALIAS_EMAIL_MISMATCH = 2;
@@ -29,86 +29,6 @@ function eventTargetValue(ev) {
     return ev.target.value;
 }
 
-var alias = Bacon.fromEventTarget(form.findInput("alias"), "change").
-    merge(
-        Bacon.fromEventTarget(form.findInput("alias"), "keyup")
-    ).
-    map(eventTargetValue).
-    skipDuplicates().
-    toProperty(form.findInput("alias").value);
-
-var email = Bacon.fromEventTarget(form.findInput("email"), "change").
-    merge(
-        Bacon.fromEventTarget(form.findInput("email"), "keyup")
-    ).
-    map(eventTargetValue).
-    skipDuplicates().
-    toProperty(form.findInput("email").value);
-
-var aliasProfiles = alias.
-    debounce(600).
-    filter(isValidAlias).
-    flatMapLatest(funz.compose(Bacon.fromPromise.bind(Bacon), fetchProfilesByAlias)).
-    toProperty(null);
-
-var emailProfile = email.
-    debounce(600).
-    filter(isValidEmail).
-    flatMapLatest(funz.compose(Bacon.fromPromise.bind(Bacon), fetchProfileByEmail)).
-    toProperty(null);
-
-var validEmail = email.map(isValidEmail).map(toBool).flatMap(function (v) {
-    return v ? emailProfile : null;
-});
-
-var validAlias = alias.map(isValidAlias).map(toBool).flatMap(function (v) {
-    return v ? aliasProfiles : null;
-});
-
-var aliasIsReserved = validAlias.flatMap(function (profiles) {
-        return Array.isArray(profiles) && profiles.some(function (profile) {
-            return parseInt(profile.Reserved, 10) === 1;
-        });
-    }).
-    toProperty(false);
-
-var emailMatchesAlias = Bacon.combineTemplate({
-        reserved: aliasIsReserved,
-        aliases: validAlias,
-        email: validEmail
-    }).
-    changes().
-    debounce(600).
-    map(function (props) {
-        var reserved = props.reserved;
-        var aliasProfiles = props.aliases;
-        var emailProfile = props.email;
-
-        var val = !reserved || (emailProfile && aliasProfiles && Array.isArray(aliasProfiles) && aliasProfiles.some(function (profile) {
-            return profile.ProfileId === emailProfile.ProfileId;
-        }));
-
-        return val;
-    }).
-    map(toBool);
-
-emailMatchesAlias.not().onValue(function (v) {
-    if (v) {
-        debug("email/alias mismatch", v);
-        raiseFormError(ERR_ALIAS_RESERVED_OR_EMAIL_MISMATCH);
-    } else {
-        debug("email matches alias or alias is unreserved", v);
-        form.clearErrorMessages();
-    }
-
-    form.node.querySelector("button").disabled = v;
-});
-
-emailProfile.filter(identity).onValue(function (profile) {
-    updateInputIfEmpty(form.findInput("alias"), profile.Alias);
-    updateInputIfEmpty(form.findInput("description"), profile.Description);
-    updateInputIfEmpty(form.findInput("homepage"), profile.Homepage);
-});
 
 function updateInputIfEmpty(input, value) {
     if (input.value == "" && value) {
@@ -167,4 +87,89 @@ function fetchProfilesByAlias(alias) {
     });
 }
 
-module.exports = {};
+function run() {
+    form = require("./form-tools")(document.querySelector("#profile-form"));
+
+    var alias = Bacon.fromEventTarget(form.findInput("alias"), "change").
+        merge(
+            Bacon.fromEventTarget(form.findInput("alias"), "keyup")
+        ).
+        map(eventTargetValue).
+        skipDuplicates().
+        toProperty(form.findInput("alias").value);
+
+    var email = Bacon.fromEventTarget(form.findInput("email"), "change").
+        merge(
+            Bacon.fromEventTarget(form.findInput("email"), "keyup")
+        ).
+        map(eventTargetValue).
+        skipDuplicates().
+        toProperty(form.findInput("email").value);
+
+    var aliasProfiles = alias.
+        debounce(600).
+        filter(isValidAlias).
+        flatMapLatest(compose(Bacon.fromPromise.bind(Bacon), fetchProfilesByAlias)).
+        toProperty(null);
+
+    var emailProfile = email.
+        debounce(600).
+        filter(isValidEmail).
+        flatMapLatest(compose(Bacon.fromPromise.bind(Bacon), fetchProfileByEmail)).
+        toProperty(null);
+
+    var validEmail = email.map(isValidEmail).map(toBool).flatMap(function (v) {
+        return v ? emailProfile : null;
+    });
+
+    var validAlias = alias.map(isValidAlias).map(toBool).flatMap(function (v) {
+        return v ? aliasProfiles : null;
+    });
+
+    var aliasIsReserved = validAlias.flatMap(function (profiles) {
+            return Array.isArray(profiles) && profiles.some(function (profile) {
+                return parseInt(profile.Reserved, 10) === 1;
+            });
+        }).
+        toProperty(false);
+
+    var emailMatchesAlias = Bacon.combineTemplate({
+            reserved: aliasIsReserved,
+            aliases: validAlias,
+            email: validEmail
+        }).
+        changes().
+        debounce(600).
+        map(function (props) {
+            var reserved = props.reserved;
+            var aliasProfiles = props.aliases;
+            var emailProfile = props.email;
+
+            var val = !reserved || (emailProfile && aliasProfiles && Array.isArray(aliasProfiles) && aliasProfiles.some(function (profile) {
+                return profile.ProfileId === emailProfile.ProfileId;
+            }));
+
+            return val;
+        }).
+        map(toBool);
+
+    emailMatchesAlias.not().onValue(function (v) {
+        if (v) {
+            debug("email/alias mismatch", v);
+            raiseFormError(ERR_ALIAS_RESERVED_OR_EMAIL_MISMATCH);
+        } else {
+            debug("email matches alias or alias is unreserved", v);
+            form.clearErrorMessages();
+        }
+
+        form.node.querySelector("button").disabled = v;
+    });
+
+    emailProfile.filter(identity).onValue(function (profile) {
+        updateInputIfEmpty(form.findInput("alias"), profile.Alias);
+        updateInputIfEmpty(form.findInput("description"), profile.Description);
+        updateInputIfEmpty(form.findInput("homepage"), profile.Homepage);
+    });
+}
+
+module.exports = run.run = run;

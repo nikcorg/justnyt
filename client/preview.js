@@ -1,7 +1,7 @@
 var debug = require("debug")("preview");
 var request = require("superagent");
 var Promise = require("bluebird");
-var form = document.querySelector("#preview-form");
+var form;
 
 function setBlocker() {
     document.querySelector(".form-blocker").classList.remove("hidden");
@@ -29,12 +29,16 @@ function fetchPreview() {
     });
 }
 
-if (form) {
-    setBlocker();
+function run() {
+    form = document.querySelector("#preview-form");
 
-    fetchPreview().
-    then(updateForm).
-    finally(clearBlocker);
+    if (form) {
+        setBlocker();
+
+        fetchPreview().
+        then(updateForm).
+        finally(clearBlocker);
+    }
 }
 
-module.exports = {};
+module.exports = run.run = run;
