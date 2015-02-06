@@ -109,13 +109,13 @@ function run() {
     var aliasProfiles = alias.
         debounce(600).
         filter(isValidAlias).
-        flatMapLatest(compose(Bacon.fromPromise.bind(Bacon), fetchProfilesByAlias)).
+        flatMapLatest(compose(fetchProfilesByAlias, Bacon.fromPromise.bind(Bacon))).
         toProperty(null);
 
     var emailProfile = email.
         debounce(600).
         filter(isValidEmail).
-        flatMapLatest(compose(Bacon.fromPromise.bind(Bacon), fetchProfileByEmail)).
+        flatMapLatest(compose(fetchProfileByEmail, Bacon.fromPromise.bind(Bacon))).
         toProperty(null);
 
     var validEmail = email.map(isValidEmail).map(toBool).flatMap(function (v) {
