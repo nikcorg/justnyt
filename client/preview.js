@@ -12,7 +12,14 @@ function clearBlocker() {
 }
 
 function updateForm(data) {
-    form.querySelector("input[name=title]").value = data.Title;
+    var titleInput = form.querySelector("input[name=title]");
+    var quoteInput = form.querySelector("textarea[name=quote]");
+
+    titleInput.value = data.Title;
+
+    if (data.Quote != "" && quoteInput.value === "") {
+        quoteInput.value = data.Quote;
+    }
 }
 
 function fetchPreview() {
