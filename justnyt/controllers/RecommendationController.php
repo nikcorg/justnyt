@@ -44,15 +44,40 @@ class RecommendationController extends \glue\Controller
         }
 
         $dom = \Sunra\PhpSimple\HtmlDomParser::str_get_html($curl->getResponseBody());
-        $title = html_entity_decode(trim($dom->find("title", 0)->plaintext));
 
-        if (empty($title)) {
-            $title = "Untitled";
+        $titleStr = "Untitled";
+        $descStr = "";
+
+        $title = $dom->find("title", 0);
+        $desc = $dom->find("meta[name=description]", 0);
+        $ogSiteName = $dom->find("meta[property=og:site_name]", 0);
+        $ogTitle = $dom->find("meta[property=og:title]", 0);
+        $ogDesc = $dom->find("meta[property=og:description", 0);
+
+        if (null != $title) {
+            $titleStr = html_entity_decode(trim($title->plaintext));
+        }
+
+        if (null != $ogTitle) {
+            $titleStr = html_entity_decode(trim($ogTitle->content));
+        }
+
+        if (null != $ogSiteName) {
+            $titleStr .= " - " . html_entity_decode(trim($ogSiteName->content));
+        }
+
+        if (null != $desc) {
+            $descStr = strip_tags(html_entity_decode(trim($desc->content)));
+        }
+
+        if (null != $ogDesc) {
+            $descStr = strip_tags(html_entity_decode(trim($ogDesc->content)));
         }
 
         try {
             $pending->setScrapedOn(time());
-            $pending->setTitle($title);
+            $pending->setTitle($titleStr);
+            $pending->setQuote($descStr);
             $pending->save();
         } catch (\Exception $e) {
             throw new \glue\exceptions\http\E500Exception("Error updating recommendation", 0, $e);
