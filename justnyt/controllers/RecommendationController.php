@@ -52,7 +52,7 @@ class RecommendationController extends \glue\Controller
         $desc = $dom->find("meta[name=description]", 0);
         $ogSiteName = $dom->find("meta[property=og:site_name]", 0);
         $ogTitle = $dom->find("meta[property=og:title]", 0);
-        $ogDesc = $dom->find("meta[property=og:description", 0);
+        $ogDesc = $dom->find("meta[property=og:description]", 0);
 
         if (null != $title) {
             $titleStr = html_entity_decode(trim($title->plaintext));
